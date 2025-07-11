@@ -74,6 +74,131 @@
         "commercial": 50,
         "enterprise": 200
       }
+    },
+    {
+      "id": "mizo-pullstring-01",
+      "name": "Traditional Pull String Instrument",
+      "description": "Authentic recording of a traditional pull string instrument, producing rhythmic and percussive sounds central to Mizo musical heritage",
+      "instrument": "Pull String",
+      "culture": "Mizo",
+      "duration": 25,
+      "bpm": 110,
+      "key": null,
+      "tags": ["string", "percussion", "traditional", "rhythmic", "handmade"],
+      "culturalContext": {
+        "significance": "Pull string instruments demonstrate the ingenuity of traditional Mizo craftsmanship and musical innovation",
+        "origin": "Mizoram, Northeast India",
+        "usageGuidelines": "Respectful use in cultural and educational contexts. Ideal for showcasing traditional instrument diversity.",
+        "recordedBy": "Mizo Traditional Music Collective",
+        "year": 2024
+      },
+      "preview": "/api/audio/preview/mizo-pullstring-01",
+      "waveform": "/api/audio/waveform/mizo-pullstring-01",
+      "price": {
+        "personal": 5,
+        "commercial": 50,
+        "enterprise": 200
+      }
+    },
+    {
+      "id": "mizo-flute-02",
+      "name": "Contemporary Mizo Flute Performance",
+      "description": "Modern interpretation of traditional Mizo flute melodies, bridging ancient techniques with contemporary musical expression",
+      "instrument": "Flute",
+      "culture": "Mizo",
+      "duration": 35,
+      "bpm": 90,
+      "key": "F",
+      "tags": ["wind", "melodic", "contemporary", "expressive", "fusion"],
+      "culturalContext": {
+        "significance": "Represents the evolution of Mizo musical traditions while maintaining cultural authenticity",
+        "origin": "Mizoram, Northeast India",
+        "usageGuidelines": "Perfect for modern content that honors traditional roots. Suitable for meditation and reflective purposes.",
+        "recordedBy": "New Generation Mizo Musicians",
+        "year": 2024
+      },
+      "preview": "/api/audio/preview/mizo-flute-02",
+      "waveform": "/api/audio/waveform/mizo-flute-02",
+      "price": {
+        "personal": 5,
+        "commercial": 50,
+        "enterprise": 200
+      }
+    },
+    {
+      "id": "mizo-3bamboos-01",
+      "name": "Three Bamboo Ensemble",
+      "description": "Harmonious ensemble of three bamboo instruments creating layered melodies characteristic of Mizo group performances",
+      "instrument": "Bamboo Ensemble",
+      "culture": "Mizo",
+      "duration": 40,
+      "bpm": 85,
+      "key": "C",
+      "tags": ["bamboo", "ensemble", "harmony", "traditional", "layered"],
+      "culturalContext": {
+        "significance": "Multi-bamboo performances represent community cooperation and the importance of harmony in Mizo society",
+        "origin": "Mizoram, Northeast India",
+        "usageGuidelines": "Excellent for collaborative and community-focused content. Maintains the spirit of unity and cooperation.",
+        "recordedBy": "Bamboo Music Preservation Society",
+        "year": 2024
+      },
+      "preview": "/api/audio/preview/mizo-3bamboos-01",
+      "waveform": "/api/audio/waveform/mizo-3bamboos-01",
+      "price": {
+        "personal": 5,
+        "commercial": 50,
+        "enterprise": 200
+      }
+    },
+    {
+      "id": "mizo-rawflutes-01",
+      "name": "Raw Bamboo Flute Collection",
+      "description": "Unprocessed recordings of various bamboo flutes in their natural state, showcasing the pure acoustic properties of traditional instruments",
+      "instrument": "Raw Bamboo Flutes",
+      "culture": "Mizo",
+      "duration": 50,
+      "bpm": 75,
+      "key": "A",
+      "tags": ["bamboo", "natural", "acoustic", "authentic", "unprocessed"],
+      "culturalContext": {
+        "significance": "Raw recordings preserve the authentic sound of handcrafted instruments as they would naturally sound in traditional settings",
+        "origin": "Mizoram, Northeast India",
+        "usageGuidelines": "Ideal for authentic cultural documentation and educational purposes. Maintains natural acoustic properties.",
+        "recordedBy": "Traditional Craft Documentation Project",
+        "year": 2024
+      },
+      "preview": "/api/audio/preview/mizo-rawflutes-01",
+      "waveform": "/api/audio/waveform/mizo-rawflutes-01",
+      "price": {
+        "personal": 5,
+        "commercial": 50,
+        "enterprise": 200
+      }
+    },
+    {
+      "id": "mizo-strings-01",
+      "name": "Traditional String Instrument Medley",
+      "description": "Collection of traditional Mizo string instruments creating intricate melodic patterns and rhythmic accompaniments",
+      "instrument": "Traditional Strings",
+      "culture": "Mizo",
+      "duration": 45,
+      "bpm": 95,
+      "key": "G",
+      "tags": ["strings", "melodic", "traditional", "intricate", "accompaniment"],
+      "culturalContext": {
+        "significance": "String instruments in Mizo culture often accompany storytelling and ceremonial songs, connecting past and present",
+        "origin": "Mizoram, Northeast India",
+        "usageGuidelines": "Perfect for narrative content and cultural storytelling. Respects the tradition of musical accompaniment to oral histories.",
+        "recordedBy": "Mizo Storytelling Musicians",
+        "year": 2024
+      },
+      "preview": "/api/audio/preview/mizo-strings-01",
+      "waveform": "/api/audio/waveform/mizo-strings-01",
+      "price": {
+        "personal": 5,
+        "commercial": 50,
+        "enterprise": 200
+      }
     }
   ]
 }

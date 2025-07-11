@@ -10,9 +10,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - **TSRR**: Acts as the underlying database and rights management system
 - **CSL**: The user-facing platform that consumes TSRR data and provides creative tools
-- **Current MVP**: Uses 3 sample Mizo audio files as mock TSRR data
+- **Current MVP**: Uses 8 sample Mizo audio files as mock TSRR data
 
-**Current Status**: Early development stage - most custom directories are empty placeholders, with only the web application currently functional.
+**Current Status**: MVP implementation complete with functional web application, API backend, and mock generation services ready for demo.
 
 ## Core Features
 
@@ -82,9 +82,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Styling**: Tailwind CSS 4.1.5
 
 ### Current Applications
-- `apps/web/` - Next.js 15.3.0 web application (currently functional, shows Turborepo template)
-- `apps/ai/` - Empty placeholder for AI processing services
-- `apps/api/` - Empty placeholder for API backend
+- `apps/web/` - Next.js 15.3.0 web application with complete dashboard, authentication, and generation workflows
+- `apps/ai/` - Empty placeholder for AI processing services (mock generation implemented in API)
+- `apps/api/` - Express.js backend with Supabase integration, generation queues, and demo endpoints
 
 ### Current Shared Packages
 - `packages/ui/` - React component library with Tailwind CSS
@@ -96,7 +96,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Asset Directories
 - `assets/cultural-context/mizo/` - Empty placeholder for Mizo cultural context data
-- `assets/sample-audio/` - Empty placeholder for audio samples (will contain 3 Mizo sample files)
+- `assets/sample-audio/` - Contains 8 Mizo audio files (.mp4) and metadata JSON file
+- `assets/demo-audio/` - Contains demo generated audio files and playlist for testing
 
 ## Target Project Structure
 
@@ -138,7 +139,7 @@ cultural-sound-lab/
 │   └── cultural-metadata/    # Cultural context definitions
 │
 ├── assets/
-│   ├── sample-audio/         # 3 Mizo sample files for MVP
+│   ├── sample-audio/         # 8 Mizo sample files for MVP
 │   └── cultural-context/     # Cultural context data
 │
 ├── docker/                   # Docker configurations
@@ -217,7 +218,13 @@ npm run db:seed      # Seed database with sample data
 ```
 
 ### Web Application (apps/web/)
-The web app runs on port 3001 by default. Currently displays Turborepo template UI.
+The web app runs on port 3001 by default. Features complete dashboard with:
+- Landing page with interactive demo
+- Authentication (login/register)
+- Audio library browsing with metadata
+- AI generation workflows (sound logos, playlists, social clips, long-form)
+- Health monitoring dashboard
+- User earnings and project management
 
 ### UI Package Build Commands
 ```bash
@@ -332,8 +339,8 @@ MODEL_PATH=/models/audiocraft
 ## Port Configuration
 
 - Web app: http://localhost:3001 (current)
-- API backend: http://localhost:3001 (target)
-- AI service: http://localhost:8000 (target)
-- Database: localhost:5432 (target)
+- API backend: http://localhost:3001 (current, implemented)
+- AI service: http://localhost:8000 (target, mock endpoints implemented)
+- Database: Supabase cloud (current)
 - Redis: localhost:6379 (target)
 - MinIO: localhost:9000 (target)
