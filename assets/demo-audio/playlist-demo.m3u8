@@ -1,0 +1,20 @@
+#EXTM3U
+#EXT-X-VERSION:3
+#EXT-X-TARGETDURATION:180
+
+#EXTINF:120.0,
+#EXT-X-CUSTOM-TITLE:Mizo Traditional Melody - Generated Track 1
+#EXT-X-CUSTOM-MOOD:peaceful
+track1-demo.mp3
+
+#EXTINF:90.0,
+#EXT-X-CUSTOM-TITLE:Cultural Harmony - Generated Track 2  
+#EXT-X-CUSTOM-MOOD:energetic
+track2-demo.mp3
+
+#EXTINF:150.0,
+#EXT-X-CUSTOM-TITLE:Mountain Echoes - Generated Track 3
+#EXT-X-CUSTOM-MOOD:meditative
+track3-demo.mp3
+
+#EXT-X-ENDLIST
