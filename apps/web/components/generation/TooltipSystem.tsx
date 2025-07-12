@@ -12,7 +12,10 @@ import {
   Lightbulb,
   BookOpen,
   Play,
-  Volume2
+  Volume2,
+  Music,
+  Settings,
+  Brain
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
