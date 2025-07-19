@@ -30,7 +30,7 @@ export async function GET(
     }
 
     // Get the file path - audio files are in the assets directory
-    const filePath = path.join(process.cwd(), 'assets', 'sample-audio', fileName);
+    const filePath = path.join(process.cwd(), 'public/assets', 'sample-audio', fileName);
     
     // Check if file exists
     if (!fs.existsSync(filePath)) {

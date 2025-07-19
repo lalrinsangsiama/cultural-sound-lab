@@ -4,7 +4,7 @@ import fs from 'fs';
 
 export async function GET() {
   try {
-    const audioDir = path.join(process.cwd(), 'assets', 'sample-audio');
+    const audioDir = path.join(process.cwd(), 'public/assets', 'sample-audio');
     
     if (!fs.existsSync(audioDir)) {
       return NextResponse.json({

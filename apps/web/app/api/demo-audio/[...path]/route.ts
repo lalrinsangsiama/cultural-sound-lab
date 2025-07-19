@@ -10,7 +10,7 @@ export async function GET(
   try {
     const { path } = await params
     const filePath = path.join('/')
-    const fullPath = join(process.cwd(), '../../assets/demo-library', filePath)
+    const fullPath = join(process.cwd(), 'public/assets/demo-library', filePath)
 
     // Security check: ensure the path is within the demo-library directory
     if (!fullPath.includes('demo-library')) {
@@ -23,7 +23,7 @@ export async function GET(
     // Check if file exists
     if (!existsSync(fullPath)) {
       // Try to serve from the existing demo-audio directory as fallback
-      const fallbackPath = join(process.cwd(), '../../assets/demo-audio', path[path.length - 1] || '')
+      const fallbackPath = join(process.cwd(), 'public/assets/demo-audio', path[path.length - 1] || '')
       
       if (existsSync(fallbackPath)) {
         const fileBuffer = await readFile(fallbackPath)

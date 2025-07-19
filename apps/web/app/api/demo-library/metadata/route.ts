@@ -4,7 +4,7 @@ import { join } from 'path'
 
 export async function GET(request: NextRequest) {
   try {
-    const metadataPath = join(process.cwd(), '../../assets/demo-library/demo-metadata.json')
+    const metadataPath = join(process.cwd(), 'public/assets/demo-library/demo-metadata.json')
     const metadataContent = await readFile(metadataPath, 'utf-8')
     const metadata = JSON.parse(metadataContent)
 

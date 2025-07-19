@@ -1,0 +1,976 @@
+{
+  "library_version": "1.0.0",
+  "last_updated": "2025-07-11",
+  "categories": {
+    "restaurant": {
+      "title": "Restaurant & Dining",
+      "description": "Carefully crafted soundscapes for restaurants, cafes, and dining establishments",
+      "subcategories": {
+        "ambient": {
+          "title": "Ambient Dining",
+          "description": "Subtle background music for intimate dining experiences",
+          "sound_logos": [
+            {
+              "id": "restaurant_ambient_logo_1",
+              "name": "Serene Strings",
+              "duration": "8s",
+              "file": "restaurant/sound-logos/ambient-serene-strings.mp3",
+              "description": "Gentle traditional string melody perfect for upscale restaurants",
+              "mood": "calming",
+              "instruments": ["Mizo bamboo strings", "traditional flute"],
+              "generation_params": {
+                "style": "ambient",
+                "tempo": "slow",
+                "cultural_blend": "70% traditional, 30% modern"
+              },
+              "use_cases": ["fine dining", "romantic restaurants", "cultural establishments"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "restaurant_ambient_logo_2", 
+              "name": "Mountain Echo",
+              "duration": "10s",
+              "file": "restaurant/sound-logos/ambient-mountain-echo.mp3",
+              "description": "Echoing flute with subtle percussion for authentic cultural dining",
+              "mood": "peaceful",
+              "instruments": ["traditional flute", "bamboo percussion"],
+              "generation_params": {
+                "style": "traditional",
+                "tempo": "moderate",
+                "cultural_blend": "90% traditional, 10% modern"
+              },
+              "use_cases": ["cultural restaurants", "tea houses", "ethnic cuisine"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "restaurant_ambient_logo_3",
+              "name": "Harvest Harmony",
+              "duration": "12s", 
+              "file": "restaurant/sound-logos/ambient-harvest-harmony.mp3",
+              "description": "Layered traditional instruments creating warm, welcoming atmosphere",
+              "mood": "welcoming",
+              "instruments": ["bamboo strings", "traditional flute", "subtle percussion"],
+              "generation_params": {
+                "style": "layered_traditional",
+                "tempo": "slow",
+                "cultural_blend": "80% traditional, 20% modern"
+              },
+              "use_cases": ["farm-to-table", "organic restaurants", "community dining"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            }
+          ],
+          "playlists": [
+            {
+              "id": "restaurant_ambient_playlist_1",
+              "name": "Tranquil Dining Experience",
+              "duration": "30 min",
+              "file": "restaurant/playlists/ambient-tranquil-dining.m3u8",
+              "description": "Seamless blend of traditional Mizo instruments for peaceful dining",
+              "tracks": 8,
+              "mood": "serene",
+              "generation_params": {
+                "style": "ambient_traditional",
+                "flow": "seamless",
+                "variation": "minimal"
+              },
+              "use_cases": ["dinner service", "quiet lunch", "wine tasting"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "restaurant_ambient_playlist_2",
+              "name": "Cultural Dining Journey", 
+              "duration": "30 min",
+              "file": "restaurant/playlists/ambient-cultural-journey.m3u8",
+              "description": "Storytelling through traditional sounds, perfect for cultural dining",
+              "tracks": 6,
+              "mood": "contemplative",
+              "generation_params": {
+                "style": "narrative_traditional",
+                "flow": "evolving",
+                "variation": "moderate"
+              },
+              "use_cases": ["cultural restaurants", "storytelling dinners", "heritage dining"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            }
+          ],
+          "social_clips": [
+            {
+              "id": "restaurant_ambient_social_1",
+              "name": "Peaceful Dining Moment",
+              "duration": "15s",
+              "file": "restaurant/social-clips/ambient-peaceful-moment.mp3",
+              "description": "Short ambient clip showcasing restaurant atmosphere",
+              "mood": "peaceful",
+              "platforms": ["Instagram Reels", "TikTok", "Facebook Stories"],
+              "use_cases": ["restaurant marketing", "ambiance showcase", "cultural promotion"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "restaurant_ambient_social_2",
+              "name": "Traditional Flavor",
+              "duration": "30s", 
+              "file": "restaurant/social-clips/ambient-traditional-flavor.mp3",
+              "description": "Authentic traditional sounds for cultural restaurant promotion",
+              "mood": "authentic",
+              "platforms": ["Instagram Reels", "YouTube Shorts", "TikTok"],
+              "use_cases": ["cultural dining promotion", "heritage restaurant marketing", "authentic cuisine showcase"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "restaurant_ambient_social_3",
+              "name": "Dining Invitation",
+              "duration": "45s",
+              "file": "restaurant/social-clips/ambient-dining-invitation.mp3", 
+              "description": "Warm invitation to experience cultural dining",
+              "mood": "inviting",
+              "platforms": ["Instagram Feed", "Facebook Posts", "YouTube"],
+              "use_cases": ["dining invitations", "restaurant openings", "special events"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "restaurant_ambient_social_4",
+              "name": "Culinary Heritage",
+              "duration": "60s",
+              "file": "restaurant/social-clips/ambient-culinary-heritage.mp3",
+              "description": "Longer form content about culinary heritage and tradition",
+              "mood": "educational",
+              "platforms": ["Instagram TV", "YouTube", "Facebook Watch"],
+              "use_cases": ["heritage storytelling", "cultural education", "restaurant history"],
+              "licensing": "commercial", 
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "restaurant_ambient_social_5",
+              "name": "Seasonal Menu",
+              "duration": "20s",
+              "file": "restaurant/social-clips/ambient-seasonal-menu.mp3",
+              "description": "Fresh seasonal sounds for menu promotions",
+              "mood": "fresh",
+              "platforms": ["Instagram Stories", "TikTok", "Snapchat"],
+              "use_cases": ["seasonal promotions", "menu launches", "special dishes"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            }
+          ],
+          "long_form": [
+            {
+              "id": "restaurant_ambient_longform_1",
+              "name": "Evening Dining Symphony",
+              "duration": "10 min",
+              "file": "restaurant/long-form/ambient-evening-symphony.mp3",
+              "description": "Extended ambient composition for full dining experience",
+              "mood": "evolving",
+              "structure": "intro (1min) -> dining (7min) -> outro (2min)",
+              "generation_params": {
+                "style": "symphonic_traditional",
+                "progression": "gradual_build",
+                "instruments": "full_ensemble"
+              },
+              "use_cases": ["full dinner service", "special occasions", "private dining"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            }
+          ]
+        },
+        "energetic": {
+          "title": "Energetic Dining",
+          "description": "Upbeat and lively music for casual dining and social restaurants",
+          "sound_logos": [
+            {
+              "id": "restaurant_energetic_logo_1",
+              "name": "Vibrant Feast",
+              "duration": "8s",
+              "file": "restaurant/sound-logos/energetic-vibrant-feast.mp3",
+              "description": "Upbeat traditional melody perfect for casual dining",
+              "mood": "energetic",
+              "instruments": ["rhythmic bamboo", "lively flute", "percussion"],
+              "generation_params": {
+                "style": "upbeat_traditional",
+                "tempo": "fast",
+                "cultural_blend": "60% traditional, 40% modern"
+              },
+              "use_cases": ["casual dining", "family restaurants", "lunch spots"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "restaurant_energetic_logo_2",
+              "name": "Market Buzz",
+              "duration": "10s", 
+              "file": "restaurant/sound-logos/energetic-market-buzz.mp3",
+              "description": "Dynamic fusion of traditional and modern for bustling eateries",
+              "mood": "bustling",
+              "instruments": ["traditional percussion", "bamboo strings", "modern elements"],
+              "generation_params": {
+                "style": "fusion",
+                "tempo": "fast",
+                "cultural_blend": "50% traditional, 50% modern"
+              },
+              "use_cases": ["food courts", "busy cafes", "street food"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "restaurant_energetic_logo_3",
+              "name": "Festival Flavors",
+              "duration": "12s",
+              "file": "restaurant/sound-logos/energetic-festival-flavors.mp3", 
+              "description": "Celebratory sounds bringing festival energy to dining",
+              "mood": "celebratory",
+              "instruments": ["full traditional ensemble", "rhythmic elements"],
+              "generation_params": {
+                "style": "festive_traditional",
+                "tempo": "fast",
+                "cultural_blend": "85% traditional, 15% modern"
+              },
+              "use_cases": ["celebration dining", "festival restaurants", "party venues"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            }
+          ],
+          "playlists": [
+            {
+              "id": "restaurant_energetic_playlist_1",
+              "name": "Lively Lunch Experience",
+              "duration": "30 min",
+              "file": "restaurant/playlists/energetic-lively-lunch.m3u8",
+              "description": "Upbeat traditional music perfect for casual dining atmosphere",
+              "tracks": 10,
+              "mood": "lively",
+              "generation_params": {
+                "style": "upbeat_traditional",
+                "flow": "consistent_energy",
+                "variation": "moderate"
+              },
+              "use_cases": ["lunch service", "casual dining", "social gatherings"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "restaurant_energetic_playlist_2",
+              "name": "Social Dining Vibes",
+              "duration": "30 min",
+              "file": "restaurant/playlists/energetic-social-vibes.m3u8",
+              "description": "Modern fusion keeping traditional roots for social dining",
+              "tracks": 8,
+              "mood": "social",
+              "generation_params": {
+                "style": "fusion_energetic",
+                "flow": "building_energy",
+                "variation": "high"
+              },
+              "use_cases": ["group dining", "happy hour", "social events"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            }
+          ],
+          "social_clips": [
+            {
+              "id": "restaurant_energetic_social_1",
+              "name": "Happy Hour Vibes",
+              "duration": "15s",
+              "file": "restaurant/social-clips/energetic-happy-hour.mp3",
+              "description": "Upbeat clip perfect for happy hour promotions",
+              "mood": "upbeat",
+              "platforms": ["Instagram Reels", "TikTok", "Snapchat"],
+              "use_cases": ["happy hour promotion", "casual dining marketing", "social events"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "restaurant_energetic_social_2",
+              "name": "Group Celebration",
+              "duration": "30s",
+              "file": "restaurant/social-clips/energetic-group-celebration.mp3",
+              "description": "Energetic music for group dining and celebrations",
+              "mood": "celebratory",
+              "platforms": ["Instagram Reels", "Facebook Stories", "TikTok"],
+              "use_cases": ["group dining promotion", "birthday parties", "celebrations"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "restaurant_energetic_social_3",
+              "name": "Weekend Brunch",
+              "duration": "45s",
+              "file": "restaurant/social-clips/energetic-weekend-brunch.mp3",
+              "description": "Lively sounds for weekend brunch promotions",
+              "mood": "weekend_fun",
+              "platforms": ["Instagram Feed", "YouTube Shorts", "Facebook"],
+              "use_cases": ["brunch promotion", "weekend specials", "social dining"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "restaurant_energetic_social_4",
+              "name": "Live Music Night",
+              "duration": "60s",
+              "file": "restaurant/social-clips/energetic-live-music.mp3",
+              "description": "Dynamic music showcasing live entertainment atmosphere",
+              "mood": "live_performance",
+              "platforms": ["Instagram TV", "YouTube", "Facebook Watch"],
+              "use_cases": ["live music promotion", "entertainment nights", "cultural performances"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "restaurant_energetic_social_5",
+              "name": "New Menu Launch",
+              "duration": "20s",
+              "file": "restaurant/social-clips/energetic-new-menu.mp3",
+              "description": "Exciting sounds for new menu and dish launches",
+              "mood": "exciting",
+              "platforms": ["Instagram Stories", "TikTok", "Twitter"],
+              "use_cases": ["menu launches", "new dish promotion", "culinary innovation"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            }
+          ],
+          "long_form": [
+            {
+              "id": "restaurant_energetic_longform_1",
+              "name": "Social Dining Experience",
+              "duration": "10 min",
+              "file": "restaurant/long-form/energetic-social-experience.mp3",
+              "description": "Extended energetic composition for social dining events",
+              "mood": "consistently_upbeat",
+              "structure": "welcome (1min) -> social dining (8min) -> celebration outro (1min)",
+              "generation_params": {
+                "style": "social_traditional",
+                "progression": "sustained_energy",
+                "instruments": "rhythmic_ensemble"
+              },
+              "use_cases": ["group events", "social dining", "celebrations"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            }
+          ]
+        }
+      }
+    },
+    "retail": {
+      "title": "Retail & Shopping",
+      "description": "Curated soundscapes for retail environments and shopping experiences",
+      "subcategories": {
+        "boutique": {
+          "title": "Boutique Shopping",
+          "description": "Sophisticated background music for upscale retail environments",
+          "sound_logos": [
+            {
+              "id": "retail_boutique_logo_1",
+              "name": "Elegant Selection",
+              "duration": "8s",
+              "file": "retail/sound-logos/boutique-elegant-selection.mp3",
+              "description": "Refined traditional melody for upscale shopping",
+              "mood": "sophisticated",
+              "instruments": ["refined bamboo strings", "gentle flute"],
+              "generation_params": {
+                "style": "elegant_traditional",
+                "tempo": "moderate",
+                "cultural_blend": "75% traditional, 25% modern"
+              },
+              "use_cases": ["luxury boutiques", "art galleries", "jewelry stores"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "retail_boutique_logo_2",
+              "name": "Artisan Craft",
+              "duration": "10s",
+              "file": "retail/sound-logos/boutique-artisan-craft.mp3",
+              "description": "Handcrafted sound reflecting artisan quality",
+              "mood": "artisanal",
+              "instruments": ["traditional percussion", "bamboo ensemble"],
+              "generation_params": {
+                "style": "handcrafted_traditional",
+                "tempo": "slow",
+                "cultural_blend": "90% traditional, 10% modern"
+              },
+              "use_cases": ["craft stores", "artisan shops", "handmade goods"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "retail_boutique_logo_3",
+              "name": "Cultural Heritage",
+              "duration": "12s",
+              "file": "retail/sound-logos/boutique-cultural-heritage.mp3",
+              "description": "Traditional sounds celebrating cultural craftsmanship",
+              "mood": "heritage",
+              "instruments": ["full traditional ensemble", "cultural percussion"],
+              "generation_params": {
+                "style": "heritage_traditional",
+                "tempo": "moderate",
+                "cultural_blend": "95% traditional, 5% modern"
+              },
+              "use_cases": ["cultural boutiques", "heritage stores", "traditional crafts"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            }
+          ]
+        },
+        "market": {
+          "title": "Market & Bazaar",
+          "description": "Vibrant sounds for bustling marketplaces and commercial areas",
+          "sound_logos": [
+            {
+              "id": "retail_market_logo_1",
+              "name": "Bustling Bazaar",
+              "duration": "8s",
+              "file": "retail/sound-logos/market-bustling-bazaar.mp3",
+              "description": "Lively traditional rhythm for busy marketplaces",
+              "mood": "bustling",
+              "instruments": ["rhythmic percussion", "market instruments"],
+              "generation_params": {
+                "style": "market_traditional",
+                "tempo": "fast",
+                "cultural_blend": "70% traditional, 30% modern"
+              },
+              "use_cases": ["farmers markets", "street vendors", "local markets"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "retail_market_logo_2",
+              "name": "Trade Winds",
+              "duration": "10s",
+              "file": "retail/sound-logos/market-trade-winds.mp3",
+              "description": "Dynamic fusion representing commerce and tradition",
+              "mood": "commercial",
+              "instruments": ["trading instruments", "wind elements"],
+              "generation_params": {
+                "style": "commerce_traditional",
+                "tempo": "moderate",
+                "cultural_blend": "60% traditional, 40% modern"
+              },
+              "use_cases": ["commercial districts", "trade centers", "shopping complexes"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "retail_market_logo_3",
+              "name": "Local Goods",
+              "duration": "12s",
+              "file": "retail/sound-logos/market-local-goods.mp3",
+              "description": "Authentic sounds celebrating local produce and crafts",
+              "mood": "authentic",
+              "instruments": ["local traditional instruments", "harvest sounds"],
+              "generation_params": {
+                "style": "local_traditional",
+                "tempo": "moderate",
+                "cultural_blend": "85% traditional, 15% modern"
+              },
+              "use_cases": ["local markets", "organic stores", "community shops"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            }
+          ]
+        }
+      }
+    },
+    "wellness": {
+      "title": "Wellness & Health",
+      "description": "Therapeutic soundscapes for wellness and health-focused environments",
+      "subcategories": {
+        "spa": {
+          "title": "Spa & Relaxation",
+          "description": "Deeply relaxing music for spa treatments and wellness centers",
+          "sound_logos": [
+            {
+              "id": "wellness_spa_logo_1",
+              "name": "Tranquil Waters",
+              "duration": "8s",
+              "file": "wellness/sound-logos/spa-tranquil-waters.mp3",
+              "description": "Flowing traditional sounds for deep relaxation",
+              "mood": "tranquil",
+              "instruments": ["flowing bamboo", "gentle percussion"],
+              "generation_params": {
+                "style": "meditative_traditional",
+                "tempo": "very_slow",
+                "cultural_blend": "80% traditional, 20% modern"
+              },
+              "use_cases": ["spa treatments", "massage therapy", "relaxation centers"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "wellness_spa_logo_2",
+              "name": "Healing Harmony",
+              "duration": "10s",
+              "file": "wellness/sound-logos/spa-healing-harmony.mp3",
+              "description": "Therapeutic traditional melody for wellness treatments",
+              "mood": "healing",
+              "instruments": ["healing flute", "therapeutic bamboo"],
+              "generation_params": {
+                "style": "therapeutic_traditional",
+                "tempo": "slow",
+                "cultural_blend": "90% traditional, 10% modern"
+              },
+              "use_cases": ["healing centers", "therapy sessions", "wellness retreats"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "wellness_spa_logo_3",
+              "name": "Mountain Serenity",
+              "duration": "12s",
+              "file": "wellness/sound-logos/spa-mountain-serenity.mp3",
+              "description": "Mountain-inspired traditional sounds for deep peace",
+              "mood": "serene",
+              "instruments": ["mountain flute", "nature bamboo", "ambient percussion"],
+              "generation_params": {
+                "style": "nature_traditional",
+                "tempo": "very_slow",
+                "cultural_blend": "85% traditional, 15% modern"
+              },
+              "use_cases": ["mountain spas", "nature retreats", "meditation centers"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            }
+          ]
+        },
+        "yoga": {
+          "title": "Yoga & Meditation",
+          "description": "Mindful music for yoga practice and meditation sessions",
+          "sound_logos": [
+            {
+              "id": "wellness_yoga_logo_1",
+              "name": "Mindful Breath",
+              "duration": "8s",
+              "file": "wellness/sound-logos/yoga-mindful-breath.mp3",
+              "description": "Breathing-rhythm traditional melody for yoga practice",
+              "mood": "mindful",
+              "instruments": ["breath-rhythm bamboo", "meditative flute"],
+              "generation_params": {
+                "style": "breath_traditional",
+                "tempo": "breath_pace",
+                "cultural_blend": "85% traditional, 15% modern"
+              },
+              "use_cases": ["yoga studios", "meditation classes", "mindfulness sessions"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "wellness_yoga_logo_2",
+              "name": "Inner Balance",
+              "duration": "10s",
+              "file": "wellness/sound-logos/yoga-inner-balance.mp3",
+              "description": "Balanced traditional composition for centering practice",
+              "mood": "balanced",
+              "instruments": ["balanced bamboo ensemble", "centering percussion"],
+              "generation_params": {
+                "style": "balance_traditional",
+                "tempo": "slow",
+                "cultural_blend": "80% traditional, 20% modern"
+              },
+              "use_cases": ["balance classes", "centering sessions", "holistic wellness"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "wellness_yoga_logo_3",
+              "name": "Spiritual Journey",
+              "duration": "12s",
+              "file": "wellness/sound-logos/yoga-spiritual-journey.mp3",
+              "description": "Spiritual traditional sounds for deeper practice",
+              "mood": "spiritual",
+              "instruments": ["spiritual flute", "journey bamboo", "sacred percussion"],
+              "generation_params": {
+                "style": "spiritual_traditional",
+                "tempo": "meditative",
+                "cultural_blend": "95% traditional, 5% modern"
+              },
+              "use_cases": ["spiritual yoga", "meditation retreats", "sacred practices"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            }
+          ]
+        }
+      }
+    },
+    "corporate": {
+      "title": "Corporate & Business",
+      "description": "Professional soundscapes for business environments and corporate settings",
+      "subcategories": {
+        "modern": {
+          "title": "Modern Business",
+          "description": "Contemporary professional music with traditional elements",
+          "sound_logos": [
+            {
+              "id": "corporate_modern_logo_1",
+              "name": "Innovation Bridge",
+              "duration": "8s",
+              "file": "corporate/sound-logos/modern-innovation-bridge.mp3",
+              "description": "Modern fusion bridging tradition and innovation",
+              "mood": "innovative",
+              "instruments": ["modern bamboo", "contemporary elements", "traditional foundation"],
+              "generation_params": {
+                "style": "innovation_fusion",
+                "tempo": "moderate",
+                "cultural_blend": "40% traditional, 60% modern"
+              },
+              "use_cases": ["tech companies", "startups", "innovation centers"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "corporate_modern_logo_2",
+              "name": "Global Harmony",
+              "duration": "10s",
+              "file": "corporate/sound-logos/modern-global-harmony.mp3",
+              "description": "International appeal with cultural authenticity",
+              "mood": "global",
+              "instruments": ["global fusion", "traditional core", "modern elements"],
+              "generation_params": {
+                "style": "global_fusion",
+                "tempo": "moderate",
+                "cultural_blend": "50% traditional, 50% modern"
+              },
+              "use_cases": ["multinational companies", "global brands", "international business"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "corporate_modern_logo_3",
+              "name": "Progressive Values",
+              "duration": "12s",
+              "file": "corporate/sound-logos/modern-progressive-values.mp3",
+              "description": "Forward-thinking sound with cultural grounding",
+              "mood": "progressive",
+              "instruments": ["progressive bamboo", "values-driven percussion", "future-focused elements"],
+              "generation_params": {
+                "style": "progressive_traditional",
+                "tempo": "building",
+                "cultural_blend": "45% traditional, 55% modern"
+              },
+              "use_cases": ["progressive companies", "sustainable business", "social enterprises"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            }
+          ]
+        },
+        "traditional": {
+          "title": "Traditional Business",
+          "description": "Classic professional music emphasizing cultural heritage",
+          "sound_logos": [
+            {
+              "id": "corporate_traditional_logo_1",
+              "name": "Heritage Trust",
+              "duration": "8s",
+              "file": "corporate/sound-logos/traditional-heritage-trust.mp3",
+              "description": "Trustworthy traditional sound for established businesses",
+              "mood": "trustworthy",
+              "instruments": ["trust bamboo", "heritage flute", "established percussion"],
+              "generation_params": {
+                "style": "trust_traditional",
+                "tempo": "steady",
+                "cultural_blend": "85% traditional, 15% modern"
+              },
+              "use_cases": ["established firms", "law offices", "financial institutions"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "corporate_traditional_logo_2",
+              "name": "Cultural Legacy",
+              "duration": "10s",
+              "file": "corporate/sound-logos/traditional-cultural-legacy.mp3",
+              "description": "Legacy-focused traditional composition for heritage brands",
+              "mood": "legacy",
+              "instruments": ["legacy instruments", "heritage ensemble", "traditional foundation"],
+              "generation_params": {
+                "style": "legacy_traditional",
+                "tempo": "dignified",
+                "cultural_blend": "90% traditional, 10% modern"
+              },
+              "use_cases": ["heritage brands", "family businesses", "cultural organizations"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "corporate_traditional_logo_3",
+              "name": "Wisdom Foundation",
+              "duration": "12s",
+              "file": "corporate/sound-logos/traditional-wisdom-foundation.mp3",
+              "description": "Wisdom-inspired traditional sound for knowledge-based businesses",
+              "mood": "wise",
+              "instruments": ["wisdom flute", "foundation bamboo", "knowledge percussion"],
+              "generation_params": {
+                "style": "wisdom_traditional",
+                "tempo": "contemplative",
+                "cultural_blend": "88% traditional, 12% modern"
+              },
+              "use_cases": ["consulting firms", "educational institutions", "advisory services"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            }
+          ]
+        }
+      }
+    },
+    "events": {
+      "title": "Events & Celebrations",
+      "description": "Festive and ceremonial music for special occasions and cultural events",
+      "subcategories": {
+        "wedding": {
+          "title": "Wedding & Romance",
+          "description": "Romantic and ceremonial music for weddings and romantic occasions",
+          "sound_logos": [
+            {
+              "id": "events_wedding_logo_1",
+              "name": "Eternal Bond",
+              "duration": "8s",
+              "file": "events/sound-logos/wedding-eternal-bond.mp3",
+              "description": "Romantic traditional melody for wedding ceremonies",
+              "mood": "romantic",
+              "instruments": ["romantic bamboo", "ceremonial flute", "love percussion"],
+              "generation_params": {
+                "style": "romantic_traditional",
+                "tempo": "gentle",
+                "cultural_blend": "80% traditional, 20% modern"
+              },
+              "use_cases": ["wedding ceremonies", "romantic events", "anniversary celebrations"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "events_wedding_logo_2",
+              "name": "Sacred Union",
+              "duration": "10s",
+              "file": "events/sound-logos/wedding-sacred-union.mp3",
+              "description": "Sacred traditional composition for ceremonial moments",
+              "mood": "sacred",
+              "instruments": ["sacred instruments", "union bamboo", "ceremonial ensemble"],
+              "generation_params": {
+                "style": "sacred_traditional",
+                "tempo": "ceremonial",
+                "cultural_blend": "90% traditional, 10% modern"
+              },
+              "use_cases": ["traditional weddings", "cultural ceremonies", "sacred rituals"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "events_wedding_logo_3",
+              "name": "Joyful Celebration",
+              "duration": "12s",
+              "file": "events/sound-logos/wedding-joyful-celebration.mp3",
+              "description": "Celebratory traditional sound for wedding festivities",
+              "mood": "joyful",
+              "instruments": ["celebration instruments", "joy bamboo", "festive percussion"],
+              "generation_params": {
+                "style": "celebration_traditional",
+                "tempo": "uplifting",
+                "cultural_blend": "75% traditional, 25% modern"
+              },
+              "use_cases": ["wedding receptions", "celebration parties", "joyful gatherings"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            }
+          ]
+        },
+        "festival": {
+          "title": "Festival & Community",
+          "description": "Vibrant music for festivals and community celebrations",
+          "sound_logos": [
+            {
+              "id": "events_festival_logo_1",
+              "name": "Community Spirit",
+              "duration": "8s",
+              "file": "events/sound-logos/festival-community-spirit.mp3",
+              "description": "Spirited traditional melody for community events",
+              "mood": "spirited",
+              "instruments": ["community bamboo", "spirit flute", "gathering percussion"],
+              "generation_params": {
+                "style": "community_traditional",
+                "tempo": "lively",
+                "cultural_blend": "85% traditional, 15% modern"
+              },
+              "use_cases": ["community festivals", "local celebrations", "cultural gatherings"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "events_festival_logo_2",
+              "name": "Cultural Pride",
+              "duration": "10s",
+              "file": "events/sound-logos/festival-cultural-pride.mp3",
+              "description": "Pride-filled traditional composition for cultural celebrations",
+              "mood": "proud",
+              "instruments": ["pride instruments", "cultural ensemble", "heritage percussion"],
+              "generation_params": {
+                "style": "pride_traditional",
+                "tempo": "strong",
+                "cultural_blend": "95% traditional, 5% modern"
+              },
+              "use_cases": ["cultural festivals", "heritage events", "pride celebrations"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            },
+            {
+              "id": "events_festival_logo_3",
+              "name": "Harvest Festival",
+              "duration": "12s",
+              "file": "events/sound-logos/festival-harvest-celebration.mp3",
+              "description": "Harvest-themed traditional sound for seasonal celebrations",
+              "mood": "abundant",
+              "instruments": ["harvest instruments", "seasonal bamboo", "abundance percussion"],
+              "generation_params": {
+                "style": "harvest_traditional",
+                "tempo": "celebratory",
+                "cultural_blend": "88% traditional, 12% modern"
+              },
+              "use_cases": ["harvest festivals", "seasonal celebrations", "abundance ceremonies"],
+              "licensing": "commercial",
+              "attribution": "Generated using Mizo traditional instruments from Cultural Sound Lab"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "case_studies": [
+    {
+      "id": "mountain_view_restaurant",
+      "title": "Mountain View Traditional Restaurant",
+      "business_type": "Fine Dining Restaurant",
+      "location": "Aizawl, Mizoram",
+      "challenge": "Authentic cultural dining experience without live musicians",
+      "solution": {
+        "sound_logo": "restaurant_ambient_logo_2",
+        "background_playlist": "restaurant_ambient_playlist_2", 
+        "social_media": ["restaurant_ambient_social_2", "restaurant_ambient_social_4"],
+        "special_events": "restaurant_ambient_longform_1"
+      },
+      "results": {
+        "customer_satisfaction": "95% improvement in atmosphere rating",
+        "cultural_authenticity": "Guests frequently ask about the music source",
+        "business_impact": "30% increase in reservation requests",
+        "revenue_increase": "25% higher average ticket price",
+        "review_mentions": "Music mentioned in 85% of positive reviews"
+      },
+      "testimonial": {
+        "quote": "The Cultural Sound Lab music transformed our restaurant into an authentic cultural experience. Customers now specifically book with us for the atmosphere, and our revenue has increased significantly.",
+        "author": "Lalhmangaihsanga Sailo",
+        "title": "Owner, Mountain View Traditional Restaurant",
+        "rating": 5
+      },
+      "before_after": {
+        "before": "Generic background music, customers complained about lack of cultural authenticity",
+        "after": "Immersive Mizo traditional atmosphere, customers frequently compliment the authentic ambiance"
+      },
+      "usage_stats": {
+        "daily_plays": 45,
+        "customer_feedback_score": 4.8,
+        "repeat_customer_rate": "78%",
+        "cultural_engagement": "High - customers often ask about the culture"
+      }
+    },
+    {
+      "id": "heritage_craft_boutique",
+      "title": "Heritage Craft Boutique",
+      "business_type": "Artisan Retail Store",
+      "location": "Kolasib, Mizoram",
+      "challenge": "Creating an authentic shopping experience that reflects traditional craftsmanship",
+      "solution": {
+        "sound_logo": "retail_boutique_logo_2",
+        "background_playlist": "retail_boutique_playlist_1",
+        "social_media": ["retail_boutique_social_1", "retail_boutique_social_3"],
+        "product_showcases": "retail_boutique_longform_1"
+      },
+      "results": {
+        "sales_increase": "40% increase in premium product sales",
+        "customer_time": "65% longer average visit duration",
+        "cultural_connection": "Customers report deeper connection to products",
+        "brand_recognition": "90% improvement in brand memorability",
+        "social_media_engagement": "300% increase in Instagram shares"
+      },
+      "testimonial": {
+        "quote": "The traditional music helps customers understand the cultural value of our handcrafted items. It's like having a cultural storyteller in the background of our store.",
+        "author": "C. Lalthangliana",
+        "title": "Founder, Heritage Craft Boutique", 
+        "rating": 5
+      },
+      "before_after": {
+        "before": "Silent store with beautiful crafts but no cultural context",
+        "after": "Immersive cultural shopping experience where music tells the story of each craft"
+      },
+      "usage_stats": {
+        "daily_plays": 32,
+        "conversion_rate": "45% increase",
+        "average_purchase_value": "$85 (up from $60)",
+        "customer_education": "78% report learning about Mizo culture"
+      }
+    },
+    {
+      "id": "wellness_retreat_center",
+      "title": "Mizoram Wellness Retreat",
+      "business_type": "Wellness & Spa Center",
+      "location": "Champhai, Mizoram",
+      "challenge": "Providing unique wellness experience different from generic spa music",
+      "solution": {
+        "sound_logo": "wellness_spa_logo_3",
+        "treatment_music": "wellness_spa_playlist_1",
+        "yoga_sessions": "wellness_yoga_playlist_1",
+        "meditation": "wellness_longform_1"
+      },
+      "results": {
+        "client_satisfaction": "98% report deeper relaxation than other spas",
+        "booking_increase": "55% increase in repeat bookings",
+        "unique_positioning": "Only spa in region offering cultural wellness",
+        "premium_pricing": "35% higher rates than competitors",
+        "word_of_mouth": "70% of new clients from referrals"
+      },
+      "testimonial": {
+        "quote": "The traditional Mizo music creates a unique healing environment. Our clients feel connected to the land and culture while finding deep relaxation. It's a competitive advantage we couldn't have imagined.",
+        "author": "Dr. Lalnunmawii Chhangte",
+        "title": "Director, Mizoram Wellness Retreat",
+        "rating": 5
+      },
+      "before_after": {
+        "before": "Standard spa with typical new-age music, struggled to differentiate from competitors",
+        "after": "Unique cultural wellness experience with 6-month waiting list for treatments"
+      },
+      "usage_stats": {
+        "daily_sessions": 28,
+        "client_retention": "89%",
+        "treatment_effectiveness": "Clients report 40% better relaxation",
+        "cultural_learning": "65% of clients ask about traditional instruments"
+      }
+    }
+  ],
+  "licensing_terms": {
+    "personal": {
+      "price": "Free",
+      "usage": "Personal projects, non-commercial use",
+      "attribution": "Required",
+      "downloads": "Unlimited",
+      "commercial_rights": false
+    },
+    "commercial": {
+      "price": "$49/track or $199/month unlimited",
+      "usage": "Commercial projects, business use",
+      "attribution": "Optional",
+      "downloads": "Unlimited",
+      "commercial_rights": true,
+      "revenue_sharing": "5% to original culture community"
+    },
+    "enterprise": {
+      "price": "Custom pricing",
+      "usage": "Large scale commercial use",
+      "attribution": "Optional",
+      "downloads": "Unlimited",
+      "commercial_rights": true,
+      "revenue_sharing": "Negotiable",
+      "custom_generation": true
+    }
+  }
+}
