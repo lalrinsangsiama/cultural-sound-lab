@@ -1,5 +1,3 @@
-import { withSentryConfig } from "@sentry/nextjs";
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   typescript: {
@@ -55,18 +53,4 @@ const nextConfig = {
   },
 };
 
-export default withSentryConfig(
-  nextConfig,
-  {
-    silent: true,
-    org: process.env.SENTRY_ORG || "cultural-sound-lab",
-    project: process.env.SENTRY_PROJECT_WEB || "web",
-  },
-  {
-    widenClientFileUpload: true,
-    transpileClientSDK: true,
-    tunnelRoute: "/monitoring",
-    hideSourceMaps: process.env.NODE_ENV === 'production',
-    disableLogger: process.env.NODE_ENV === 'production',
-  }
-);
+export default nextConfig;
