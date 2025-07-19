@@ -1,12 +1,12 @@
 # Cultural Sound Lab - MVP Web Application
 
-A Next.js 15.1.0 application for monetizing traditional and cultural music through AI-powered generation, licensing, and creative tools.
+A Next.js 15.3.0 application for monetizing traditional and cultural music through AI-powered generation, licensing, and creative tools.
 
 ## 🚀 Features
 
 ### ✅ Completed
-- **Next.js 15.1.0** with App Router
-- **React 18.3.1** with TypeScript 5.8.2
+- **Next.js 15.3.0** with App Router
+- **React 19.1.0** with TypeScript 5.8.2
 - **Tailwind CSS** with custom Cultural Sound Lab branding
 - **shadcn/ui** components
 - **Authentication** (login/register pages)
@@ -124,7 +124,7 @@ apps/web/
    ```
 
 3. **Open your browser**:
-   Navigate to `http://localhost:3000`
+   Navigate to `http://localhost:3001`
 
 ### Available Scripts
 

@@ -5,7 +5,7 @@ A comprehensive form component for Cultural Sound Lab's AI music generation feat
 ## Features
 
 ### Step 1: Select Source Samples
-- Browse and select from 3 Mizo cultural audio samples
+- Browse and select from 8 Mizo cultural audio samples
 - Visual selection indicators
 - Sample metadata display (instrument, duration, tags)
 - Cultural context preservation
