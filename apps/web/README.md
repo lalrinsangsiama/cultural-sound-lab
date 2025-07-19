@@ -124,7 +124,7 @@ apps/web/
    ```
 
 3. **Open your browser**:
-   Navigate to `http://localhost:3001`
+   Navigate to `http://localhost:3000`
 
 ### Available Scripts
 
