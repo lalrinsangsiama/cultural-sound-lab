@@ -12,7 +12,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **CSL**: The user-facing platform that consumes TSRR data and provides creative tools
 - **Current MVP**: Uses 8 sample Mizo audio files as mock TSRR data
 
-**Current Status**: MVP implementation complete with functional web application, API backend, and mock generation services ready for demo.
+**Current Status**: MVP implementation complete with functional web application, API backend, and mock generation services ready for demo. All TypeScript build errors have been resolved and the codebase passes type checking across all packages.
 
 ## Core Features
 
@@ -205,7 +205,8 @@ GET    /api/analytics/cultural-impact
 npm run dev          # Start all development servers
 npm run build        # Build all packages and applications
 npm run lint         # Run ESLint across all packages
-npm run check-types  # Run TypeScript type checking
+npm run check-types  # Run TypeScript type checking (web + ui packages)
+# Note: API package uses: npm run type-check --workspace=@cultural-sound-lab/api
 npm run format       # Format code with Prettier
 
 # Target commands for full stack
@@ -303,6 +304,8 @@ MODEL_PATH=/models/audiocraft
 - UI components use a `ui-` prefix for Tailwind classes to avoid conflicts
 - All packages are configured to use shared ESLint and TypeScript configurations
 - The web app transpiles UI components directly using Next.js `transpilePackages`
+- TypeScript strict mode is enabled and all packages pass type checking without errors
+- Type safety has been implemented across components, hooks, and API interfaces
 
 ## Implementation Phases
 
