@@ -2,6 +2,7 @@
 
 import { lazy, Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { AudioGridProps } from '@/lib/types/audio';
 
 const AudioGrid = lazy(() => import('@/components/audio/AudioGrid'));
 
@@ -24,7 +25,7 @@ const AudioGridSkeleton = () => (
   </div>
 );
 
-interface LazyAudioGridProps {
+interface LazyAudioGridProps extends AudioGridProps {
   [key: string]: any;
 }
 

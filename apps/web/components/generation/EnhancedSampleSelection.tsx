@@ -99,7 +99,7 @@ const SampleCard = ({
   onPlay: () => void;
   isPlaying: boolean;
   isDragging: boolean;
-  dragHandleRef: React.RefObject<HTMLDivElement>;
+  dragHandleRef: (el: HTMLDivElement | null) => void;
 }) => {
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
   
@@ -210,7 +210,7 @@ const SampleCard = ({
           </div>
           <Slider
             value={[sample.volume * 100]}
-            onValueChange={([value]) => onVolumeChange(value / 100)}
+            onValueChange={([value]) => onVolumeChange((value ?? (sample.volume * 100)) / 100)}
             max={100}
             min={0}
             step={5}
@@ -267,8 +267,10 @@ export default function EnhancedSampleSelection({
 
   const handleSampleUpdate = useCallback((index: number, updates: Partial<SelectedSample>) => {
     const updatedSamples = [...selectedSamples];
-    updatedSamples[index] = { ...updatedSamples[index], ...updates };
-    onSamplesChange?.(updatedSamples);
+    if (updatedSamples[index]) {
+      updatedSamples[index] = { ...updatedSamples[index], ...updates };
+      onSamplesChange?.(updatedSamples);
+    }
   }, [selectedSamples, onSamplesChange]);
 
   const handleRemoveSample = useCallback((index: number) => {
@@ -293,10 +295,13 @@ export default function EnhancedSampleSelection({
   }, [selectedSamples, onSamplesChange]);
 
   const handleMuteToggle = useCallback((index: number) => {
-    handleSampleUpdate(index, { 
-      isMuted: !selectedSamples[index].isMuted,
-      isSolo: false // Clear solo when muting
-    });
+    const sample = selectedSamples[index];
+    if (sample) {
+      handleSampleUpdate(index, { 
+        isMuted: !sample.isMuted,
+        isSolo: false // Clear solo when muting
+      });
+    }
   }, [selectedSamples, handleSampleUpdate]);
 
   const resetAllControls = useCallback(() => {
@@ -319,8 +324,10 @@ export default function EnhancedSampleSelection({
       const reorderedSamples = [...selectedSamples];
       const draggedSample = reorderedSamples[draggedItem];
       
-      reorderedSamples.splice(draggedItem, 1);
-      reorderedSamples.splice(dragOverItem, 0, draggedSample);
+      if (draggedSample) {
+        reorderedSamples.splice(draggedItem, 1);
+        reorderedSamples.splice(dragOverItem, 0, draggedSample);
+      }
       
       // Update positions
       const updatedSamples = reorderedSamples.map((sample, index) => ({
@@ -429,7 +436,7 @@ export default function EnhancedSampleSelection({
               <div className="flex items-center justify-center gap-4 text-xs">
                 <div className="flex items-center gap-1">
                   <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                  <span>Primary: {selectedSamples.find(s => !s.isMuted && !hasSolo) || selectedSamples.find(s => s.isSolo)?.title || "None"}</span>
+                  <span>Primary: {(selectedSamples.find(s => !s.isMuted && !hasSolo) || selectedSamples.find(s => s.isSolo))?.title || "None"}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <div className="w-2 h-2 bg-green-500 rounded-full" />

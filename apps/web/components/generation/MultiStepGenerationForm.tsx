@@ -476,7 +476,7 @@ export default function MultiStepGenerationForm({
                 <div className="space-y-2">
                   <Slider
                     value={[formData.length]}
-                    onValueChange={(value) => setFormData(prev => ({ ...prev, length: value[0] }))}
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, length: value[0] ?? prev.length }))}
                     min={selectedType.minLength}
                     max={selectedType.maxLength}
                     step={selectedType.id === 'playlist' ? 60 : 1} // 1 minute steps for playlist
@@ -677,7 +677,7 @@ export default function MultiStepGenerationForm({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <span>Step {currentStep}: {steps[currentStep - 1].title}</span>
+            <span>Step {currentStep}: {steps[currentStep - 1]?.title || "Unknown"}</span>
             {currentStep < 4 && (
               <Badge variant="outline">
                 {currentStep}/3
@@ -685,7 +685,7 @@ export default function MultiStepGenerationForm({
             )}
           </CardTitle>
           <CardDescription>
-            {steps[currentStep - 1].description}
+            {steps[currentStep - 1]?.description || "Step description not available"}
           </CardDescription>
         </CardHeader>
         <CardContent>

@@ -41,8 +41,8 @@ export function PerformanceMonitor() {
           setMetrics(prev => ({
             ...prev,
             ttfb: navEntry.responseStart - navEntry.requestStart,
-            domLoad: navEntry.domContentLoadedEventEnd - navEntry.navigationStart,
-            windowLoad: navEntry.loadEventEnd - navEntry.navigationStart,
+            domLoad: navEntry.domContentLoadedEventEnd - navEntry.fetchStart,
+            windowLoad: navEntry.loadEventEnd - navEntry.fetchStart,
           } as PerformanceMetrics))
         }
         

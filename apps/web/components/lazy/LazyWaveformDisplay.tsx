@@ -2,6 +2,7 @@
 
 import { lazy, Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { WaveformDisplayProps } from '@/lib/types/audio';
 
 const WaveformDisplay = lazy(() => import('@/components/audio/WaveformDisplay'));
 
@@ -19,7 +20,7 @@ const WaveformSkeleton = () => (
   </div>
 );
 
-interface LazyWaveformDisplayProps {
+interface LazyWaveformDisplayProps extends WaveformDisplayProps {
   [key: string]: any;
 }
 

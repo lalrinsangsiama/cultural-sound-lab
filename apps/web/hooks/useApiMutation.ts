@@ -89,7 +89,8 @@ export function useApiMutation<TData = unknown, TVariables = void>(
   const mutate = useCallback(
     (variables: TVariables) => {
       return mutateAsync(variables).catch(() => {
-        // Silence the error since it's already handled in state
+        // Return the current data or a default value when error is caught
+        throw new Error('Mutation failed');
       });
     },
     [mutateAsync]

@@ -179,6 +179,8 @@ export function useAudioLoader(options: AudioLoadOptions = {}) {
       for (let urlIndex = 0; urlIndex < urlsToTry.length; urlIndex++) {
         const currentUrl = urlsToTry[urlIndex];
         
+        if (!currentUrl) continue;
+        
         try {
           setState(prev => ({ ...prev, retryCount: attempt }));
           

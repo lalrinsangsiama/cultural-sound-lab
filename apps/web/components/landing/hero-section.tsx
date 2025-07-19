@@ -89,11 +89,12 @@ const AudioWaveVisualization = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    analyserRef.current.getByteFrequencyData(dataArrayRef.current);
+    const dataArray = dataArrayRef.current;
+    analyserRef.current.getByteFrequencyData(dataArray);
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const barWidth = canvas.width / dataArrayRef.current.length;
+    const barWidth = canvas.width / dataArray.length;
     let x = 0;
 
     const gradient = ctx.createLinearGradient(0, canvas.height, 0, 0);
@@ -101,8 +102,8 @@ const AudioWaveVisualization = () => {
     gradient.addColorStop(0.5, '#A78BFA');
     gradient.addColorStop(1, '#C4B5FD');
 
-    for (let i = 0; i < dataArrayRef.current.length; i++) {
-      const barHeight = (dataArrayRef.current[i] / 255) * canvas.height * 0.8;
+    for (let i = 0; i < dataArray.length; i++) {
+      const barHeight = ((dataArray[i] ?? 0) / 255) * canvas.height * 0.8;
       
       ctx.fillStyle = gradient;
       ctx.fillRect(x, canvas.height - barHeight, barWidth - 1, barHeight);

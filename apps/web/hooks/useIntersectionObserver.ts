@@ -26,7 +26,7 @@ export function useIntersectionObserver(
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        const isElementIntersecting = entry.isIntersecting;
+        const isElementIntersecting = entry?.isIntersecting ?? false;
         
         if (isElementIntersecting) {
           setIsIntersecting(true);

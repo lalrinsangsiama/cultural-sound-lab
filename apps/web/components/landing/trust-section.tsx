@@ -19,7 +19,7 @@ const AnimatedStat = ({
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, threshold: 0.3 });
+  const inView = useInView(ref, { once: true, margin: "-30%" });
 
   useEffect(() => {
     if (inView) {

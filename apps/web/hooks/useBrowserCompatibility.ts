@@ -34,7 +34,7 @@ export function useBrowserCompatibility(): BrowserCompatibility {
       if (userAgent.includes('Chrome')) {
         browser = 'Chrome';
         const match = userAgent.match(/Chrome\/(\d+)/);
-        version = match ? match[1] : 'Unknown';
+        version = match?.[1] ?? 'Unknown';
         if (parseInt(version) < 80) {
           isSupported = false;
           recommendations.push('Please update Chrome to version 80 or later');
@@ -42,7 +42,7 @@ export function useBrowserCompatibility(): BrowserCompatibility {
       } else if (userAgent.includes('Firefox')) {
         browser = 'Firefox';
         const match = userAgent.match(/Firefox\/(\d+)/);
-        version = match ? match[1] : 'Unknown';
+        version = match?.[1] ?? 'Unknown';
         if (parseInt(version) < 75) {
           isSupported = false;
           recommendations.push('Please update Firefox to version 75 or later');
@@ -50,7 +50,7 @@ export function useBrowserCompatibility(): BrowserCompatibility {
       } else if (userAgent.includes('Safari')) {
         browser = 'Safari';
         const match = userAgent.match(/Version\/(\d+)/);
-        version = match ? match[1] : 'Unknown';
+        version = match?.[1] ?? 'Unknown';
         if (parseInt(version) < 13) {
           isSupported = false;
           recommendations.push('Please update Safari to version 13 or later');
@@ -58,7 +58,7 @@ export function useBrowserCompatibility(): BrowserCompatibility {
       } else if (userAgent.includes('Edge')) {
         browser = 'Edge';
         const match = userAgent.match(/Edg\/(\d+)/);
-        version = match ? match[1] : 'Unknown';
+        version = match?.[1] ?? 'Unknown';
         if (parseInt(version) < 80) {
           isSupported = false;
           recommendations.push('Please update Edge to version 80 or later');

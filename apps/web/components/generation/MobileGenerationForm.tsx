@@ -220,7 +220,7 @@ export default function MobileGenerationForm({
 
   // Touch handlers for swipe
   const handleTouchStart = (e: React.TouchEvent) => {
-    setStartX(e.touches[0].clientX);
+    setStartX(e.touches[0]?.clientX ?? 0);
     setIsDragging(true);
   };
 
@@ -233,7 +233,7 @@ export default function MobileGenerationForm({
     if (!isDragging) return;
     setIsDragging(false);
 
-    const endX = e.changedTouches[0].clientX;
+    const endX = e.changedTouches[0]?.clientX ?? 0;
     const deltaX = startX - endX;
     const threshold = 100; // Minimum swipe distance
 
@@ -544,7 +544,7 @@ export default function MobileGenerationForm({
                 <div className="space-y-3">
                   <Slider
                     value={[formData.length]}
-                    onValueChange={(value) => setFormData(prev => ({ ...prev, length: value[0] }))}
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, length: value[0] ?? prev.length }))}
                     min={selectedType.minLength}
                     max={selectedType.maxLength}
                     step={selectedType.id === 'playlist' ? 60 : 1}

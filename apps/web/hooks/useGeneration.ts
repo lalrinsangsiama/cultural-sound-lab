@@ -145,7 +145,7 @@ export function useGeneration() {
   const getGenerationStatus = useCallback(async (id: string): Promise<GenerationResult | null> => {
     try {
       const result = await generation.get(id);
-      return result;
+      return result as GenerationResult;
     } catch (error) {
       console.error('Failed to get generation status:', error);
       return null;
@@ -221,7 +221,7 @@ export function useGeneration() {
   const loadUserGenerations = useCallback(async (filters?: { status?: string; type?: string }) => {
     try {
       const response = await generation.getUserGenerations(filters);
-      setGenerations(response.data || []);
+      setGenerations((response as any)?.data || []);
       return response;
     } catch (error) {
       console.error('Failed to load user generations:', error);

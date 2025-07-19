@@ -191,7 +191,7 @@ const BpmDetector = ({
           <div className="flex-1">
             <Slider
               value={[currentBpm]}
-              onValueChange={([value]) => onBpmChange(value)}
+              onValueChange={([value]) => onBpmChange(value ?? currentBpm)}
               min={60}
               max={200}
               step={1}
@@ -290,7 +290,7 @@ const IntensitySlider = ({
       
       <Slider
         value={[value]}
-        onValueChange={([newValue]) => onChange(newValue)}
+        onValueChange={([newValue]) => onChange(newValue ?? value)}
         min={min}
         max={max}
         step={step}
@@ -567,7 +567,7 @@ export default function AdvancedParameters({
                   <div className="flex items-center gap-4">
                     <Slider
                       value={[parameters.duration]}
-                      onValueChange={([value]) => updateParameter("duration", value)}
+                      onValueChange={([value]) => updateParameter("duration", value ?? parameters.duration)}
                       min={5}
                       max={300}
                       step={5}
