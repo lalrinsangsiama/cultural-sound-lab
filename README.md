@@ -36,7 +36,7 @@ Cultural Sound Lab is an innovative platform that enables musicians and cultural
    ```
 
 3. **Access the application**:
-   - Web App: http://localhost:3001
+   - Web App: http://localhost:3000
    - API: http://localhost:3001/api
 
 ### Available Scripts
