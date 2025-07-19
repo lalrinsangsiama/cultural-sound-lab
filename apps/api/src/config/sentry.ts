@@ -8,7 +8,7 @@ export function initSentry() {
     integrations: [
       Sentry.httpIntegration(),
       Sentry.expressIntegration(),
-      nodeProfilingIntegration(),
+      // nodeProfilingIntegration(), // Commented out - not available
     ],
     tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
     profilesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,

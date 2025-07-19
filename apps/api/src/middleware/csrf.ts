@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import crypto from 'crypto';
-import { redis } from '../config/redis';
+// CSRF protection now relies on session storage instead of Redis
 
 interface CSRFRequest extends Request {
   csrfToken?: string;
@@ -52,11 +52,11 @@ export const csrfMiddleware = () => {
       
       // For safe methods, generate and store CSRF token
       if (SAFE_METHODS.includes(req.method)) {
-        let secret = await redis.get(secretKey);
+        let secret = req.session?.csrfSecret;
         
         if (!secret) {
           secret = generateSecret();
-          await redis.setex(secretKey, CSRF_TOKEN_EXPIRY, secret);
+          req.session.csrfSecret = secret;
         }
         
         const token = generateToken(secret);
@@ -81,7 +81,7 @@ export const csrfMiddleware = () => {
           });
         }
         
-        const secret = await redis.get(secretKey);
+        const secret = req.session?.csrfSecret;
         
         if (!secret) {
           return res.status(403).json({
@@ -103,7 +103,7 @@ export const csrfMiddleware = () => {
         
         // Regenerate token after successful verification for additional security
         const newSecret = generateSecret();
-        await redis.setex(secretKey, CSRF_TOKEN_EXPIRY, newSecret);
+        req.session.csrfSecret = newSecret;
         const newToken = generateToken(newSecret);
         res.setHeader('X-CSRF-Token', newToken);
       }

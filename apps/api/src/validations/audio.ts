@@ -8,7 +8,7 @@ export const audioSampleSchema = z.object({
   instrument_type: z.string().min(1).max(100),
   cultural_origin: z.string().min(1).max(100),
   usage_rights: z.enum(['commercial', 'non-commercial', 'attribution']),
-  duration: z.number().positive().optional(),
+  duration: z.number().positive('Duration must be positive').optional(),
   file_url: z.string().url().optional(),
   created_at: z.string().datetime(),
   updated_at: z.string().datetime(),
@@ -70,7 +70,7 @@ export const audioSamplesListResponseSchema = z.object({
 export const audioPreviewResponseSchema = z.object({
   preview_url: z.string().url(),
   expires_at: z.string().datetime(),
-  duration: z.number().positive().optional(),
+  duration: z.number().positive('Duration must be positive').optional(),
 });
 
 // Error response schema
@@ -78,8 +78,8 @@ export const errorResponseSchema = z.object({
   error: z.string(),
   message: z.string(),
   statusCode: z.number().int(),
-  timestamp: z.string().datetime(),
-  details: z.record(z.any()).optional(),
+  timestamp: z.string(),
+  details: z.record(z.string(), z.any()).optional(),
 });
 
 // Type exports

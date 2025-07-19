@@ -60,10 +60,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Backend Stack
 - Node.js with Express.js
-- PostgreSQL (metadata, user data, licensing)
-- Redis (caching, session management)
+- Supabase (PostgreSQL for metadata, user data, licensing)
 - MinIO/S3 (audio file storage)
-- Bull Queue (job processing)
+- In-memory queue (job processing)
 - Stripe (payments)
 
 ### AI/Audio Processing
@@ -246,10 +245,10 @@ npm run dev:components   # Watch mode for components
 
 ### Target Stack
 - **Frontend**: Next.js 14 + shadcn/ui + Framer Motion + Tone.js + WaveSurfer.js
-- **Backend**: Node.js + Express.js + PostgreSQL + Redis + MinIO/S3
+- **Backend**: Node.js + Express.js + Supabase + MinIO/S3
 - **AI Service**: Python + FastAPI + Audiocraft + Demucs + PyDub
 - **Payments**: Stripe integration
-- **Queue System**: Bull Queue for job processing
+- **Queue System**: In-memory queue for job processing
 
 ## Testing
 
@@ -280,8 +279,9 @@ NEXT_PUBLIC_API_URL=http://localhost:3001
 NEXT_PUBLIC_STORAGE_URL=http://localhost:9000
 
 # Backend
-DATABASE_URL=postgresql://user:password@localhost:5432/csl
-REDIS_URL=redis://localhost:6379
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_KEY=your-service-key
 JWT_SECRET=your-secret-key
 STRIPE_SECRET_KEY=sk_test_...
 
@@ -342,5 +342,4 @@ MODEL_PATH=/models/audiocraft
 - API backend: http://localhost:3001 (current, implemented)
 - AI service: http://localhost:8000 (target, mock endpoints implemented)
 - Database: Supabase cloud (current)
-- Redis: localhost:6379 (target)
 - MinIO: localhost:9000 (target)

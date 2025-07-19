@@ -1,10 +1,8 @@
 import session from 'express-session';
-import { RedisStore } from 'connect-redis';
-import { queueRedis } from './redis';
 
-// Session configuration
+// Session configuration - using memory store (suitable for single-instance deployment)
+// For production scaling, Supabase handles session state through JWT tokens
 export const sessionConfig: session.SessionOptions = {
-  store: process.env.REDIS_URL ? new RedisStore({ client: queueRedis }) : undefined,
   secret: process.env.SESSION_SECRET || 'cultural-sound-lab-dev-secret-change-in-production',
   resave: false,
   saveUninitialized: false,
@@ -100,12 +98,7 @@ export const sessionHelpers = {
 
 // Session middleware factory
 export const createSessionMiddleware = () => {
-  if (!process.env.REDIS_URL) {
-    console.warn('⚠️  Redis not configured - using memory store for sessions (not suitable for production)');
-  } else {
-    console.log('✅ Redis session store configured');
-  }
-  
+  console.log('✅ Using memory session store - Supabase handles persistent auth via JWT tokens');
   return session(sessionConfig);
 };
 

@@ -123,6 +123,9 @@ npm run type-check
 # Run linting
 npm run lint
 
+# Run tests
+npm run test
+
 # Build for production
 npm run build
 ```

@@ -212,14 +212,14 @@ async function handleInvoicePaymentSucceeded(invoice: Stripe.Invoice) {
     .eq('id', invoice.id);
 
   // If this is a subscription invoice, handle subscription activation
-  if (invoice.subscription) {
+  if ((invoice as any).subscription) {
     await supabase
       .from('subscriptions')
       .update({
         status: 'active',
         updated_at: new Date().toISOString(),
       })
-      .eq('id', invoice.subscription as string);
+      .eq('id', (invoice as any).subscription as string);
   }
 }
 
@@ -236,11 +236,11 @@ async function handleInvoicePaymentFailed(invoice: Stripe.Invoice) {
     .eq('id', invoice.id);
 
   // Handle subscription payment failure
-  if (invoice.subscription) {
+  if ((invoice as any).subscription) {
     const { data: subscription } = await supabase
       .from('subscriptions')
       .select('user_id, status')
-      .eq('id', invoice.subscription as string)
+      .eq('id', (invoice as any).subscription as string)
       .single();
 
     if (subscription) {
@@ -271,8 +271,8 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
     .from('subscriptions')
     .update({
       status: subscription.status,
-      current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
-      current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+      current_period_start: new Date((subscription as any).current_period_start * 1000).toISOString(),
+      current_period_end: new Date((subscription as any).current_period_end * 1000).toISOString(),
       cancel_at_period_end: subscription.cancel_at_period_end,
       canceled_at: subscription.canceled_at ? new Date(subscription.canceled_at * 1000).toISOString() : null,
       updated_at: new Date().toISOString(),
@@ -361,7 +361,7 @@ async function handleInvoiceCreated(invoice: Stripe.Invoice) {
         amount_paid: invoice.amount_paid / 100,
         currency: invoice.currency,
         status: invoice.status || 'draft',
-        subscription_id: invoice.subscription as string || null,
+        subscription_id: (invoice as any).subscription as string || null,
         created_at: new Date(invoice.created * 1000).toISOString(),
       });
   }

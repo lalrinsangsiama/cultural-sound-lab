@@ -2,7 +2,6 @@ import { NodeSDK } from '@opentelemetry/sdk-node';
 import { Instrumentation } from '@opentelemetry/instrumentation';
 import { ExpressInstrumentation } from '@opentelemetry/instrumentation-express';
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
-import { RedisInstrumentation } from '@opentelemetry/instrumentation-redis';
 import { JaegerExporter } from '@opentelemetry/exporter-jaeger';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
@@ -47,7 +46,7 @@ export function initTelemetry() {
     serviceName,
     // serviceVersion,
     traceExporter,
-    metricExporter,
+    // metricExporter, // Not supported in this version
     instrumentations: [
       new HttpInstrumentation({
         ignoreIncomingRequestHook: (req: any) => {
@@ -66,15 +65,6 @@ export function initTelemetry() {
         ignoreLayers: [
           (layer: any) => layer.name === 'query' || layer.name === 'expressInit',
         ],
-      }),
-      new RedisInstrumentation({
-        dbStatementSerializer: (cmdName: any, cmdArgs: any) => {
-          // Redact sensitive data in Redis commands
-          if (cmdName.toLowerCase().includes('auth')) {
-            return `${cmdName} [REDACTED]`;
-          }
-          return `${cmdName} ${cmdArgs.join(' ')}`;
-        },
       }),
     ],
   });

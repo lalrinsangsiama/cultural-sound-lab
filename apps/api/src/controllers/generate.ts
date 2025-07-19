@@ -4,7 +4,22 @@ import { AuthenticatedRequest } from '@/middleware/auth';
 import { v4 as uuidv4 } from 'uuid';
 import { aiService } from '@/services/aiService';
 import { generationQueue } from '@/services/generationQueue';
-import { cacheHelpers } from '@/config/redis';
+
+// Simple cache helpers that do nothing (Supabase handles data persistence)
+const cacheHelpers = {
+  async get<T>(key: string): Promise<T | null> {
+    return null; // No caching, always fetch fresh
+  },
+  async set(key: string, value: any, ttl?: number): Promise<void> {
+    // No-op, Supabase handles persistence
+  },
+  async del(key: string | string[]): Promise<void> {
+    // No-op
+  },
+  async clearByPattern(pattern: string): Promise<void> {
+    // No-op
+  }
+};
 
 interface GenerationRequest {
   type: 'sound_logo' | 'playlist' | 'social_clip' | 'long_form';

@@ -405,21 +405,4 @@ export const api = new CulturalSoundLabApi({
   },
 });
 
-// Export types for use in components
-export type {
-  AudioSample,
-  CreateAudioSampleInput,
-  UpdateAudioSampleInput,
-  GetAudioSamplesQuery,
-  AudioSamplesListResponse,
-  AudioPreviewResponse,
-  Generation,
-  CreateGenerationInput,
-  GenerationsListResponse,
-  JobStatusResponse,
-  DownloadResponse,
-  PaymentIntent,
-  HealthCheck,
-  ApiError,
-  ApiClientConfig,
-};
+// Types are already exported above as interfaces

@@ -76,14 +76,14 @@ export const generationParametersSchema = z.discriminatedUnion('type', [
 export const createGenerationSchema = z.object({
   type: generationTypeSchema,
   parameters: z.record(z.any()),
-  title: z.string().min(1, 'Title is required').max(255, 'Title too long').optional(),
-  description: z.string().max(1000, 'Description too long').optional(),
+  title: z.string().min(1).max(255).optional(),
+  description: z.string().max(1000).optional(),
 });
 
 // Update generation status schema (for webhooks)
 export const updateGenerationStatusSchema = z.object({
   status: generationStatusSchema,
-  result_url: z.string().url('Invalid URL format').optional(),
+  result_url: z.string().url().optional(),
   error_message: z.string().optional(),
   processing_time: z.number().positive('Processing time must be positive').optional(),
   metadata: z.record(z.any()).optional(),
@@ -98,7 +98,7 @@ export const generationSchema = z.object({
   title: z.string().optional(),
   description: z.string().optional(),
   parameters: z.record(z.any()),
-  result_url: z.string().url('Invalid URL format').optional(),
+  result_url: z.string().url().optional(),
   error_message: z.string().optional(),
   processing_time: z.number().positive('Processing time must be positive').optional(),
   metadata: z.record(z.any()).optional(),
@@ -128,7 +128,7 @@ export const getGenerationsQuerySchema = z.object({
 export const jobStatusResponseSchema = z.object({
   jobId: z.string(),
   status: z.enum(['active', 'waiting', 'completed', 'failed', 'delayed']),
-  progress: z.number().min(0, 'Progress must be at least 0').max(100, 'Progress cannot exceed 100').optional(),
+  progress: z.number().min(0).max(100).optional(),
   data: z.record(z.any()).optional(),
   result: z.any().optional(),
   error: z.string().optional(),
@@ -142,7 +142,7 @@ export const downloadResponseSchema = z.object({
   download_url: z.string().url(),
   expires_at: z.string().datetime(),
   filename: z.string(),
-  file_size: z.number().positive().optional(),
+  file_size: z.number().positive('File size must be positive').optional(),
   content_type: z.string(),
 });
 

@@ -22,10 +22,10 @@ const envSchema = z.object({
   NEXT_PUBLIC_APP_DESCRIPTION: z.string().default('AI-powered cultural music generation platform'),
 
   // Features Flags
-  NEXT_PUBLIC_ENABLE_ANALYTICS: z.string().transform(val => val === 'true').default('false'),
-  NEXT_PUBLIC_ENABLE_PAYMENTS: z.string().transform(val => val === 'true').default('false'),
-  NEXT_PUBLIC_ENABLE_AI_GENERATION: z.string().transform(val => val === 'true').default('true'),
-  NEXT_PUBLIC_ENABLE_DEMO_MODE: z.string().transform(val => val === 'true').default('true'),
+  NEXT_PUBLIC_ENABLE_ANALYTICS: z.string().transform(val => val === 'true').default(false),
+  NEXT_PUBLIC_ENABLE_PAYMENTS: z.string().transform(val => val === 'true').default(false),
+  NEXT_PUBLIC_ENABLE_AI_GENERATION: z.string().transform(val => val === 'true').default(true),
+  NEXT_PUBLIC_ENABLE_DEMO_MODE: z.string().transform(val => val === 'true').default(true),
 
   // External Services
   // Razorpay Configuration
@@ -43,8 +43,8 @@ const envSchema = z.object({
   NEXT_PUBLIC_CDN_URL: z.string().url().optional(),
 
   // Rate Limiting (for client-side display)
-  NEXT_PUBLIC_RATE_LIMIT_REQUESTS: z.string().transform(Number).pipe(z.number().positive()).default('100'),
-  NEXT_PUBLIC_RATE_LIMIT_WINDOW: z.string().transform(Number).pipe(z.number().positive()).default('3600'),
+  NEXT_PUBLIC_RATE_LIMIT_REQUESTS: z.string().transform(Number).pipe(z.number().positive()).default(100),
+  NEXT_PUBLIC_RATE_LIMIT_WINDOW: z.string().transform(Number).pipe(z.number().positive()).default(3600),
 
   // Contact Information
   NEXT_PUBLIC_SUPPORT_EMAIL: z.string().email().default('support@culturalsoundlab.com'),
@@ -79,7 +79,6 @@ const serverEnvSchema = z.object({
 
   // Database connections (for server-side operations)
   DATABASE_URL: z.string().optional(),
-  REDIS_URL: z.string().optional(),
 
   // Email configuration
   SENDGRID_API_KEY: z.string().optional(),
@@ -140,7 +139,7 @@ export function validateClientEnv(): ClientEnvConfig {
   } catch (error) {
     console.error('❌ Client environment validation failed:');
     if (error instanceof z.ZodError) {
-      error.errors.forEach(err => {
+      error.issues.forEach((err: any) => {
         console.error(`  - ${err.path.join('.')}: ${err.message}`);
       });
     } else {
@@ -187,7 +186,7 @@ export function validateServerEnv(): ServerEnvConfig {
   } catch (error) {
     console.error('❌ Server environment validation failed:');
     if (error instanceof z.ZodError) {
-      error.errors.forEach(err => {
+      error.issues.forEach((err: any) => {
         console.error(`  - ${err.path.join('.')}: ${err.message}`);
       });
     } else {
@@ -256,7 +255,7 @@ export const parseFileSize = (sizeStr: string): number => {
   }
 
   const [, size, unit] = match;
-  return parseFloat(size) * units[unit.toUpperCase()];
+  return parseFloat(size || '0') * (units[unit?.toUpperCase()] || 1);
 };
 
 // Environment-specific configuration getters

@@ -205,8 +205,8 @@ export const createSubscription = async (req: AuthenticatedRequest, res: Respons
       currentPeriodStart: (subscription as any).current_period_start,
       currentPeriodEnd: (subscription as any).current_period_end,
       trialEnd: subscription.trial_end,
-      clientSecret: ((subscription as any).latest_invoice as Stripe.Invoice)?.payment_intent
-        ? ((subscription as any).latest_invoice as Stripe.Invoice).payment_intent as Stripe.PaymentIntent
+      clientSecret: ((subscription as any).latest_invoice as any)?.payment_intent
+        ? ((subscription as any).latest_invoice as any).payment_intent as Stripe.PaymentIntent
         : null,
     });
   } catch (error) {

@@ -3,7 +3,7 @@ import { Server } from 'http';
 import jwt from 'jsonwebtoken';
 import { supabase } from '@/config/supabase';
 import { logger } from '@/config/logger';
-import { redis } from '@/config/redis';
+// WebSocket service with in-memory user tracking
 
 export interface SocketUser {
   id: string;

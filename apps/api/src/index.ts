@@ -17,13 +17,11 @@ initTelemetry();
 import { initSentry } from '@/config/sentry';
 import * as Sentry from '@sentry/node';
 import { nodeProfilingIntegration } from '@sentry/profiling-node';
-import { requestHandler, errorHandler } from '@sentry/node';
 initSentry();
 
 import { globalErrorHandler, notFoundHandler, rateLimitErrorHandler } from '@/middleware/error';
 import { versioningMiddleware, versionTransform } from '@/middleware/versioning';
 import { databaseService } from '@/config/database';
-import { redis } from '@/config/redis';
 import { setupSwagger } from '@/config/swagger';
 import { logger, httpLogger } from '@/config/logger';
 import { dashboardService } from '@/config/dashboard';
@@ -51,8 +49,7 @@ const server = createServer(app);
 const PORT = process.env.PORT || 3001;
 
 // Request tracing
-app.use(requestHandler());
-app.use(Sentry.Handlers.tracingHandler());
+Sentry.setupExpressErrorHandler(app);
 
 // Security middleware with comprehensive headers
 app.use(helmet({
@@ -80,7 +77,7 @@ app.use(helmet({
 // Enhanced CORS configuration with strict production rules
 const allowedOrigins = process.env.NODE_ENV === 'production'
   ? (process.env.ALLOWED_ORIGINS || 'https://culturalsoundlab.com,https://www.culturalsoundlab.com').split(',').map(origin => origin.trim())
-  : ['http://localhost:3000', 'http://localhost:3001', 'http://127.0.0.1:3000', 'http://127.0.0.1:3001'];
+  : ['http://localhost:3000', 'http://localhost:3001', 'http://127.0.0.1:3000', 'http://127.0.0.1:3001', 'https://culturalsoundlab.com', 'https://www.culturalsoundlab.com'];
 
 // Additional security for production
 const isProduction = process.env.NODE_ENV === 'production';
@@ -163,7 +160,7 @@ app.use(compression());
 app.use(createSessionMiddleware());
 
 // Structured logging middleware
-app.use(pinoHttp({ logger }));
+app.use(pinoHttp());
 
 // Metrics collection middleware
 app.use(metricsMiddleware);
@@ -172,10 +169,10 @@ app.use(metricsMiddleware);
 app.use('/api', sanitizeRequest);
 
 // CSRF protection middleware
-app.use('/api', csrfMiddleware());
+app.use('/api', csrfMiddleware);
 
 // Origin validation for state-changing requests
-app.use('/api', originValidation(allowedOrigins));
+app.use('/api', (req, res, next) => originValidation(allowedOrigins)(req, res, next));
 
 // Rate limiting
 const limiter = rateLimit({
@@ -190,8 +187,8 @@ const limiter = rateLimit({
 app.use('/api', limiter);
 
 // API versioning middleware
-app.use('/api', versioningMiddleware);
-app.use('/api', versionTransform);
+app.use('/api', versioningMiddleware as any);
+app.use('/api', versionTransform as any);
 
 // Setup API documentation
 setupSwagger(app);
@@ -227,22 +224,11 @@ webSocketService.init(server);
 
 // Health check handler
 const healthCheckHandler = async (req: Request, res: Response) => {
-  let redisHealthy = false;
-
   // Check database connections (main and replica)
   const dbHealth = await databaseService.checkHealth();
 
-  // Check Redis connection
-  try {
-    await redis.ping();
-    redisHealthy = true;
-  } catch (error) {
-    logger.error({ err: error }, 'Redis health check failed');
-    redisHealthy = false;
-  }
-
-  // Overall health status
-  const isHealthy = dbHealth.main && redisHealthy;
+  // Overall health status - using Supabase for all persistent storage
+  const isHealthy = dbHealth.main;
 
   res.status(isHealthy ? 200 : 503).json({
     status: isHealthy ? 'healthy' : 'unhealthy',
@@ -255,7 +241,6 @@ const healthCheckHandler = async (req: Request, res: Response) => {
         replica: dbHealth.replica,
         replicaEnabled: dbHealth.replicaEnabled,
       },
-      redis: redisHealthy,
       websocket: webSocketService.getConnectedUsersCount(),
     },
     performance: {
@@ -306,7 +291,7 @@ app.get('/', (req, res) => {
 app.use(notFoundHandler);
 
 // Sentry error handler
-app.use(errorHandler());
+app.use(Sentry.expressErrorHandler());
 
 // Global error handler
 app.use(globalErrorHandler);

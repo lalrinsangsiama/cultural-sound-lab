@@ -1,7 +1,7 @@
 import CircuitBreaker from 'opossum';
 import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
 import { logger } from '@/config/logger';
-import { redis } from '@/config/redis';
+// Circuit breaker metrics now stored in memory instead of Redis
 
 export interface CircuitBreakerConfig {
   timeout: number;
@@ -322,35 +322,16 @@ class CircuitBreakerService {
    * Persist metrics to Redis for monitoring
    */
   private async persistMetrics(serviceName: string): Promise<void> {
-    if (!this.defaultConfig.monitoringEnabled) return;
-
-    try {
-      const metrics = this.metrics.get(serviceName);
-      if (!metrics) return;
-
-      const key = `circuit_breaker:metrics:${serviceName}`;
-      await redis.setex(key, 300, JSON.stringify(metrics)); // 5 minutes TTL
-    } catch (error) {
-      logger.error({ error, serviceName }, 'Failed to persist circuit breaker metrics');
-    }
+    // Metrics are already stored in memory Map
+    // No external persistence needed for single-instance deployment
   }
 
   /**
    * Load metrics from Redis
    */
   public async loadMetrics(serviceName: string): Promise<void> {
-    try {
-      const key = `circuit_breaker:metrics:${serviceName}`;
-      const data = await redis.get(key);
-      
-      if (data) {
-        const metrics = JSON.parse(data) as ServiceMetrics;
-        this.metrics.set(serviceName, metrics);
-        logger.debug({ serviceName }, 'Loaded circuit breaker metrics from Redis');
-      }
-    } catch (error) {
-      logger.error({ error, serviceName }, 'Failed to load circuit breaker metrics');
-    }
+    // Metrics are already in memory - no loading needed
+    // For single-instance deployment, metrics persist in memory only
   }
 
   /**

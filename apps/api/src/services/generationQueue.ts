@@ -1,9 +1,8 @@
-import Bull from 'bull';
-import { queueRedis } from '@/config/redis';
 import { supabase } from '@/config/supabase';
 import axios from 'axios';
 import { webSocketService } from '@/config/websocket';
 import { aiServiceBreaker } from '@/config/circuit-breaker';
+import { EventEmitter } from 'events';
 
 export interface GenerationJobData {
   generationId: string;
@@ -38,73 +37,68 @@ export interface GenerationResult {
   };
 }
 
-class GenerationQueueService {
-  private queue: Bull.Queue<GenerationJobData>;
+interface Job {
+  id: string;
+  data: GenerationJobData;
+  status: 'waiting' | 'active' | 'completed' | 'failed';
+  progress: number;
+  result?: any;
+  error?: string;
+  attempts: number;
+  maxAttempts: number;
+  createdAt: Date;
+  priority: number;
+}
+
+class GenerationQueueService extends EventEmitter {
+  private jobs: Map<string, Job> = new Map();
+  private queue: Job[] = [];
+  private activeJobs: Set<string> = new Set();
   private readonly aiServiceUrl: string;
   private readonly maxConcurrency: number;
-  private readonly defaultJobOptions: Bull.JobOptions;
+  private readonly maxAttempts: number;
+  private jobIdCounter: number = 0;
+  private processingInterval?: NodeJS.Timeout;
 
   constructor() {
+    super();
     this.aiServiceUrl = process.env.AI_SERVICE_URL || 'http://localhost:8000';
     this.maxConcurrency = parseInt(process.env.GENERATION_CONCURRENCY || '2');
+    this.maxAttempts = 3;
     
-    this.defaultJobOptions = {
-      attempts: 3,
-      backoff: {
-        type: 'exponential',
-        delay: 5000,
-      },
-      removeOnComplete: 50, // Keep last 50 completed jobs
-      removeOnFail: 20,     // Keep last 20 failed jobs
-    };
-
-    // Initialize Bull queue
-    // Check if Redis is properly configured
-    const isRedisConfigured = process.env.REDIS_URL || process.env.REDIS_HOST;
-    
-    if (isRedisConfigured && queueRedis.options) {
-      this.queue = new Bull('generation-queue', {
-        redis: {
-          host: queueRedis.options.host,
-          port: queueRedis.options.port,
-          password: queueRedis.options.password,
-          db: queueRedis.options.db,
-        },
-        defaultJobOptions: this.defaultJobOptions,
-      });
-    } else {
-      // Create a mock queue when Redis is not available
-      console.warn('⚠️  Creating mock queue - Redis not configured');
-      this.queue = {
-        add: async (data: any) => ({ id: `mock_job_${Date.now()}` }),
-        process: () => {},
-        on: () => {},
-        getJob: async () => null,
-        getJobs: async () => [],
-        removeJob: async () => {},
-        close: async () => {},
-      } as any;
-    }
-
-    this.setupProcessors();
+    console.log('✅ Using in-memory generation queue');
     this.setupEventHandlers();
+    this.startProcessing();
   }
 
   /**
    * Add a generation job to the queue
    */
-  async addGenerationJob(data: GenerationJobData, options: Partial<Bull.JobOptions> = {}): Promise<Bull.Job<GenerationJobData>> {
+  async addGenerationJob(data: GenerationJobData, options: any = {}): Promise<Job> {
     try {
       // Update generation status to 'processing'
       await this.updateGenerationStatus(data.generationId, 'processing', undefined, undefined, undefined, data.userId);
 
-      // Add job to queue with priority based on type
+      // Create job
+      const jobId = `job_${++this.jobIdCounter}_${Date.now()}`;
       const priority = this.getJobPriority(data.type);
-      const job = await this.queue.add('generate', data, {
-        ...this.defaultJobOptions,
-        ...options,
+      
+      const job: Job = {
+        id: jobId,
+        data,
+        status: 'waiting',
+        progress: 0,
+        attempts: 0,
+        maxAttempts: this.maxAttempts,
+        createdAt: new Date(),
         priority,
-      });
+      };
+
+      this.jobs.set(jobId, job);
+      this.queue.push(job);
+      
+      // Sort queue by priority (lower number = higher priority)
+      this.queue.sort((a, b) => a.priority - b.priority);
 
       console.log(`✅ Generation job added to queue: ${job.id} for generation ${data.generationId}`);
       return job;
@@ -126,20 +120,17 @@ class GenerationQueueService {
     error?: string;
   }> {
     try {
-      const job = await this.queue.getJob(jobId);
+      const job = this.jobs.get(jobId);
       if (!job) {
         throw new Error('Job not found');
       }
 
-      const state = await job.getState();
-      const progress = job.progress();
-
       return {
-        status: state,
-        progress: typeof progress === 'number' ? progress : 0,
+        status: job.status,
+        progress: job.progress,
         data: job.data,
-        result: job.returnvalue,
-        error: job.failedReason,
+        result: job.result,
+        error: job.error,
       };
     } catch (error) {
       console.error('Failed to get job status:', error);
@@ -152,17 +143,26 @@ class GenerationQueueService {
    */
   async cancelJob(jobId: string): Promise<void> {
     try {
-      const job = await this.queue.getJob(jobId);
+      const job = this.jobs.get(jobId);
       if (!job) {
         throw new Error('Job not found');
       }
 
-      await job.remove();
+      // Remove from queue if waiting
+      const queueIndex = this.queue.findIndex(q => q.id === jobId);
+      if (queueIndex !== -1) {
+        this.queue.splice(queueIndex, 1);
+      }
+
+      // Update job status
+      job.status = 'failed';
+      job.error = 'Job cancelled by user';
+      
+      // Remove from active jobs
+      this.activeJobs.delete(jobId);
       
       // Update generation status to failed
-      if (job.data?.generationId) {
-        await this.updateGenerationStatus(job.data.generationId, 'failed', 'Job cancelled by user', undefined, undefined, job.data.userId);
-      }
+      await this.updateGenerationStatus(job.data.generationId, 'failed', 'Job cancelled by user', undefined, undefined, job.data.userId);
 
       console.log(`❌ Generation job cancelled: ${jobId}`);
     } catch (error) {
@@ -182,20 +182,14 @@ class GenerationQueueService {
     delayed: number;
   }> {
     try {
-      const [waiting, active, completed, failed, delayed] = await Promise.all([
-        this.queue.getWaiting(),
-        this.queue.getActive(),
-        this.queue.getCompleted(),
-        this.queue.getFailed(),
-        this.queue.getDelayed(),
-      ]);
-
+      const allJobs = Array.from(this.jobs.values());
+      
       return {
-        waiting: waiting.length,
-        active: active.length,
-        completed: completed.length,
-        failed: failed.length,
-        delayed: delayed.length,
+        waiting: allJobs.filter(job => job.status === 'waiting').length,
+        active: allJobs.filter(job => job.status === 'active').length,
+        completed: allJobs.filter(job => job.status === 'completed').length,
+        failed: allJobs.filter(job => job.status === 'failed').length,
+        delayed: 0, // No delayed jobs in simple implementation
       };
     } catch (error) {
       console.error('Failed to get queue stats:', error);
@@ -208,133 +202,193 @@ class GenerationQueueService {
    */
   async cleanQueue(olderThan: number = 24 * 60 * 60 * 1000): Promise<void> {
     try {
-      await this.queue.clean(olderThan, 'completed');
-      await this.queue.clean(olderThan, 'failed');
-      console.log('✅ Queue cleaned successfully');
+      const cutoffTime = new Date(Date.now() - olderThan);
+      const jobsToRemove: string[] = [];
+      
+      for (const [jobId, job] of this.jobs.entries()) {
+        if ((job.status === 'completed' || job.status === 'failed') && 
+            job.createdAt < cutoffTime) {
+          jobsToRemove.push(jobId);
+        }
+      }
+      
+      jobsToRemove.forEach(jobId => this.jobs.delete(jobId));
+      console.log(`✅ Queue cleaned successfully - removed ${jobsToRemove.length} old jobs`);
     } catch (error) {
       console.error('Failed to clean queue:', error);
     }
   }
 
   /**
-   * Setup job processors
+   * Start processing jobs
    */
-  private setupProcessors(): void {
-    this.queue.process('generate', this.maxConcurrency, async (job) => {
-      const { data } = job;
-      const startTime = Date.now();
+  private startProcessing(): void {
+    this.processingInterval = setInterval(() => {
+      this.processQueue();
+    }, 1000); // Check every second
+  }
 
-      try {
-        console.log(`🎵 Starting generation job ${job.id} for generation ${data.generationId}`);
-        
-        // Update progress
-        await job.progress(10);
-        webSocketService.emitGenerationProgress(data.generationId, data.userId, {
-          status: 'processing',
-          progress: 10,
-          message: 'Preparing audio generation...'
-        });
+  /**
+   * Process jobs in the queue
+   */
+  private async processQueue(): Promise<void> {
+    // Don't exceed max concurrency
+    if (this.activeJobs.size >= this.maxConcurrency) {
+      return;
+    }
 
-        // Prepare AI service request
-        const aiRequest = {
-          generation_id: data.generationId,
-          type: data.type,
-          parameters: data.parameters,
-          source_samples: data.source_urls,
-        };
+    // Get next job from queue
+    const nextJob = this.queue.find(job => job.status === 'waiting');
+    if (!nextJob) {
+      return;
+    }
 
-        // Call AI service
-        await job.progress(20);
-        webSocketService.emitGenerationProgress(data.generationId, data.userId, {
-          status: 'processing',
-          progress: 20,
-          message: 'Sending request to AI service...'
-        });
-        const response = await aiServiceBreaker.fire({
-          url: '/generate',
-          method: 'POST',
-          data: aiRequest,
-          timeout: 300000, // 5 minutes timeout
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.AI_SERVICE_API_KEY || ''}`,
-          },
-        });
+    // Move job to active
+    nextJob.status = 'active';
+    this.activeJobs.add(nextJob.id);
+    
+    // Remove from waiting queue
+    const queueIndex = this.queue.findIndex(job => job.id === nextJob.id);
+    if (queueIndex !== -1) {
+      this.queue.splice(queueIndex, 1);
+    }
 
-        await job.progress(50);
-        webSocketService.emitGenerationProgress(data.generationId, data.userId, {
-          status: 'processing',
-          progress: 50,
-          message: 'AI is generating your audio...'
-        });
-
-        if (!(response as any).data.success) {
-          throw new Error((response as any).data.error || 'AI service returned error');
-        }
-
-        // Poll for completion
-        const result = await this.pollGenerationResult(data.generationId, job);
-        
-        const processingTime = Date.now() - startTime;
-        
-        // Update generation in database
-        await this.updateGenerationStatus(
-          data.generationId,
-          'completed',
-          undefined,
-          result.result_url,
-          processingTime,
-          data.userId
-        );
-
-        await job.progress(100);
-
-        console.log(`✅ Generation job completed: ${job.id} in ${processingTime}ms`);
-        return result;
-
-      } catch (error) {
-        const processingTime = Date.now() - startTime;
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        
-        console.error(`❌ Generation job failed: ${job.id}`, error);
-        
-        // Update generation status to failed
-        await this.updateGenerationStatus(
-          data.generationId,
-          'failed',
-          errorMessage,
-          undefined,
-          processingTime,
-          data.userId
-        );
-
-        throw error;
-      }
+    // Process the job
+    this.processJob(nextJob).catch(error => {
+      console.error(`Failed to process job ${nextJob.id}:`, error);
     });
+  }
+
+  /**
+   * Process a single job
+   */
+  private async processJob(job: Job): Promise<void> {
+    const { data } = job;
+    const startTime = Date.now();
+
+    try {
+      console.log(`🎵 Starting generation job ${job.id} for generation ${data.generationId}`);
+      
+      // Update progress
+      job.progress = 10;
+      webSocketService.emitGenerationProgress(data.generationId, data.userId, {
+        status: 'processing',
+        progress: 10,
+        message: 'Preparing audio generation...'
+      });
+
+      // Prepare AI service request
+      const aiRequest = {
+        generation_id: data.generationId,
+        type: data.type,
+        parameters: data.parameters,
+        source_samples: data.source_urls,
+      };
+
+      // Call AI service
+      job.progress = 20;
+      webSocketService.emitGenerationProgress(data.generationId, data.userId, {
+        status: 'processing',
+        progress: 20,
+        message: 'Sending request to AI service...'
+      });
+      const response = await aiServiceBreaker.fire({
+        url: '/generate',
+        method: 'POST',
+        data: aiRequest,
+        timeout: 300000, // 5 minutes timeout
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.AI_SERVICE_API_KEY || ''}`,
+        },
+      });
+
+      job.progress = 50;
+      webSocketService.emitGenerationProgress(data.generationId, data.userId, {
+        status: 'processing',
+        progress: 50,
+        message: 'AI is generating your audio...'
+      });
+
+      if (!(response as any).data.success) {
+        throw new Error((response as any).data.error || 'AI service returned error');
+      }
+
+      // Poll for completion
+      const result = await this.pollGenerationResult(data.generationId, job);
+      
+      const processingTime = Date.now() - startTime;
+      
+      // Update generation in database
+      await this.updateGenerationStatus(
+        data.generationId,
+        'completed',
+        undefined,
+        result.result_url,
+        processingTime,
+        data.userId
+      );
+
+      job.progress = 100;
+      job.status = 'completed';
+      job.result = result;
+      this.activeJobs.delete(job.id);
+
+      console.log(`✅ Generation job completed: ${job.id} in ${processingTime}ms`);
+      this.emit('completed', job, result);
+
+    } catch (error) {
+      const processingTime = Date.now() - startTime;
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      
+      console.error(`❌ Generation job failed: ${job.id}`, error);
+      
+      job.attempts++;
+      if (job.attempts < job.maxAttempts) {
+        // Retry job
+        job.status = 'waiting';
+        this.queue.push(job);
+        this.queue.sort((a, b) => a.priority - b.priority);
+        this.activeJobs.delete(job.id);
+        console.log(`🔄 Retrying job ${job.id} (attempt ${job.attempts}/${job.maxAttempts})`);
+        return;
+      }
+      
+      // Update generation status to failed
+      await this.updateGenerationStatus(
+        data.generationId,
+        'failed',
+        errorMessage,
+        undefined,
+        processingTime,
+        data.userId
+      );
+
+      job.status = 'failed';
+      job.error = errorMessage;
+      this.activeJobs.delete(job.id);
+      this.emit('failed', job, error);
+    }
   }
 
   /**
    * Setup event handlers for the queue
    */
   private setupEventHandlers(): void {
-    this.queue.on('completed', (job, result) => {
+    this.on('completed', (job, result) => {
       console.log(`✅ Job ${job.id} completed with result:`, result);
     });
 
-    this.queue.on('failed', (job, error) => {
+    this.on('failed', (job, error) => {
       console.error(`❌ Job ${job.id} failed:`, error.message);
     });
 
-    this.queue.on('stalled', (job) => {
-      console.warn(`⚠️ Job ${job.id} stalled`);
-    });
-
-    this.queue.on('progress', (job, progress) => {
+    this.on('progress', (job, progress) => {
       console.log(`📊 Job ${job.id} progress: ${progress}%`);
     });
 
     // Global error handler
-    this.queue.on('error', (error) => {
+    this.on('error', (error) => {
       console.error('Queue error:', error);
     });
   }
@@ -342,7 +396,7 @@ class GenerationQueueService {
   /**
    * Poll AI service for generation result
    */
-  private async pollGenerationResult(generationId: string, job: Bull.Job): Promise<GenerationResult> {
+  private async pollGenerationResult(generationId: string, job: Job): Promise<GenerationResult> {
     const maxAttempts = 60; // 5 minutes with 5-second intervals
     const pollInterval = 5000; // 5 seconds
 
@@ -360,7 +414,7 @@ class GenerationQueueService {
         const status = (response as any).data.status;
         const progress = Math.min(50 + (attempt / maxAttempts) * 40, 90); // 50-90% progress
         
-        await job.progress(progress);
+        job.progress = progress;
 
         if (status === 'completed') {
           return {
@@ -469,7 +523,23 @@ class GenerationQueueService {
    */
   async shutdown(): Promise<void> {
     console.log('Shutting down generation queue...');
-    await this.queue.close();
+    if (this.processingInterval) {
+      clearInterval(this.processingInterval);
+    }
+    
+    // Wait for active jobs to complete or timeout after 30 seconds
+    const timeout = 30000;
+    const startTime = Date.now();
+    
+    while (this.activeJobs.size > 0 && (Date.now() - startTime) < timeout) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+    
+    if (this.activeJobs.size > 0) {
+      console.warn(`⚠️ Shutdown timeout - ${this.activeJobs.size} jobs still active`);
+    }
+    
+    console.log('✅ Generation queue shutdown complete');
   }
 }
 

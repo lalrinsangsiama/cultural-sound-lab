@@ -218,7 +218,7 @@ export default function MobileAudioPlayer({
     const audio = audioRef.current;
     if (!audio) return;
 
-    const newVolume = value[0];
+    const newVolume = value[0] || 0;
     audio.volume = newVolume;
     setState(prev => ({ 
       ...prev, 

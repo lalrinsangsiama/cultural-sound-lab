@@ -3,7 +3,21 @@ import { supabase, supabaseAdmin } from '@/config/supabase';
 import { AuthenticatedRequest } from '@/middleware/auth';
 import { generateUniqueFilename, getAudioMetadata } from '@/middleware/upload';
 import { audioService } from '@/services/audioService';
-import { cacheHelpers } from '@/config/redis';
+// Simple cache helpers that do nothing (Supabase handles data persistence)
+const cacheHelpers = {
+  async get<T>(key: string): Promise<T | null> {
+    return null; // No caching, always fetch fresh
+  },
+  async set(key: string, value: any, ttl?: number): Promise<void> {
+    // No-op, Supabase handles persistence
+  },
+  async del(key: string | string[]): Promise<void> {
+    // No-op
+  },
+  async clearByPattern(pattern: string): Promise<void> {
+    // No-op
+  }
+};
 
 export const getAudioSamples = async (req: Request, res: Response) => {
   try {

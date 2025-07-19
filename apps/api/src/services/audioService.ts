@@ -129,8 +129,8 @@ class AudioService {
 
       const result: AudioMetadata = {
         duration: parseFloat(audioStream.duration || '0'),
-        sample_rate: parseInt(audioStream.sample_rate || '0'),
-        bitrate: parseInt(audioStream.bit_rate || '0'),
+        sample_rate: parseInt(String(audioStream.sample_rate || '0')),
+        bitrate: parseInt(String(audioStream.bit_rate || '0')),
         channels: audioStream.channels || 0,
         format: (metadata as any).format.format_name || 'unknown',
         codec: audioStream.codec_name,

@@ -22,12 +22,6 @@ const envSchema = z.object({
   DB_USER: z.string().optional(),
   DB_PASSWORD: z.string().optional(),
 
-  // Redis Configuration
-  REDIS_URL: z.string().optional(),
-  REDIS_HOST: z.string().default('localhost'),
-  REDIS_PORT: z.string().transform(Number).pipe(z.number().positive()).default(6379),
-  REDIS_PASSWORD: z.string().optional(),
-  REDIS_DB: z.string().transform(Number).pipe(z.number().min(0).max(15)).default(0),
 
   // Authentication & Security
   JWT_SECRET: z.string().min(32).optional(),
@@ -219,34 +213,6 @@ export const validateDatabaseConnection = async (): Promise<boolean> => {
   return false;
 };
 
-// Redis connection validation
-export const validateRedisConnection = async (): Promise<boolean> => {
-  const config = getEnvConfig();
-  
-  if (config.REDIS_URL || config.REDIS_HOST) {
-    try {
-      const Redis = (await import('ioredis')).default;
-      const redis = new Redis({
-        host: config.REDIS_HOST,
-        port: Number(config.REDIS_PORT),
-        password: config.REDIS_PASSWORD,
-        db: Number(config.REDIS_DB),
-        lazyConnect: true,
-      });
-      
-      await redis.ping();
-      console.log('✅ Redis connection validated');
-      await redis.quit();
-      return true;
-    } catch (error) {
-      console.warn('⚠️  Redis connection failed:', error instanceof Error ? error.message : error);
-      return false;
-    }
-  }
-  
-  console.log('⚠️  No Redis configuration found, running without cache');
-  return false;
-};
 
 // External service validation
 export const validateExternalServices = async (): Promise<void> => {
@@ -318,7 +284,6 @@ export const runStartupValidation = async (): Promise<void> => {
   // Validate connections
   await Promise.all([
     validateDatabaseConnection(),
-    validateRedisConnection(),
     validateExternalServices(),
   ]);
   

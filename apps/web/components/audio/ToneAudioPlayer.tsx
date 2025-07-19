@@ -115,11 +115,11 @@ export default function ToneAudioPlayer({
 
     const initTone = async () => {
       try {
-        const Tone = (await import("tone")).default;
+        const Tone = await import("tone");
         
         // Create audio effects chain
         reverbRef.current = new Tone.Reverb(2).toDestination();
-        delayRef.current = new Tone.PingPongDelay("8n", 0.2).toDestination();
+        delayRef.current = new Tone.Delay("8n").toDestination();
         filterRef.current = new Tone.Filter(1000, "lowpass").connect(reverbRef.current);
         distortionRef.current = new Tone.Distortion(0).connect(filterRef.current);
         
@@ -131,7 +131,7 @@ export default function ToneAudioPlayer({
           onload: () => {
             setState(prev => ({
               ...prev,
-              duration: tonePlayerRef.current.buffer.duration,
+              duration: tonePlayerRef.current?.buffer?.duration || 0,
               isLoading: false,
             }));
           },
@@ -146,8 +146,8 @@ export default function ToneAudioPlayer({
         }).connect(distortionRef.current);
 
         // Set initial effect values
-        reverbRef.current.wet.value = state.reverbWet;
-        delayRef.current.wet.value = state.delayWet;
+        if (reverbRef.current) reverbRef.current.wet.value = state.reverbWet;
+        if (delayRef.current) (delayRef.current as any).wet.value = state.delayWet;
         filterRef.current.frequency.value = state.filterFrequency;
         distortionRef.current.distortion = state.distortionAmount;
 
@@ -284,7 +284,7 @@ export default function ToneAudioPlayer({
         onPause?.();
       } else {
         try {
-          const Tone = (await import("tone")).default;
+          const Tone = await import("tone");
           await Tone.start(); // Start audio context
           tonePlayerRef.current.start();
           setState(prev => ({ ...prev, isPlaying: true }));
@@ -331,8 +331,8 @@ export default function ToneAudioPlayer({
     } else {
       const audio = audioRef.current;
       if (!audio) return;
-      audio.currentTime = newTime;
-      setState(prev => ({ ...prev, currentTime: newTime }));
+      audio.currentTime = newTime || 0;
+      setState(prev => ({ ...prev, currentTime: newTime || 0 }));
     }
   }, [enableEffects]);
 

@@ -173,7 +173,7 @@ class DemoLibraryService {
 
     // Return first subcategory if no specific subcategory requested
     const firstSubcategoryKey = Object.keys(category.subcategories)[0]
-    return category.subcategories[firstSubcategoryKey] || null
+    return category.subcategories[firstSubcategoryKey!] || null
   }
 
   getAudioUrl(file: string): string {
