@@ -109,7 +109,7 @@ export function usePaymentProcessing() {
         reason: 'payment_failed',
       });
 
-      setState(prev => ({ ...prev, savedGeneration: saved }));
+      setState(prev => ({ ...prev, savedGeneration: saved as GenerationResult }));
       return saved;
     } catch (error) {
       console.error('Failed to save generation:', error);
@@ -166,7 +166,7 @@ export function usePaymentProcessing() {
 
       setState(prev => ({ 
         ...prev, 
-        paymentIntent: result, 
+        paymentIntent: result as PaymentIntent, 
         isProcessing: false,
         retryCount: 0 
       }));
@@ -195,8 +195,9 @@ export function usePaymentProcessing() {
         await saveGenerationForLater(generationData);
       }
 
+      const errorObj = error && typeof error === 'object' ? error as Record<string, unknown> : {};
       throw {
-        ...error,
+        ...errorObj,
         failureReason,
         canRetry: failureReason.canRetry && retryCount < 3,
       };

@@ -76,7 +76,7 @@ export interface ApiError {
 }
 
 export class ApiClient {
-  private baseUrl: string;
+  protected baseUrl: string;
 
   constructor(baseUrl: string = API_BASE_URL) {
     this.baseUrl = baseUrl;

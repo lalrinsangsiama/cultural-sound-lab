@@ -252,7 +252,7 @@ export default function DemoShowcase() {
   }
 
   const currentCategory = demoData.categories[selectedCategory as keyof typeof demoData.categories]
-  const currentSubcategory = currentCategory?.subcategories[selectedSubcategory]
+  const currentSubcategory = currentCategory?.subcategories[selectedSubcategory as keyof typeof currentCategory.subcategories]
   const currentContent = currentSubcategory?.[selectedContentType as keyof typeof currentSubcategory] as DemoItem[] | undefined
 
   return (

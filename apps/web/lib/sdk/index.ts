@@ -41,7 +41,7 @@ export {
 } from './hooks';
 
 // Re-export for convenience
-export { apiClient as defaultApi };
+export { apiClient as defaultApi } from '../api/client';
 
 // SDK version
 export const SDK_VERSION = '1.0.0';

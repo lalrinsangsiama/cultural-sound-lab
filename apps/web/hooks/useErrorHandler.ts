@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { enhancedToast } from '@/components/ui/enhanced-toast';
-import { ApiError } from '@/lib/api-client';
+import { ApiError } from '@/lib/api/error-handling';
 import { captureApiError } from '@/lib/api/error-handling';
 
 interface ErrorOptions {

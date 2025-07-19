@@ -126,7 +126,7 @@ export function useRazorpayProcessing() {
         reason: 'payment_failed',
       });
 
-      setState(prev => ({ ...prev, savedGeneration: saved }));
+      setState(prev => ({ ...prev, savedGeneration: saved as GenerationResult }));
       return saved;
     } catch (error) {
       console.error('Failed to save generation:', error);

@@ -9,7 +9,7 @@ import { NetworkStatusIndicator, NetworkStatusBadge } from '@/components/ui/netw
 import { EnhancedErrorBoundary } from '@/components/error/enhanced-error-boundary';
 import { useEnhancedMutation, useEnhancedQuery } from '@/hooks/useEnhancedApi';
 import { useErrorHandler } from '@/hooks/useErrorHandler';
-import { ApiError } from '@/lib/api-client';
+import { ApiError } from '@/lib/api/error-handling';
 import { Wifi, WifiOff, AlertCircle, Clock, CheckCircle2, Bug } from 'lucide-react';
 
 // Simulate different types of errors
@@ -332,10 +332,9 @@ export function ErrorRecoveryDemo() {
               </Button>
               
               <Button 
-                variant="outline" 
+                variant="destructive"
                 onClick={() => enhancedToast.dismissAll()}
                 size="sm"
-                variant="destructive"
               >
                 Clear All Toasts
               </Button>

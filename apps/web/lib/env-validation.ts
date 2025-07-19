@@ -255,7 +255,8 @@ export const parseFileSize = (sizeStr: string): number => {
   }
 
   const [, size, unit] = match;
-  return parseFloat(size || '0') * (units[unit?.toUpperCase()] || 1);
+  const unitKey = unit?.toUpperCase() as keyof typeof units;
+  return parseFloat(size || '0') * (units[unitKey] || 1);
 };
 
 // Environment-specific configuration getters

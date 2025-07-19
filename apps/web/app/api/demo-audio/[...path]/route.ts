@@ -5,10 +5,11 @@ import { existsSync } from 'fs'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { path: string[] } }
+  { params }: { params: Promise<{ path: string[] }> }
 ) {
   try {
-    const filePath = params.path.join('/')
+    const { path } = await params
+    const filePath = path.join('/')
     const fullPath = join(process.cwd(), '../../assets/demo-library', filePath)
 
     // Security check: ensure the path is within the demo-library directory
@@ -22,7 +23,7 @@ export async function GET(
     // Check if file exists
     if (!existsSync(fullPath)) {
       // Try to serve from the existing demo-audio directory as fallback
-      const fallbackPath = join(process.cwd(), '../../assets/demo-audio', params.path[params.path.length - 1] || '')
+      const fallbackPath = join(process.cwd(), '../../assets/demo-audio', path[path.length - 1] || '')
       
       if (existsSync(fallbackPath)) {
         const fileBuffer = await readFile(fallbackPath)

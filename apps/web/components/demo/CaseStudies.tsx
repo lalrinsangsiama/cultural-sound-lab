@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Star, TrendingUp, Users, DollarSign, Clock, Award, Play, ChevronRight } from 'lucide-react'
+import { Star, TrendingUp, Users, DollarSign, Clock, Award, ChevronRight } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -181,7 +181,7 @@ const caseStudiesData = [
 ]
 
 export default function CaseStudies() {
-  const [selectedCase, setSelectedCase] = useState(caseStudiesData[0])
+  const [selectedCase, setSelectedCase] = useState(caseStudiesData[0]!)
   const [activeTab, setActiveTab] = useState('overview')
 
   return (

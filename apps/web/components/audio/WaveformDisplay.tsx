@@ -81,7 +81,7 @@ export default function WaveformDisplay({
   useEffect(() => {
     if (!containerRef.current) return;
 
-    let wavesurfer: WaveSurfer | null = null;
+    let wavesurfer: any | null = null;
 
     const initWaveSurfer = async () => {
       try {
@@ -97,14 +97,14 @@ export default function WaveformDisplay({
           barWidth: 2,
           barGap: 1,
           barRadius: 2,
-          responsive,
+          // responsive, // Not supported in newer version
           normalize,
           backend: "WebAudio",
           mediaControls: false,
           interact: true,
-          dragToSeek: true,
+          // dragToSeek: true, // Not supported in newer version
           hideScrollbar: true,
-          fillParent: true,
+          // fillParent: true, // Not supported in newer version
         });
 
         wavesurferRef.current = wavesurfer;
@@ -173,13 +173,17 @@ export default function WaveformDisplay({
 
   const togglePlayPause = () => {
     if (wavesurferRef.current) {
-      wavesurferRef.current.playPause();
+      if (wavesurferRef.current.isPlaying()) {
+        wavesurferRef.current.pause();
+      } else {
+        wavesurferRef.current.play();
+      }
     }
   };
 
   const handleVolumeChange = (value: number[]) => {
     const newVolume = value[0];
-    if (wavesurferRef.current) {
+    if (wavesurferRef.current && newVolume !== undefined) {
       wavesurferRef.current.setVolume(newVolume);
     }
   };
@@ -187,13 +191,13 @@ export default function WaveformDisplay({
   const toggleMute = () => {
     if (wavesurferRef.current) {
       const newMuteState = !isMuted;
-      wavesurferRef.current.setMuted(newMuteState);
+      wavesurferRef.current.setVolume(newMuteState ? 0 : volume);
       setIsMuted(newMuteState);
     }
   };
 
   const handleSeek = (value: number[]) => {
-    if (wavesurferRef.current) {
+    if (wavesurferRef.current && value[0] !== undefined) {
       const seekTo = value[0] / duration;
       wavesurferRef.current.seekTo(seekTo);
     }

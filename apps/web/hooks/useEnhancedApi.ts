@@ -3,7 +3,7 @@ import { enhancedApiClient } from '@/lib/api/enhanced-client';
 import { useOfflineStorage } from './useOfflineStorage';
 import { useNetworkStatus } from './useNetworkStatus';
 import { useErrorHandler } from './useErrorHandler';
-import { ApiError } from '@/lib/api-client';
+import { ApiError } from '@/lib/api/error-handling';
 
 interface UseEnhancedApiOptions {
   onSuccess?: (data: any) => void;

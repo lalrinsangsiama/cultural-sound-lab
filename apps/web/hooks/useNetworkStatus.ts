@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-interface NetworkInformation {
+interface NetworkInformation extends EventTarget {
   type?: string;
   downlink?: number;
   effectiveType?: string;
@@ -47,8 +47,8 @@ export function useNetworkStatus(): NetworkStatus {
       // Detect slow connection
       if (connection) {
         const slowTypes = ['slow-2g', '2g'];
-        const slowDownlink = connection.downlink < 1.5; // Less than 1.5 Mbps
-        status.isSlowConnection = slowTypes.includes(connection.effectiveType) || slowDownlink;
+        const slowDownlink = connection.downlink !== undefined && connection.downlink < 1.5; // Less than 1.5 Mbps
+        status.isSlowConnection = slowTypes.includes(connection.effectiveType || '') || slowDownlink;
       }
 
       setNetworkStatus(status);

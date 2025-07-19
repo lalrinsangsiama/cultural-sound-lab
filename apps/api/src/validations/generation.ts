@@ -75,9 +75,9 @@ export const generationParametersSchema = z.discriminatedUnion('type', [
 // Create generation request schema
 export const createGenerationSchema = z.object({
   type: generationTypeSchema,
-  parameters: z.record(z.any()),
-  title: z.string().min(1).max(255).optional(),
-  description: z.string().max(1000).optional(),
+  parameters: z.record(z.string(), z.any()),
+  title: z.string().min(1, 'Title must be at least 1 character').max(255, 'Title must not exceed 255 characters').optional(),
+  description: z.string().max(1000, 'Description must not exceed 1000 characters').optional(),
 });
 
 // Update generation status schema (for webhooks)
@@ -86,7 +86,7 @@ export const updateGenerationStatusSchema = z.object({
   result_url: z.string().url().optional(),
   error_message: z.string().optional(),
   processing_time: z.number().positive('Processing time must be positive').optional(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
 });
 
 // Generation response schemas
@@ -97,11 +97,11 @@ export const generationSchema = z.object({
   status: generationStatusSchema,
   title: z.string().optional(),
   description: z.string().optional(),
-  parameters: z.record(z.any()),
+  parameters: z.record(z.string(), z.any()),
   result_url: z.string().url().optional(),
   error_message: z.string().optional(),
   processing_time: z.number().positive('Processing time must be positive').optional(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
   created_at: z.string().datetime(),
   updated_at: z.string().datetime(),
 });
@@ -129,7 +129,7 @@ export const jobStatusResponseSchema = z.object({
   jobId: z.string(),
   status: z.enum(['active', 'waiting', 'completed', 'failed', 'delayed']),
   progress: z.number().min(0).max(100).optional(),
-  data: z.record(z.any()).optional(),
+  data: z.record(z.string(), z.any()).optional(),
   result: z.any().optional(),
   error: z.string().optional(),
   created_at: z.string().datetime(),

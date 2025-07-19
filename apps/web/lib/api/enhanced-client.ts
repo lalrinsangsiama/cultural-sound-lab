@@ -1,5 +1,5 @@
-import { ApiClient, ApiError } from '../api-client';
-import { withRetry, handleApiError, captureApiError } from './error-handling';
+import { ApiClient } from '../api-client';
+import { withRetry, handleApiError, captureApiError, ApiError } from './error-handling';
 import { useOfflineStorage } from '@/hooks/useOfflineStorage';
 import { useNetworkStatus } from '@/hooks/useNetworkStatus';
 
