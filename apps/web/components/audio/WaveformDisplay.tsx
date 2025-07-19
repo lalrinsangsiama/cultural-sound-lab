@@ -9,6 +9,43 @@ import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 import { WaveformDisplayProps } from "@/lib/types/audio";
 
+// WaveSurfer type definitions
+interface WaveSurferOptions {
+  container: HTMLElement;
+  waveColor?: string;
+  progressColor?: string;
+  cursorColor?: string;
+  height?: number;
+  barWidth?: number;
+  barGap?: number;
+  barRadius?: number;
+  responsive?: boolean;
+  normalize?: boolean;
+  backend?: string;
+  mediaControls?: boolean;
+  interact?: boolean;
+  dragToSeek?: boolean;
+  hideScrollbar?: boolean;
+  fillParent?: boolean;
+}
+
+interface WaveSurfer {
+  create(options: WaveSurferOptions): WaveSurfer;
+  load(url: string): void;
+  play(): void;
+  pause(): void;
+  stop(): void;
+  setVolume(volume: number): void;
+  getDuration(): number;
+  getCurrentTime(): number;
+  seekTo(position: number): void;
+  getDecodedData(): { getChannelData(channel: number): Float32Array } | null;
+  on(event: string, callback: (...args: unknown[]) => void): void;
+  off(event: string, callback: (...args: unknown[]) => void): void;
+  destroy(): void;
+  isPlaying(): boolean;
+}
+
 const formatTime = (time: number) => {
   const minutes = Math.floor(time / 60);
   const seconds = Math.floor(time % 60);
@@ -31,7 +68,7 @@ export default function WaveformDisplay({
   className,
 }: WaveformDisplayProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const wavesurferRef = useRef<any>(null);
+  const wavesurferRef = useRef<WaveSurfer | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [duration, setDuration] = useState(0);
@@ -44,7 +81,7 @@ export default function WaveformDisplay({
   useEffect(() => {
     if (!containerRef.current) return;
 
-    let wavesurfer: any = null;
+    let wavesurfer: WaveSurfer | null = null;
 
     const initWaveSurfer = async () => {
       try {

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { getUserFromToken } from '@/config/supabase';
+import { getUserFromToken } from '../config/supabase';
 
 interface AuthenticatedRequest extends Request {
   user?: {
@@ -14,18 +14,34 @@ export const authenticateUser = async (
   res: Response,
   next: NextFunction
 ) => {
-  // Check if we're in mock mode (no Supabase configured)
+  // Check if we're in demo mode (explicitly enabled and NOT in production)
+  const isDemoMode = process.env.DEMO_MODE === 'true';
+  const isProduction = process.env.NODE_ENV === 'production';
   const isSupabaseConfigured = process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY;
   
-  if (!isSupabaseConfigured) {
-    // Mock user for demo purposes
+  // Completely disable demo mode in production environments
+  if (isDemoMode && isProduction) {
+    console.error('🚨 SECURITY: Demo mode cannot be enabled in production environment');
+    return res.status(500).json({
+      error: 'Invalid configuration detected'
+    });
+  }
+  
+  if (isDemoMode && !isSupabaseConfigured) {
+    // Mock user for demo purposes only when explicitly enabled in non-production
     req.user = {
       id: 'demo-user-123',
       email: 'demo@culturalsoundlab.com',
       role: 'user'
     };
-    console.log('🎭 Mock auth: Using demo user');
+    console.warn('⚠️ Demo mode active: Using mock authentication (development only)');
     return next();
+  }
+  
+  if (!isSupabaseConfigured) {
+    return res.status(500).json({
+      error: 'Authentication service not configured. Please set up Supabase credentials.'
+    });
   }
 
   try {
@@ -89,5 +105,6 @@ export const requireRole = (allowedRoles: string[]) => {
 
 export const requireAdmin = requireRole(['admin']);
 export const requireContributor = requireRole(['admin', 'cultural_contributor']);
+export const requireAuth = authenticateUser;
 
 export { AuthenticatedRequest };

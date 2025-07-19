@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Waveform, Heart, Github, Twitter, Instagram } from 'lucide-react';
+import { AudioWaveform, Heart, Github, Twitter, Instagram } from 'lucide-react';
 
 export function Footer() {
   return (
@@ -18,7 +18,7 @@ export function Footer() {
           >
             <div className="flex items-center space-x-2 mb-4">
               <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
-                <Waveform className="w-4 h-4 text-white" />
+                <AudioWaveform className="w-4 h-4 text-white" />
               </div>
               <span className="font-display text-xl font-bold">
                 Cultural Sound Lab
@@ -105,20 +105,20 @@ export function Footer() {
                 </button>
               </li>
               <li>
-                <a 
-                  href="#"
+                <button 
+                  onClick={() => window.location.href = '/dashboard/help'}
                   className="text-gray-300 hover:text-white transition-colors"
                 >
                   Cultural Guidelines
-                </a>
+                </button>
               </li>
               <li>
-                <a 
-                  href="#"
+                <button 
+                  onClick={() => window.location.href = '/dashboard/case-studies'}
                   className="text-gray-300 hover:text-white transition-colors"
                 >
                   Success Stories
-                </a>
+                </button>
               </li>
             </ul>
           </motion.div>
@@ -167,21 +167,27 @@ export function Footer() {
           
           <div className="flex items-center space-x-4">
             <a 
-              href="#" 
+              href="https://twitter.com/culturalsoundlab" 
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-gray-400 hover:text-white transition-colors"
               aria-label="Twitter"
             >
               <Twitter className="w-5 h-5" />
             </a>
             <a 
-              href="#" 
+              href="https://instagram.com/culturalsoundlab" 
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-gray-400 hover:text-white transition-colors"
               aria-label="Instagram"
             >
               <Instagram className="w-5 h-5" />
             </a>
             <a 
-              href="#" 
+              href="https://github.com/culturalsoundlab" 
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-gray-400 hover:text-white transition-colors"
               aria-label="GitHub"
             >

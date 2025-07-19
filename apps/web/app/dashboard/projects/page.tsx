@@ -7,18 +7,27 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Play, Download, Share, Trash2, Edit } from "lucide-react";
 import { formatDuration } from "@/lib/utils";
+import { Project } from "@/lib/types/audio";
 
-const projects = [
+const projects: Project[] = [
   {
     id: "1",
     title: "Mizo Drum Sound Logo",
-    type: "sound-logo",
+    type: "sound_logo",
     status: "completed",
     duration: 12,
     createdAt: "2024-01-15T10:30:00Z",
-    downloadUrl: "/api/projects/1/download",
+    resultUrl: "/api/projects/1/download",
     description: "Energetic sound logo for tech startup",
-    sourceSamples: ["Mizo Traditional Drum", "Mizo Bamboo Flute"]
+    sourceSamples: ["Mizo Traditional Drum", "Mizo Bamboo Flute"],
+    parameters: {
+      mood: "energetic",
+      tempo: 120,
+      energy_level: 8,
+      instruments: ["drums", "flute"],
+      cultural_style: "Mizo",
+      brand_name: "TechStart"
+    }
   },
   {
     id: "2",
@@ -27,42 +36,71 @@ const projects = [
     status: "completed",
     duration: 1800,
     createdAt: "2024-01-14T15:45:00Z",
-    downloadUrl: "/api/projects/2/download",
+    resultUrl: "/api/projects/2/download",
     description: "Ambient playlist for meditation app",
-    sourceSamples: ["Mizo Flute Melody", "Mizo String Instrument"]
+    sourceSamples: ["Mizo Flute Melody", "Mizo String Instrument"],
+    parameters: {
+      mood: "peaceful",
+      tempo: 80,
+      energy_level: 3,
+      instruments: ["flute", "strings"],
+      cultural_style: "Mizo"
+    }
   },
   {
     id: "3",
     title: "Instagram Reel Background",
-    type: "social-clip",
+    type: "social_clip",
     status: "processing",
     duration: 30,
     createdAt: "2024-01-16T09:15:00Z",
-    downloadUrl: null,
+    resultUrl: undefined,
     description: "Upbeat clip for social media content",
-    sourceSamples: ["Mizo Ensemble", "Mizo Vocal Chant"]
+    sourceSamples: ["Mizo Ensemble", "Mizo Vocal Chant"],
+    parameters: {
+      mood: "upbeat",
+      tempo: 140,
+      energy_level: 7,
+      instruments: ["ensemble", "vocals"],
+      cultural_style: "Mizo"
+    }
   },
   {
     id: "4",
     title: "Documentary Score",
-    type: "long-form",
+    type: "long_form",
     status: "completed",
     duration: 180,
     createdAt: "2024-01-13T14:20:00Z",
-    downloadUrl: "/api/projects/4/download",
+    resultUrl: "/api/projects/4/download",
     description: "Atmospheric score for cultural documentary",
-    sourceSamples: ["Mizo Vocal Chant", "Mizo String Instrument", "Mizo Flute Melody"]
+    sourceSamples: ["Mizo Vocal Chant", "Mizo String Instrument", "Mizo Flute Melody"],
+    parameters: {
+      mood: "atmospheric",
+      tempo: 70,
+      energy_level: 4,
+      instruments: ["vocals", "strings", "flute"],
+      cultural_style: "Mizo",
+      description: "Documentary about Mizo culture"
+    }
   },
   {
     id: "5",
     title: "Brand Jingle",
-    type: "sound-logo",
+    type: "sound_logo",
     status: "failed",
     duration: 8,
     createdAt: "2024-01-12T11:00:00Z",
-    downloadUrl: null,
+    resultUrl: undefined,
     description: "Failed generation - insufficient parameters",
-    sourceSamples: ["Mizo Traditional Drum"]
+    sourceSamples: ["Mizo Traditional Drum"],
+    parameters: {
+      mood: "corporate",
+      tempo: 110,
+      energy_level: 5,
+      instruments: ["drums"],
+      cultural_style: "Mizo"
+    }
   }
 ];
 
@@ -165,7 +203,7 @@ function ProjectList({
   onShare, 
   onDelete 
 }: {
-  projects: any[];
+  projects: Project[];
   onPlay: (id: string) => void;
   onDownload: (id: string) => void;
   onShare: (id: string) => void;

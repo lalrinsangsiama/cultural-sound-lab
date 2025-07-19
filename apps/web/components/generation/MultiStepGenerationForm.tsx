@@ -251,7 +251,7 @@ export default function MultiStepGenerationForm({
 
     for (const stage of stages) {
       setGenerationStatus({
-        stage: stage.stage as any,
+        stage: stage.stage as 'initializing' | 'processing' | 'finalizing' | 'complete' | 'error',
         progress: stage.progress,
         message: stage.message
       });

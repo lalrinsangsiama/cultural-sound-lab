@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
+import { useAuth } from "@/components/providers/AuthProvider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,7 +13,7 @@ import {
   EyeOff, 
   Mail, 
   Lock, 
-  Waveform,
+  AudioWaveform,
   ArrowLeft,
   Sparkles,
   Music
@@ -22,22 +22,23 @@ import Link from "next/link";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     email: "",
     password: ""
   });
-  const router = useRouter();
+  const { signIn, loading } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setError("");
     
-    // Simulate login
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    const result = await signIn(formData.email, formData.password);
     
-    // Redirect to dashboard
-    router.push("/dashboard");
+    if (result.error) {
+      setError(result.error);
+    }
+    // Navigation is handled by the AuthProvider
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,7 +82,7 @@ export default function LoginPage() {
         >
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-primary rounded-xl flex items-center justify-center animate-pulse-glow">
-              <Waveform className="w-5 h-5 text-white" />
+              <AudioWaveform className="w-5 h-5 text-white" />
             </div>
             <div>
               <h1 className="font-display text-2xl font-bold text-gradient">
@@ -111,6 +112,11 @@ export default function LoginPage() {
             </CardHeader>
             
             <CardContent className="space-y-6">
+              {error && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                  <p className="text-sm text-red-600">{error}</p>
+                </div>
+              )}
               <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Email Field */}
                 <div className="space-y-2">
@@ -178,9 +184,9 @@ export default function LoginPage() {
                   type="submit"
                   size="lg"
                   className="w-full btn-primary group"
-                  disabled={isLoading}
+                  disabled={loading}
                 >
-                  {isLoading ? (
+                  {loading ? (
                     <div className="flex items-center">
                       <div className="loading-dots mr-2">Signing in</div>
                       <div className="animate-spin w-4 h-4 border-2 border-white/30 border-t-white rounded-full" />

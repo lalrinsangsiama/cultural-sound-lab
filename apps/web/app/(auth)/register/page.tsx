@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useAuth } from "@/components/providers/AuthProvider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,28 +16,41 @@ export default function RegisterPage() {
     confirmPassword: "",
     culturalAffiliation: "",
   });
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const { signUp, loading } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setError("");
+    setSuccess("");
     
     // Basic validation
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords don't match");
-      setIsLoading(false);
+      setError("Passwords don't match");
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters long");
       return;
     }
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    console.log("Registration attempt:", formData);
-    setIsLoading(false);
-    
-    // Redirect to dashboard using Next.js router
-    router.push("/dashboard");
+    const result = await signUp(
+      formData.email, 
+      formData.password,
+      {
+        name: formData.name,
+        cultural_affiliation: formData.culturalAffiliation,
+        role: 'user'
+      }
+    );
+
+    if (result.error) {
+      setError(result.error);
+    } else {
+      setSuccess("Registration successful! Please check your email to confirm your account.");
+    }
   };
 
   const handleChange = (field: string, value: string) => {
@@ -53,6 +66,16 @@ export default function RegisterPage() {
         </CardDescription>
       </CardHeader>
       <CardContent>
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
+            <p className="text-sm text-red-600">{error}</p>
+          </div>
+        )}
+        {success && (
+          <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+            <p className="text-sm text-green-600">{success}</p>
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="name">Full Name</Label>
@@ -106,8 +129,8 @@ export default function RegisterPage() {
               required
             />
           </div>
-          <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Creating account..." : "Create Account"}
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? "Creating account..." : "Create Account"}
           </Button>
         </form>
         <div className="mt-4 text-center text-sm">

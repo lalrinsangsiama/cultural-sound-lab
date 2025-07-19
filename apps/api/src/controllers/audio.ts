@@ -3,6 +3,7 @@ import { supabase, supabaseAdmin } from '@/config/supabase';
 import { AuthenticatedRequest } from '@/middleware/auth';
 import { generateUniqueFilename, getAudioMetadata } from '@/middleware/upload';
 import { audioService } from '@/services/audioService';
+import { cacheHelpers } from '@/config/redis';
 
 export const getAudioSamples = async (req: Request, res: Response) => {
   try {
@@ -14,6 +15,25 @@ export const getAudioSamples = async (req: Request, res: Response) => {
       mood_tags,
       search 
     } = req.query;
+
+    // Create cache key based on query params
+    const CACHE_TTL = 300; // 5 minutes
+    const cacheKeyParts = [
+      'audio:samples',
+      `page:${page}`,
+      `limit:${limit}`,
+      cultural_origin ? `origin:${cultural_origin}` : '',
+      instrument_type ? `instrument:${instrument_type}` : '',
+      mood_tags ? `mood:${Array.isArray(mood_tags) ? mood_tags.join(',') : mood_tags}` : '',
+      search ? `search:${search}` : ''
+    ].filter(Boolean);
+    const cacheKey = cacheKeyParts.join(':');
+
+    // Try to get from cache first
+    const cached = await cacheHelpers.get(cacheKey);
+    if (cached) {
+      return res.json(cached);
+    }
 
     const offset = (Number(page) - 1) * Number(limit);
 
@@ -51,7 +71,7 @@ export const getAudioSamples = async (req: Request, res: Response) => {
       });
     }
 
-    res.json({
+    const response = {
       data,
       pagination: {
         page: Number(page),
@@ -59,7 +79,12 @@ export const getAudioSamples = async (req: Request, res: Response) => {
         total: count || 0,
         pages: Math.ceil((count || 0) / Number(limit))
       }
-    });
+    };
+
+    // Cache the result
+    await cacheHelpers.set(cacheKey, response, CACHE_TTL);
+
+    res.json(response);
   } catch (error) {
     console.error('Error fetching audio samples:', error);
     res.status(500).json({
@@ -71,6 +96,14 @@ export const getAudioSamples = async (req: Request, res: Response) => {
 export const getAudioSample = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    const CACHE_TTL = 300; // 5 minutes
+    const cacheKey = `audio:${id}`;
+    
+    // Try to get from cache first
+    const cached = await cacheHelpers.get(cacheKey);
+    if (cached) {
+      return res.json(cached);
+    }
 
     const { data, error } = await supabase
       .from('audio_samples')
@@ -84,6 +117,9 @@ export const getAudioSample = async (req: Request, res: Response) => {
         error: 'Audio sample not found'
       });
     }
+
+    // Cache the result
+    await cacheHelpers.set(cacheKey, data, CACHE_TTL);
 
     res.json(data);
   } catch (error) {
@@ -181,6 +217,9 @@ export const uploadAudioSample = async (req: AuthenticatedRequest, res: Response
       metadata: uploadResult.metadata
     };
 
+    // Invalidate the samples list cache since we added a new sample
+    await cacheHelpers.clearByPattern('audio:samples:*');
+
     res.status(201).json(response);
   } catch (error) {
     console.error('Error uploading audio sample:', error);
@@ -231,6 +270,12 @@ export const updateAudioSample = async (req: AuthenticatedRequest, res: Response
         details: error.message
       });
     }
+
+    // Invalidate cache for this specific audio sample
+    await cacheHelpers.del(`audio:${id}`);
+    
+    // Also invalidate the samples list cache (all variations)
+    await cacheHelpers.clearByPattern('audio:samples:*');
 
     res.json(data);
   } catch (error) {
@@ -290,6 +335,12 @@ export const deleteAudioSample = async (req: AuthenticatedRequest, res: Response
       console.warn('Failed to delete files from storage:', deleteError);
     }
 
+    // Invalidate cache for this specific audio sample
+    await cacheHelpers.del(`audio:${id}`);
+    
+    // Also invalidate the samples list cache (all variations)
+    await cacheHelpers.clearByPattern('audio:samples:*');
+
     res.status(204).send();
   } catch (error) {
     console.error('Error deleting audio sample:', error);
@@ -346,6 +397,91 @@ export const previewAudio = async (req: Request, res: Response) => {
     }
   } catch (error) {
     console.error('Error getting audio preview:', error);
+    res.status(500).json({
+      error: 'Internal server error'
+    });
+  }
+};
+
+export const streamAudio = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const range = req.headers.range;
+
+    // Get audio sample metadata
+    const { data, error } = await supabase
+      .from('audio_samples')
+      .select('file_url, title, file_size, format')
+      .eq('id', id)
+      .eq('approved', true)
+      .single();
+
+    if (error) {
+      return res.status(404).json({
+        error: 'Audio sample not found'
+      });
+    }
+
+    try {
+      // Use audioService to get file stream with range support
+      const streamData = await audioService.getAudioStream(data.file_url, range);
+      
+      if (!streamData) {
+        return res.status(404).json({
+          error: 'Audio file not accessible'
+        });
+      }
+
+      const { stream, fileSize, contentRange, statusCode } = streamData;
+
+      // Set appropriate headers for audio streaming
+      res.setHeader('Content-Type', data.format || 'audio/mpeg');
+      res.setHeader('Accept-Ranges', 'bytes');
+      res.setHeader('Cache-Control', 'public, max-age=31536000'); // 1 year
+      res.setHeader('ETag', `"${id}-${data.file_size}"`);
+      
+      // Handle conditional requests
+      const ifNoneMatch = req.headers['if-none-match'];
+      if (ifNoneMatch === `"${id}-${data.file_size}"`) {
+        return res.status(304).end();
+      }
+
+      if (range) {
+        res.setHeader('Content-Range', contentRange);
+        res.setHeader('Content-Length', fileSize.toString());
+        res.status(statusCode);
+      } else {
+        res.setHeader('Content-Length', data.file_size.toString());
+        res.status(200);
+      }
+
+      // Pipe the stream to response
+      stream.pipe(res);
+
+      // Handle stream errors
+      stream.on('error', (streamError) => {
+        console.error('Stream error:', streamError);
+        if (!res.headersSent) {
+          res.status(500).json({ error: 'Streaming error' });
+        }
+      });
+
+      // Increment play count (not download count for streaming)
+      await supabase
+        .from('audio_samples')
+        .update({ 
+          play_count: supabase.rpc('increment_play_count', { audio_id: id })
+        })
+        .eq('id', id);
+
+    } catch (streamError) {
+      console.error('Audio streaming error:', streamError);
+      return res.status(500).json({
+        error: 'Failed to stream audio'
+      });
+    }
+  } catch (error) {
+    console.error('Error streaming audio:', error);
     res.status(500).json({
       error: 'Internal server error'
     });

@@ -9,6 +9,8 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Loading, LoadingSkeleton } from "@/components/ui/loading";
+import { Copy, Eye, EyeOff, Plus, Trash2, RefreshCw, Check } from "lucide-react";
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState({
@@ -40,9 +42,69 @@ export default function SettingsPage() {
     }
   });
 
-  const handleSave = () => {
+  const [apiKeys, setApiKeys] = useState([
+    {
+      id: "1",
+      name: "Production API Key",
+      key: "csl_sk_live_1234567890abcdef",
+      createdAt: "2024-01-15",
+      lastUsed: "2024-01-16",
+      visible: false
+    },
+    {
+      id: "2", 
+      name: "Development API Key",
+      key: "csl_sk_test_abcdef1234567890",
+      createdAt: "2024-01-10",
+      lastUsed: "2024-01-16",
+      visible: false
+    }
+  ]);
+
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [isGeneratingKey, setIsGeneratingKey] = useState(false);
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    setSaveSuccess(false);
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    setIsSaving(false);
+    setSaveSuccess(true);
+    setTimeout(() => setSaveSuccess(false), 3000);
     console.log("Saving settings:", settings);
-    // In a real app, this would save to the backend
+  };
+
+  const toggleKeyVisibility = (keyId: string) => {
+    setApiKeys(prev => prev.map(key => 
+      key.id === keyId ? { ...key, visible: !key.visible } : key
+    ));
+  };
+
+  const copyApiKey = (key: string) => {
+    navigator.clipboard.writeText(key);
+    // Show toast notification in real app
+  };
+
+  const deleteApiKey = (keyId: string) => {
+    setApiKeys(prev => prev.filter(key => key.id !== keyId));
+  };
+
+  const generateNewApiKey = async () => {
+    setIsGeneratingKey(true);
+    // Simulate API key generation
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    const newKey = {
+      id: Date.now().toString(),
+      name: "New API Key",
+      key: `csl_sk_live_${Math.random().toString(36).substr(2, 16)}`,
+      createdAt: new Date().toISOString().split('T')[0],
+      lastUsed: "Never",
+      visible: false
+    };
+    setApiKeys(prev => [...prev, newKey as typeof prev[0]]);
+    setIsGeneratingKey(false);
   };
 
   return (
@@ -53,8 +115,20 @@ export default function SettingsPage() {
           <h2 className="text-3xl font-bold text-gray-900">Settings</h2>
           <p className="text-gray-600">Manage your account and preferences</p>
         </div>
-        <Button onClick={handleSave}>
-          Save Changes
+        <Button onClick={handleSave} disabled={isSaving}>
+          {isSaving ? (
+            <>
+              <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+              Saving...
+            </>
+          ) : saveSuccess ? (
+            <>
+              <Check className="h-4 w-4 mr-2" />
+              Saved!
+            </>
+          ) : (
+            "Save Changes"
+          )}
         </Button>
       </div>
 
@@ -357,6 +431,99 @@ export default function SettingsPage() {
                 generation: { ...prev.generation, highQualityPreview: checked }
               }))}
             />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* API Key Management */}
+      <Card>
+        <CardHeader>
+          <CardTitle>API Key Management</CardTitle>
+          <CardDescription>Manage your API keys for programmatic access</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <p className="text-sm text-gray-600">
+                Use API keys to integrate Cultural Sound Lab into your applications. Keep your keys secure and never share them publicly.
+              </p>
+            </div>
+            <Button onClick={generateNewApiKey} disabled={isGeneratingKey}>
+              {isGeneratingKey ? (
+                <>
+                  <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <Plus className="h-4 w-4 mr-2" />
+                  New API Key
+                </>
+              )}
+            </Button>
+          </div>
+
+          <div className="space-y-4">
+            {apiKeys.map((apiKey) => (
+              <div key={apiKey.id} className="border rounded-lg p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <h4 className="font-medium">{apiKey.name}</h4>
+                    <p className="text-sm text-gray-500">
+                      Created: {apiKey.createdAt} • Last used: {apiKey.lastUsed}
+                    </p>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => toggleKeyVisibility(apiKey.id)}
+                    >
+                      {apiKey.visible ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => copyApiKey(apiKey.key)}
+                    >
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => deleteApiKey(apiKey.id)}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+                <div className="bg-gray-50 rounded p-2 font-mono text-sm">
+                  {apiKey.visible ? apiKey.key : '•'.repeat(24) + apiKey.key.slice(-8)}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="p-4 bg-amber-50 rounded-lg">
+            <div className="flex items-start space-x-3">
+              <div className="flex-shrink-0">
+                <div className="h-2 w-2 bg-amber-400 rounded-full mt-2"></div>
+              </div>
+              <div>
+                <h4 className="font-medium text-amber-800">API Usage Guidelines</h4>
+                <ul className="text-sm text-amber-700 mt-1 space-y-1">
+                  <li>• Rate limit: 100 requests per minute</li>
+                  <li>• Keep keys secure and rotate them regularly</li>
+                  <li>• Cultural attribution is required for all API usage</li>
+                  <li>• Commercial usage requires appropriate licensing</li>
+                </ul>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>

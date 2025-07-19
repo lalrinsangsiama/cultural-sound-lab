@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import * as Tone from "tone";
 import { 
   Play, 
   Pause, 
@@ -82,11 +83,11 @@ export default function ToneAudioPlayer({
   enableEffects = true
 }: ToneAudioPlayerProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const tonePlayerRef = useRef<any>(null);
-  const reverbRef = useRef<any>(null);
-  const delayRef = useRef<any>(null);
-  const filterRef = useRef<any>(null);
-  const distortionRef = useRef<any>(null);
+  const tonePlayerRef = useRef<Tone.Player | null>(null);
+  const reverbRef = useRef<Tone.Reverb | null>(null);
+  const delayRef = useRef<Tone.Delay | null>(null);
+  const filterRef = useRef<Tone.Filter | null>(null);
+  const distortionRef = useRef<Tone.Distortion | null>(null);
   
   const [state, setState] = useState<TonePlayerState>({
     isPlaying: false,

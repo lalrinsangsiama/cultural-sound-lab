@@ -3,8 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { MobileNav } from "@/components/ui/mobile-nav";
+import { BottomNav } from "@/components/ui/bottom-nav";
+import { ProfileButton } from "@/components/ui/profile-button";
 import { 
   Music, 
   Sparkles, 
@@ -12,15 +16,23 @@ import {
   DollarSign, 
   Settings, 
   LogOut,
-  User
+  User,
+  HelpCircle,
+  PlayCircle,
+  TrendingUp,
+  CheckSquare
 } from "lucide-react";
 
 const navigation = [
   { name: "Library", href: "/dashboard/library", icon: Library },
   { name: "Generate", href: "/dashboard/generate", icon: Sparkles },
+  { name: "Demos", href: "/dashboard/demos", icon: PlayCircle },
+  { name: "Case Studies", href: "/dashboard/case-studies", icon: TrendingUp },
   { name: "Projects", href: "/dashboard/projects", icon: Music },
   { name: "Earnings", href: "/dashboard/earnings", icon: DollarSign },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
+  { name: "Help", href: "/dashboard/help", icon: HelpCircle },
+  { name: "Launch Checklist", href: "/dashboard/launch-checklist", icon: CheckSquare },
 ];
 
 export default function DashboardLayout({
@@ -31,8 +43,25 @@ export default function DashboardLayout({
   const pathname = usePathname();
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
+    <ProtectedRoute>
+      <div className="flex h-screen bg-gray-100">
+      {/* Skip Navigation Links */}
+      <div className="sr-only">
+        <a 
+          href="#main-content" 
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-primary-foreground px-4 py-2 rounded z-50"
+        >
+          Skip to main content
+        </a>
+        <a 
+          href="#sidebar-navigation" 
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-36 bg-primary text-primary-foreground px-4 py-2 rounded z-50"
+        >
+          Skip to navigation
+        </a>
+      </div>
+      
+      {/* Desktop Sidebar */}
       <div className="hidden md:flex md:w-64 md:flex-col">
         <div className="flex flex-col flex-grow pt-5 overflow-y-auto bg-white border-r">
           <div className="flex items-center flex-shrink-0 px-4">
@@ -47,15 +76,16 @@ export default function DashboardLayout({
             </div>
           </div>
           <div className="mt-5 flex-1 flex flex-col">
-            <nav className="flex-1 px-2 pb-4 space-y-1">
+            <nav id="sidebar-navigation" className="flex-1 px-2 pb-4 space-y-1" role="navigation" aria-label="Main navigation">
               {navigation.map((item) => {
                 const isActive = pathname === item.href;
                 return (
                   <Link
                     key={item.name}
                     href={item.href}
+                    aria-current={isActive ? "page" : undefined}
                     className={cn(
-                      "group flex items-center px-2 py-2 text-sm font-medium rounded-md",
+                      "group flex items-center px-2 py-2 text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
                       isActive
                         ? "bg-primary text-primary-foreground"
                         : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
@@ -66,6 +96,7 @@ export default function DashboardLayout({
                         "mr-3 h-5 w-5",
                         isActive ? "text-primary-foreground" : "text-gray-400 group-hover:text-gray-500"
                       )}
+                      aria-hidden="true"
                     />
                     {item.name}
                   </Link>
@@ -87,8 +118,8 @@ export default function DashboardLayout({
                   demo@culturalsoundlab.com
                 </p>
               </div>
-              <Button variant="ghost" size="sm" className="ml-auto">
-                <LogOut className="h-4 w-4" />
+              <Button variant="ghost" size="sm" className="ml-auto" aria-label="Sign out">
+                <LogOut className="h-4 w-4" aria-hidden="true" />
               </Button>
             </div>
           </div>
@@ -97,33 +128,43 @@ export default function DashboardLayout({
 
       {/* Main content */}
       <div className="flex flex-col flex-1 overflow-hidden">
+        {/* Mobile Header */}
         <header className="bg-white shadow-sm border-b">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center py-6">
+            <div className="flex justify-between items-center py-4 md:py-6">
               <div className="flex items-center">
-                <div className="md:hidden">
-                  <Music className="h-8 w-8 text-primary" />
+                <MobileNav />
+                <div className="flex items-center md:hidden ml-2">
+                  <div className="bg-gradient-to-r from-purple-600 to-orange-600 rounded-lg p-1.5">
+                    <Music className="h-5 w-5 text-white" />
+                  </div>
+                  <span className="ml-2 text-lg font-bold bg-gradient-to-r from-purple-600 to-orange-600 bg-clip-text text-transparent">
+                    CSL
+                  </span>
                 </div>
-                <h1 className="ml-2 text-2xl font-bold text-gray-900 md:ml-0">
+                <h1 className="ml-2 text-xl md:text-2xl font-bold text-gray-900 md:ml-0">
                   {navigation.find(item => item.href === pathname)?.name || "Dashboard"}
                 </h1>
               </div>
               <div className="flex items-center space-x-4">
-                <Button variant="outline" size="sm">
-                  <User className="h-4 w-4 mr-2" />
-                  Profile
-                </Button>
+                <ProfileButton variant="desktop" className="hidden sm:flex" />
+                <ProfileButton variant="mobile" className="sm:hidden" />
               </div>
             </div>
           </div>
         </header>
 
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Main Content with bottom padding for mobile nav */}
+        <main id="main-content" className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 pb-16 md:pb-0" role="main">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
             {children}
           </div>
         </main>
       </div>
-    </div>
+
+      {/* Mobile Bottom Navigation */}
+      <BottomNav />
+      </div>
+    </ProtectedRoute>
   );
 }

@@ -161,16 +161,18 @@ function AudioSampleCard({
               handlePlay();
             }}
             disabled={isLoadingPreview}
-            className="flex-1"
+            className="flex-1 h-10 md:h-8" // Taller on mobile
           >
             {isLoadingPreview ? (
-              <Loader2 className="h-3 w-3 animate-spin mr-1" />
+              <Loader2 className="h-4 w-4 animate-spin mr-1 md:h-3 md:w-3" />
             ) : isPlaying ? (
-              <Pause className="h-3 w-3 mr-1" />
+              <Pause className="h-4 w-4 mr-1 md:h-3 md:w-3" />
             ) : (
-              <Play className="h-3 w-3 mr-1" />
+              <Play className="h-4 w-4 mr-1 md:h-3 md:w-3" />
             )}
-            {isLoadingPreview ? "Loading..." : isPlaying ? "Pause" : "Preview"}
+            <span className="text-sm md:text-xs">
+              {isLoadingPreview ? "Loading..." : isPlaying ? "Pause" : "Preview"}
+            </span>
           </Button>
           
           <Button
@@ -180,8 +182,9 @@ function AudioSampleCard({
               e.stopPropagation();
               // Handle info/details
             }}
+            className="h-10 w-10 md:h-8 md:w-8" // Larger tap target on mobile
           >
-            <Info className="h-3 w-3" />
+            <Info className="h-4 w-4 md:h-3 md:w-3" />
           </Button>
         </div>
 
@@ -191,11 +194,13 @@ function AudioSampleCard({
             e.stopPropagation();
             onUseInGeneration(sample);
           }}
-          className="w-full"
+          className="w-full h-12 md:h-10" // Taller on mobile for easier tapping
           disabled={isSelected}
         >
-          <Plus className="h-4 w-4 mr-2" />
-          {isSelected ? "Added to Generation" : "Use in Generation"}
+          <Plus className="h-5 w-5 mr-2 md:h-4 md:w-4" />
+          <span className="text-sm font-medium">
+            {isSelected ? "Added to Generation" : "Use in Generation"}
+          </span>
         </Button>
       </CardContent>
     </Card>
@@ -307,10 +312,12 @@ export default function AudioGrid({
       <div 
         className={cn(
           "grid gap-4",
-          columns === 1 && "grid-cols-1",
-          columns === 2 && "grid-cols-1 md:grid-cols-2",
-          columns === 3 && "grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
-          columns === 4 && "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+          // Mobile-first: always single column on mobile
+          "grid-cols-1",
+          // Desktop breakpoints
+          columns === 2 && "md:grid-cols-2",
+          columns === 3 && "md:grid-cols-2 lg:grid-cols-3",
+          columns === 4 && "md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
         )}
       >
         {samples.map((sample) => (

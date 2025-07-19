@@ -45,12 +45,20 @@ const AnimatedStat = ({
   );
 };
 
+// Testimonial interface
+interface Testimonial {
+  text: string;
+  author: string;
+  role: string;
+  community: string;
+}
+
 // Testimonial card with parallax effect
 const TestimonialCard = ({ 
   testimonial, 
   index 
 }: { 
-  testimonial: any; 
+  testimonial: Testimonial; 
   index: number;
 }) => {
   const ref = useRef(null);
@@ -163,7 +171,7 @@ const stats = [
     description: 'Authentic recordings',
     color: 'text-purple-600',
     bgColor: 'bg-purple-100',
-    link: '/library',
+    link: '/dashboard/library',
   },
   {
     icon: DollarSign,
@@ -184,7 +192,7 @@ const stats = [
     description: 'Global heritage',
     color: 'text-orange-600',
     bgColor: 'bg-orange-100',
-    link: '/library',
+    link: '/dashboard/library',
   },
 ];
 
@@ -382,7 +390,7 @@ export function TrustSection() {
               className="border-2 border-white text-white hover:bg-white hover:text-gray-900 font-semibold px-8 py-4 rounded-full transition-all duration-300"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => window.location.href = '/library'}
+              onClick={() => window.location.href = '/dashboard/library'}
             >
               Explore the Library
             </motion.button>

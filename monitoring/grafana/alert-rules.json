@@ -1,0 +1,383 @@
+{
+  "groups": [
+    {
+      "name": "cultural-sound-lab-api-alerts",
+      "orgId": 1,
+      "folder": "cultural-sound-lab",
+      "rules": [
+        {
+          "uid": "api-high-error-rate",
+          "title": "High API Error Rate",
+          "condition": "C",
+          "data": [
+            {
+              "refId": "A",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 300,
+                "to": 0
+              },
+              "model": {
+                "expr": "rate(http_requests_total{job=\"cultural-sound-lab-api\", status=~\"5..\"}[5m]) / rate(http_requests_total{job=\"cultural-sound-lab-api\"}[5m]) * 100",
+                "refId": "A"
+              }
+            },
+            {
+              "refId": "C",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "model": {
+                "conditions": [
+                  {
+                    "evaluator": {
+                      "params": [5],
+                      "type": "gt"
+                    },
+                    "operator": {
+                      "type": "and"
+                    },
+                    "query": {
+                      "params": ["A"]
+                    },
+                    "reducer": {
+                      "params": [],
+                      "type": "last"
+                    },
+                    "type": "query"
+                  }
+                ],
+                "refId": "C"
+              }
+            }
+          ],
+          "noDataState": "NoData",
+          "execErrState": "Alerting",
+          "for": "5m",
+          "annotations": {
+            "description": "API error rate is above 5% for the last 5 minutes",
+            "runbook_url": "https://docs.culturalsoundlab.com/runbooks/high-error-rate",
+            "summary": "High error rate detected in Cultural Sound Lab API"
+          },
+          "labels": {
+            "severity": "critical",
+            "service": "cultural-sound-lab-api",
+            "team": "backend"
+          }
+        },
+        {
+          "uid": "api-high-response-time",
+          "title": "High API Response Time",
+          "condition": "C",
+          "data": [
+            {
+              "refId": "A",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 300,
+                "to": 0
+              },
+              "model": {
+                "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job=\"cultural-sound-lab-api\"}[5m])) * 1000",
+                "refId": "A"
+              }
+            },
+            {
+              "refId": "C",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "model": {
+                "conditions": [
+                  {
+                    "evaluator": {
+                      "params": [2000],
+                      "type": "gt"
+                    },
+                    "operator": {
+                      "type": "and"
+                    },
+                    "query": {
+                      "params": ["A"]
+                    },
+                    "reducer": {
+                      "params": [],
+                      "type": "last"
+                    },
+                    "type": "query"
+                  }
+                ],
+                "refId": "C"
+              }
+            }
+          ],
+          "noDataState": "NoData",
+          "execErrState": "Alerting",
+          "for": "5m",
+          "annotations": {
+            "description": "95th percentile response time is above 2 seconds for the last 5 minutes",
+            "runbook_url": "https://docs.culturalsoundlab.com/runbooks/high-response-time",
+            "summary": "High response time detected in Cultural Sound Lab API"
+          },
+          "labels": {
+            "severity": "warning",
+            "service": "cultural-sound-lab-api",
+            "team": "backend"
+          }
+        },
+        {
+          "uid": "database-connection-failure",
+          "title": "Database Connection Failure",
+          "condition": "C",
+          "data": [
+            {
+              "refId": "A",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 60,
+                "to": 0
+              },
+              "model": {
+                "expr": "up{job=\"cultural-sound-lab-api-health\", endpoint=\"database\"} == 0",
+                "refId": "A"
+              }
+            },
+            {
+              "refId": "C",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "model": {
+                "conditions": [
+                  {
+                    "evaluator": {
+                      "params": [0],
+                      "type": "eq"
+                    },
+                    "operator": {
+                      "type": "and"
+                    },
+                    "query": {
+                      "params": ["A"]
+                    },
+                    "reducer": {
+                      "params": [],
+                      "type": "last"
+                    },
+                    "type": "query"
+                  }
+                ],
+                "refId": "C"
+              }
+            }
+          ],
+          "noDataState": "NoData",
+          "execErrState": "Alerting",
+          "for": "1m",
+          "annotations": {
+            "description": "Database connection is failing",
+            "runbook_url": "https://docs.culturalsoundlab.com/runbooks/database-failure",
+            "summary": "Database connection failure in Cultural Sound Lab"
+          },
+          "labels": {
+            "severity": "critical",
+            "service": "cultural-sound-lab-api",
+            "team": "backend"
+          }
+        },
+        {
+          "uid": "redis-connection-failure",
+          "title": "Redis Connection Failure",
+          "condition": "C",
+          "data": [
+            {
+              "refId": "A",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 60,
+                "to": 0
+              },
+              "model": {
+                "expr": "up{job=\"cultural-sound-lab-api-health\", endpoint=\"redis\"} == 0",
+                "refId": "A"
+              }
+            },
+            {
+              "refId": "C",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "model": {
+                "conditions": [
+                  {
+                    "evaluator": {
+                      "params": [0],
+                      "type": "eq"
+                    },
+                    "operator": {
+                      "type": "and"
+                    },
+                    "query": {
+                      "params": ["A"]
+                    },
+                    "reducer": {
+                      "params": [],
+                      "type": "last"
+                    },
+                    "type": "query"
+                  }
+                ],
+                "refId": "C"
+              }
+            }
+          ],
+          "noDataState": "NoData",
+          "execErrState": "Alerting",
+          "for": "1m",
+          "annotations": {
+            "description": "Redis connection is failing",
+            "runbook_url": "https://docs.culturalsoundlab.com/runbooks/redis-failure",
+            "summary": "Redis connection failure in Cultural Sound Lab"
+          },
+          "labels": {
+            "severity": "warning",
+            "service": "cultural-sound-lab-api",
+            "team": "backend"
+          }
+        },
+        {
+          "uid": "high-audio-generation-failure-rate",
+          "title": "High Audio Generation Failure Rate",
+          "condition": "C",
+          "data": [
+            {
+              "refId": "A",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 600,
+                "to": 0
+              },
+              "model": {
+                "expr": "rate(audio_generations_total{status=\"failed\"}[10m]) / rate(audio_generations_total[10m]) * 100",
+                "refId": "A"
+              }
+            },
+            {
+              "refId": "C",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "model": {
+                "conditions": [
+                  {
+                    "evaluator": {
+                      "params": [20],
+                      "type": "gt"
+                    },
+                    "operator": {
+                      "type": "and"
+                    },
+                    "query": {
+                      "params": ["A"]
+                    },
+                    "reducer": {
+                      "params": [],
+                      "type": "last"
+                    },
+                    "type": "query"
+                  }
+                ],
+                "refId": "C"
+              }
+            }
+          ],
+          "noDataState": "NoData",
+          "execErrState": "Alerting",
+          "for": "5m",
+          "annotations": {
+            "description": "Audio generation failure rate is above 20% for the last 10 minutes",
+            "runbook_url": "https://docs.culturalsoundlab.com/runbooks/audio-generation-failure",
+            "summary": "High audio generation failure rate detected"
+          },
+          "labels": {
+            "severity": "warning",
+            "service": "cultural-sound-lab-api",
+            "team": "ai"
+          }
+        },
+        {
+          "uid": "memory-usage-high",
+          "title": "High Memory Usage",
+          "condition": "C",
+          "data": [
+            {
+              "refId": "A",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 300,
+                "to": 0
+              },
+              "model": {
+                "expr": "(process_resident_memory_bytes{job=\"cultural-sound-lab-api\"} / 1024 / 1024 / 1024) > 1",
+                "refId": "A"
+              }
+            },
+            {
+              "refId": "C",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "model": {
+                "conditions": [
+                  {
+                    "evaluator": {
+                      "params": [1],
+                      "type": "gt"
+                    },
+                    "operator": {
+                      "type": "and"
+                    },
+                    "query": {
+                      "params": ["A"]
+                    },
+                    "reducer": {
+                      "params": [],
+                      "type": "last"
+                    },
+                    "type": "query"
+                  }
+                ],
+                "refId": "C"
+              }
+            }
+          ],
+          "noDataState": "NoData",
+          "execErrState": "Alerting",
+          "for": "5m",
+          "annotations": {
+            "description": "Memory usage is above 1GB for the last 5 minutes",
+            "runbook_url": "https://docs.culturalsoundlab.com/runbooks/high-memory-usage",
+            "summary": "High memory usage detected in Cultural Sound Lab API"
+          },
+          "labels": {
+            "severity": "warning",
+            "service": "cultural-sound-lab-api",
+            "team": "backend"
+          }
+        }
+      ]
+    }
+  ]
+}

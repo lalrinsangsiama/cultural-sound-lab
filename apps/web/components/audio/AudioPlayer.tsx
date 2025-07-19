@@ -176,13 +176,35 @@ export default function AudioPlayer({
       onPause?.();
     } else {
       try {
+        // Handle browser autoplay restrictions
+        if (audio.muted) {
+          audio.muted = false;
+        }
+        
+        // Ensure volume is audible
+        if (audio.volume === 0) {
+          audio.volume = 0.7;
+        }
+
+        // For Safari/iOS: ensure audio context is resumed
+        if (typeof window !== 'undefined' && 'webkitAudioContext' in window) {
+          // This helps with iOS audio playback
+          audio.load();
+        }
+
         await audio.play();
-        setState(prev => ({ ...prev, isPlaying: true }));
-        onPlay?.();
-      } catch (error) {
         setState(prev => ({ 
           ...prev, 
-          error: "Failed to play audio",
+          isPlaying: true,
+          volume: audio.volume,
+          isMuted: audio.muted 
+        }));
+        onPlay?.();
+      } catch (error) {
+        console.error('Audio play error:', error);
+        setState(prev => ({ 
+          ...prev, 
+          error: "Failed to play audio. Please try clicking play again.",
           isPlaying: false 
         }));
       }
@@ -193,7 +215,7 @@ export default function AudioPlayer({
     const audio = audioRef.current;
     if (!audio) return;
 
-    const newTime = value[0];
+    const newTime = value[0] ?? 0;
     audio.currentTime = newTime;
     setState(prev => ({ ...prev, currentTime: newTime }));
   }, []);
@@ -202,7 +224,7 @@ export default function AudioPlayer({
     const audio = audioRef.current;
     if (!audio) return;
 
-    const newVolume = value[0];
+    const newVolume = value[0] ?? 0;
     audio.volume = newVolume;
     setState(prev => ({ 
       ...prev, 
@@ -264,6 +286,40 @@ export default function AudioPlayer({
     }
   }, [src, title, artist]);
 
+  const handleKeyDown = useCallback((event: React.KeyboardEvent) => {
+    switch (event.key) {
+      case ' ':
+      case 'k':
+        event.preventDefault();
+        togglePlay();
+        break;
+      case 'ArrowLeft':
+        event.preventDefault();
+        skipTime(-10);
+        break;
+      case 'ArrowRight':
+        event.preventDefault();
+        skipTime(10);
+        break;
+      case 'm':
+        event.preventDefault();
+        toggleMute();
+        break;
+      case 'r':
+        event.preventDefault();
+        restart();
+        break;
+      case 'ArrowUp':
+        event.preventDefault();
+        handleVolumeChange([Math.min(1, state.volume + 0.1)]);
+        break;
+      case 'ArrowDown':
+        event.preventDefault();
+        handleVolumeChange([Math.max(0, state.volume - 0.1)]);
+        break;
+    }
+  }, [togglePlay, skipTime, toggleMute, restart, handleVolumeChange, state.volume]);
+
   if (state.error) {
     return (
       <Card className={cn("p-4 border-red-200 bg-red-50", className)}>
@@ -276,8 +332,31 @@ export default function AudioPlayer({
   }
 
   return (
-    <Card className={cn("p-4 space-y-4", className)}>
-      <audio ref={audioRef} src={src} preload="metadata" />
+    <Card 
+      className={cn("p-4 space-y-4", className)}
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+      role="region"
+      aria-label={`Audio player for ${title} by ${artist}`}
+    >
+      <audio 
+        ref={audioRef} 
+        src={src} 
+        preload="metadata" 
+        aria-label={`Audio player for ${title} by ${artist}`}
+      />
+      
+      {/* Screen reader announcements */}
+      <div 
+        aria-live="polite" 
+        aria-atomic="true" 
+        className="sr-only"
+      >
+        {state.isPlaying && `Playing ${title}`}
+        {!state.isPlaying && state.currentTime > 0 && `Paused ${title}`}
+        {state.isBuffering && "Loading audio..."}
+        {state.error && `Error: ${state.error}`}
+      </div>
       
       {/* Header */}
       <div className="flex items-center justify-between">
@@ -290,6 +369,8 @@ export default function AudioPlayer({
             variant="ghost"
             size="sm"
             onClick={() => setIsLiked(!isLiked)}
+            aria-label={isLiked ? "Remove from favorites" : "Add to favorites"}
+            aria-pressed={isLiked}
             className={cn(
               "transition-colors",
               isLiked ? "text-red-500" : "text-muted-foreground"
@@ -299,7 +380,7 @@ export default function AudioPlayer({
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" aria-label="More options">
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -338,6 +419,7 @@ export default function AudioPlayer({
           step={0.1}
           className="w-full"
           disabled={state.isLoading}
+          aria-label="Seek audio position"
         />
         <div className="flex justify-between text-xs text-muted-foreground">
           <span>{formatTime(state.currentTime)}</span>
@@ -362,6 +444,7 @@ export default function AudioPlayer({
           size="sm"
           onClick={restart}
           disabled={state.isLoading}
+          aria-label="Restart track"
         >
           <RotateCcw className="h-4 w-4" />
         </Button>
@@ -371,6 +454,7 @@ export default function AudioPlayer({
           size="sm"
           onClick={() => skipTime(-10)}
           disabled={state.isLoading}
+          aria-label="Skip back 10 seconds"
         >
           <SkipBack className="h-4 w-4" />
         </Button>
@@ -379,13 +463,14 @@ export default function AudioPlayer({
           onClick={togglePlay}
           disabled={state.isLoading}
           className="h-12 w-12 rounded-full"
+          aria-label={state.isPlaying ? "Pause" : "Play"}
         >
           {state.isLoading ? (
-            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" aria-hidden="true" />
           ) : state.isPlaying ? (
-            <Pause className="h-5 w-5" />
+            <Pause className="h-5 w-5" aria-hidden="true" />
           ) : (
-            <Play className="h-5 w-5" />
+            <Play className="h-5 w-5" aria-hidden="true" />
           )}
         </Button>
         
@@ -394,6 +479,7 @@ export default function AudioPlayer({
           size="sm"
           onClick={() => skipTime(10)}
           disabled={state.isLoading}
+          aria-label="Skip forward 10 seconds"
         >
           <SkipForward className="h-4 w-4" />
         </Button>
@@ -405,11 +491,13 @@ export default function AudioPlayer({
             onClick={toggleMute}
             onMouseEnter={() => setShowVolumeSlider(true)}
             onMouseLeave={() => setShowVolumeSlider(false)}
+            aria-label={state.isMuted ? "Unmute" : "Mute"}
+            aria-pressed={state.isMuted}
           >
             {state.isMuted ? (
-              <VolumeX className="h-4 w-4" />
+              <VolumeX className="h-4 w-4" aria-hidden="true" />
             ) : (
-              <Volume2 className="h-4 w-4" />
+              <Volume2 className="h-4 w-4" aria-hidden="true" />
             )}
           </Button>
           
@@ -425,6 +513,7 @@ export default function AudioPlayer({
                 max={1}
                 step={0.1}
                 className="w-full"
+                aria-label="Volume control"
               />
             </div>
           )}

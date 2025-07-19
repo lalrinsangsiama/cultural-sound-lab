@@ -136,17 +136,17 @@ const SampleImportWizard = ({ onClose }: { onClose: () => void }) => {
             ))}
           </div>
           <div className="text-sm text-blue-700">
-            Step {step} of {steps.length}: {steps[step - 1].title}
+            Step {step} of {steps.length}: {steps[step - 1]?.title}
           </div>
         </div>
 
         <div className="space-y-4">
           <p className="text-sm text-gray-600 mb-4">
-            {steps[step - 1].description}
+            {steps[step - 1]?.description}
           </p>
           
           <div className="grid gap-3">
-            {steps[step - 1].options.map((option, index) => (
+            {steps[step - 1]?.options.map((option, index) => (
               <Button
                 key={index}
                 variant="outline"

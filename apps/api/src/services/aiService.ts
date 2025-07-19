@@ -2,6 +2,7 @@ import axios, { AxiosInstance } from 'axios';
 import { generationQueue, GenerationJobData } from './generationQueue';
 import { audioService } from './audioService';
 import { mockGenerationService } from './mockGenerationService';
+import { aiServiceBreaker } from '@/config/circuit-breaker';
 
 export interface AIGenerationRequest {
   generation_id: string;
@@ -168,12 +169,16 @@ class AIService {
   }
 
   /**
-   * Health check for AI service
+   * Health check for AI service with circuit breaker
    */
   async healthCheck(): Promise<{ status: string; version?: string; models?: string[] }> {
     try {
-      const response = await this.client.get('/health');
-      return response.data;
+      const response = await aiServiceBreaker.fire({
+        url: '/health',
+        method: 'GET',
+        timeout: 5000, // Shorter timeout for health checks
+      });
+      return (response as any).data;
     } catch (error) {
       console.error('AI service health check failed:', error);
       return {
@@ -183,12 +188,16 @@ class AIService {
   }
 
   /**
-   * Get available AI models
+   * Get available AI models with circuit breaker
    */
   async getAvailableModels(): Promise<string[]> {
     try {
-      const response = await this.client.get('/models');
-      return response.data.models || [];
+      const response = await aiServiceBreaker.fire({
+        url: '/models',
+        method: 'GET',
+        timeout: 10000,
+      });
+      return (response as any).data.models || [];
     } catch (error) {
       console.error('Failed to get available models:', error);
       return [];

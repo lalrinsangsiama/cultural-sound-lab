@@ -2,6 +2,73 @@
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
+// Type definitions for API requests and responses
+export interface AudioSampleFilters {
+  culture?: string;
+  instrument?: string;
+  search?: string;
+}
+
+export interface UserRegistrationData {
+  name: string;
+  email: string;
+  password: string;
+  culturalAffiliation?: string;
+}
+
+export interface GenerationFilters {
+  page?: number;
+  limit?: number;
+  type?: string;
+  status?: string;
+}
+
+export interface GenerationParameters {
+  duration?: number;
+  mood?: string;
+  energy_level?: number;
+  instruments?: string[];
+  cultural_style?: string;
+  tempo?: number;
+  key?: string;
+  description?: string;
+  brand_name?: string;
+  playlist_size?: number;
+  video_description?: string;
+}
+
+export interface GenerationRequest {
+  type: 'sound_logo' | 'playlist' | 'social_clip' | 'long_form';
+  parameters: GenerationParameters;
+  source_samples: string[];
+}
+
+export interface LicenseRequest {
+  generationId: string;
+  type: string;
+  usageDescription: string;
+}
+
+export interface PaymentRequest {
+  licenseId: string;
+  paymentMethodId: string;
+  amount: number;
+}
+
+export interface ProfileUpdateData {
+  name?: string;
+  email?: string;
+  culturalAffiliation?: string;
+  bio?: string;
+  location?: string;
+}
+
+export interface UserSettings {
+  notifications?: Record<string, boolean>;
+  privacy?: Record<string, boolean>;
+  generation?: Record<string, unknown>;
+}
+
 export interface ApiError {
   message: string;
   code?: string;
@@ -67,12 +134,7 @@ export class ApiClient {
     });
   }
 
-  async register(userData: {
-    name: string;
-    email: string;
-    password: string;
-    culturalAffiliation?: string;
-  }) {
+  async register(userData: UserRegistrationData) {
     return this.request("/api/auth/register", {
       method: "POST",
       body: JSON.stringify(userData),
@@ -86,11 +148,7 @@ export class ApiClient {
   }
 
   // Audio library endpoints
-  async getAudioSamples(filters?: {
-    culture?: string;
-    instrument?: string;
-    search?: string;
-  }) {
+  async getAudioSamples(filters?: AudioSampleFilters) {
     const params = new URLSearchParams();
     if (filters?.culture) params.append("culture", filters.culture);
     if (filters?.instrument) params.append("instrument", filters.instrument);
@@ -109,23 +167,7 @@ export class ApiClient {
   }
 
   // Generation endpoints
-  async generateAudio(params: {
-    type: 'sound_logo' | 'playlist' | 'social_clip' | 'long_form';
-    parameters: {
-      duration?: number;
-      mood?: string;
-      energy_level?: number;
-      instruments?: string[];
-      cultural_style?: string;
-      tempo?: number;
-      key?: string;
-      description?: string;
-      brand_name?: string;
-      playlist_size?: number;
-      video_description?: string;
-    };
-    source_samples: string[];
-  }) {
+  async generateAudio(params: GenerationRequest) {
     return this.request("/api/generate", {
       method: "POST",
       body: JSON.stringify(params),
@@ -136,12 +178,7 @@ export class ApiClient {
     return this.request(`/api/generate/${id}`);
   }
 
-  async getUserGenerations(filters?: {
-    page?: number;
-    limit?: number;
-    type?: string;
-    status?: string;
-  }) {
+  async getUserGenerations(filters?: GenerationFilters) {
     const params = new URLSearchParams();
     if (filters?.page) params.append("page", filters.page.toString());
     if (filters?.limit) params.append("limit", filters.limit.toString());
@@ -183,11 +220,7 @@ export class ApiClient {
   }
 
   // Licensing endpoints
-  async createLicense(data: {
-    generationId: string;
-    type: string;
-    usageDescription: string;
-  }) {
+  async createLicense(data: LicenseRequest) {
     return this.request("/api/licenses", {
       method: "POST",
       body: JSON.stringify(data),
@@ -198,11 +231,7 @@ export class ApiClient {
     return this.request("/api/licenses");
   }
 
-  async processPayment(data: {
-    licenseId: string;
-    paymentMethodId: string;
-    amount: number;
-  }) {
+  async processPayment(data: PaymentRequest) {
     return this.request("/api/payments", {
       method: "POST",
       body: JSON.stringify(data),
@@ -224,24 +253,14 @@ export class ApiClient {
   }
 
   // User settings endpoints
-  async updateProfile(data: {
-    name?: string;
-    email?: string;
-    culturalAffiliation?: string;
-    bio?: string;
-    location?: string;
-  }) {
+  async updateProfile(data: ProfileUpdateData) {
     return this.request("/api/user/profile", {
       method: "PUT",
       body: JSON.stringify(data),
     });
   }
 
-  async updateSettings(data: {
-    notifications?: Record<string, boolean>;
-    privacy?: Record<string, boolean>;
-    generation?: Record<string, any>;
-  }) {
+  async updateSettings(data: UserSettings) {
     return this.request("/api/user/settings", {
       method: "PUT",
       body: JSON.stringify(data),
@@ -255,21 +274,21 @@ export const apiClient = new ApiClient();
 // Helper functions for common operations
 export const auth = {
   login: (email: string, password: string) => apiClient.login(email, password),
-  register: (userData: any) => apiClient.register(userData),
+  register: (userData: UserRegistrationData) => apiClient.register(userData),
   logout: () => apiClient.logout(),
 };
 
 export const audio = {
-  getSamples: (filters?: any) => apiClient.getAudioSamples(filters),
+  getSamples: (filters?: AudioSampleFilters) => apiClient.getAudioSamples(filters),
   getSample: (id: string) => apiClient.getAudioSample(id),
   getPreview: (id: string) => apiClient.getAudioPreview(id),
 };
 
 export const generation = {
-  create: (params: any) => apiClient.generateAudio(params),
+  create: (params: GenerationRequest) => apiClient.generateAudio(params),
   get: (id: string) => apiClient.getGeneration(id),
   getJobStatus: (jobId: string) => apiClient.getJobStatus(jobId),
-  getUserGenerations: (filters?: any) => apiClient.getUserGenerations(filters),
+  getUserGenerations: (filters?: GenerationFilters) => apiClient.getUserGenerations(filters),
   download: (id: string) => apiClient.downloadGeneration(id),
   delete: (id: string) => apiClient.deleteGeneration(id),
 };

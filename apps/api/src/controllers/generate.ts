@@ -4,6 +4,7 @@ import { AuthenticatedRequest } from '@/middleware/auth';
 import { v4 as uuidv4 } from 'uuid';
 import { aiService } from '@/services/aiService';
 import { generationQueue } from '@/services/generationQueue';
+import { cacheHelpers } from '@/config/redis';
 
 interface GenerationRequest {
   type: 'sound_logo' | 'playlist' | 'social_clip' | 'long_form';
@@ -94,6 +95,9 @@ export const createGeneration = async (req: AuthenticatedRequest, res: Response)
         source_urls: [] // Will be populated by aiService
       });
 
+      // Invalidate user generations cache since we added a new generation
+      await cacheHelpers.clearByPattern(`user:generations:${req.user!.id}:*`);
+
       res.status(201).json({
         ...data,
         job_id: jobId,
@@ -127,6 +131,14 @@ export const createGeneration = async (req: AuthenticatedRequest, res: Response)
 export const getGeneration = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { id } = req.params;
+    const CACHE_TTL = 60; // 1 minute (shorter for active generations)
+    const cacheKey = `generation:${id}:${req.user!.id}`;
+
+    // Try to get from cache first
+    const cached = await cacheHelpers.get(cacheKey);
+    if (cached) {
+      return res.json(cached);
+    }
 
     const { data, error } = await supabase
       .from('generations')
@@ -140,6 +152,10 @@ export const getGeneration = async (req: AuthenticatedRequest, res: Response) =>
         error: 'Generation not found'
       });
     }
+
+    // Cache completed generations for longer, active ones for shorter time
+    const cacheTTL = data.status === 'completed' ? 300 : 60; // 5 min vs 1 min
+    await cacheHelpers.set(cacheKey, data, cacheTTL);
 
     res.json(data);
   } catch (error) {
@@ -158,6 +174,24 @@ export const getUserGenerations = async (req: AuthenticatedRequest, res: Respons
       type, 
       status 
     } = req.query;
+
+    // Create cache key based on user and query params
+    const CACHE_TTL = 30; // 30 seconds (short for active generations)
+    const cacheKeyParts = [
+      'user:generations',
+      req.user!.id,
+      `page:${page}`,
+      `limit:${limit}`,
+      type ? `type:${type}` : '',
+      status ? `status:${status}` : ''
+    ].filter(Boolean);
+    const cacheKey = cacheKeyParts.join(':');
+
+    // Try to get from cache first
+    const cached = await cacheHelpers.get(cacheKey);
+    if (cached) {
+      return res.json(cached);
+    }
 
     const offset = (Number(page) - 1) * Number(limit);
 
@@ -185,7 +219,7 @@ export const getUserGenerations = async (req: AuthenticatedRequest, res: Respons
       });
     }
 
-    res.json({
+    const response = {
       data,
       pagination: {
         page: Number(page),
@@ -193,7 +227,12 @@ export const getUserGenerations = async (req: AuthenticatedRequest, res: Respons
         total: count || 0,
         pages: Math.ceil((count || 0) / Number(limit))
       }
-    });
+    };
+
+    // Cache the result
+    await cacheHelpers.set(cacheKey, response, CACHE_TTL);
+
+    res.json(response);
   } catch (error) {
     console.error('Error fetching user generations:', error);
     res.status(500).json({

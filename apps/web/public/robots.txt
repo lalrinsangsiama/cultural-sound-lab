@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+
+# Disallow admin and private areas
+Disallow: /api/
+Disallow: /auth/
+Disallow: /dashboard/settings/
+Disallow: /launch-checklist/
+
+# Allow important public pages
+Allow: /
+Allow: /library
+Allow: /generate
+
+# Sitemap location
+Sitemap: https://culturalsoundlab.com/sitemap.xml
+
+# Crawl delay
+Crawl-delay: 1

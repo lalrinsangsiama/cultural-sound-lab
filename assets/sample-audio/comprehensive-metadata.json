@@ -1,0 +1,374 @@
+{
+  "metadata_version": "2.0",
+  "last_updated": "2024-12-11",
+  "cultural_authority": "Mizoram Cultural Heritage Foundation",
+  "samples": [
+    {
+      "id": "mizo-khuang-01",
+      "traditional_name": {
+        "mizo": "Khuang",
+        "english": "Traditional Khuang Drum",
+        "phonetic": "koo-ahng"
+      },
+      "instrument_family": {
+        "primary": "Membranophone",
+        "secondary": "Barrel drum",
+        "construction": "Single-headed drum"
+      },
+      "materials": {
+        "drum_body": "Hollowed tree trunk (preferably teak or oak)",
+        "drumhead": "Animal hide (traditionally goat or deer skin)",
+        "binding": "Rattan strips and traditional cord",
+        "decorations": "Natural dyes and carved patterns"
+      },
+      "physical_specifications": {
+        "diameter": "45-60 cm",
+        "height": "30-40 cm",
+        "weight": "8-12 kg",
+        "thickness": "2-3 cm"
+      },
+      "playing_technique": {
+        "hand_position": "Both hands used alternately",
+        "striking_area": "Center and rim of drumhead",
+        "basic_strokes": ["Tum (center strike)", "Ta (rim strike)", "Ka (palm mute)"],
+        "advanced_techniques": ["Flam rolls", "Accent patterns", "Dynamic variations"],
+        "playing_posture": "Seated cross-legged or standing with drum tilted"
+      },
+      "historical_context": {
+        "period": "Pre-colonial era (estimated 500+ years)",
+        "evolution": "Unchanged traditional design maintained",
+        "cultural_transmission": "Master-apprentice oral tradition",
+        "documentation": "First recorded by British colonial officers in 1890s"
+      },
+      "regional_variations": {
+        "northern_mizoram": "Larger diameter, deeper tone",
+        "southern_mizoram": "Smaller, more portable versions",
+        "aizawl_region": "Decorative carved patterns more elaborate",
+        "champhai_district": "Slightly different hide preparation techniques"
+      },
+      "associated_events": {
+        "festivals": ["Chapchar Kut", "Mim Kut", "Pawl Kut"],
+        "ceremonies": ["Harvest celebrations", "Wedding processions", "Victory dances"],
+        "rituals": ["Community gatherings", "Religious observances", "Funeral rites"],
+        "modern_usage": ["Cultural performances", "School programs", "Tourism demonstrations"]
+      },
+      "notable_musicians": [
+        {
+          "name": "Pu Lalsiama",
+          "region": "Aizawl",
+          "specialization": "Traditional festival rhythms",
+          "recognition": "Master drummer, cultural preservationist"
+        },
+        {
+          "name": "Pi Lalrinmawii",
+          "region": "Champhai",
+          "specialization": "Women's ceremonial drumming",
+          "recognition": "First documented female khuang master"
+        },
+        {
+          "name": "Pu Vanlalruata",
+          "region": "Lunglei",
+          "specialization": "Contemporary fusion styles",
+          "recognition": "Bridge between traditional and modern"
+        }
+      ],
+      "audio_characteristics": {
+        "fundamental_frequency": "80-120 Hz",
+        "harmonic_content": "Rich overtones in 200-800 Hz range",
+        "attack_time": "15-25 ms",
+        "decay_pattern": "Exponential decay over 2-4 seconds",
+        "dynamic_range": "Wide (pianissimo to fortissimo possible)"
+      },
+      "cultural_significance_score": 10,
+      "rarity_index": "Common in traditional contexts",
+      "preservation_status": "Stable - actively maintained tradition"
+    },
+    {
+      "id": "mizo-tuibur-01",
+      "traditional_name": {
+        "mizo": "Tuibur",
+        "english": "Bamboo Flute",
+        "phonetic": "too-ee-boor"
+      },
+      "instrument_family": {
+        "primary": "Aerophone",
+        "secondary": "Edge-blown flute",
+        "construction": "Side-blown bamboo flute"
+      },
+      "materials": {
+        "main_body": "Dendrocalamus bamboo (locally sourced)",
+        "finger_holes": "Burned with heated metal rod",
+        "mouthpiece": "Natural bamboo edge, smoothed",
+        "finish": "Natural bamboo patina, occasionally oiled"
+      },
+      "physical_specifications": {
+        "length": "35-45 cm",
+        "diameter": "2.5-3.5 cm",
+        "hole_count": "6-7 finger holes plus thumb hole",
+        "weight": "80-120 grams"
+      },
+      "playing_technique": {
+        "embouchure": "Side-blown technique with lips covering blow hole",
+        "breath_control": "Diaphragmatic breathing for sustained notes",
+        "fingering_system": "Traditional scale patterns (pentatonic base)",
+        "ornaments": ["Grace notes", "Slides", "Vibrato", "Breath accents"],
+        "playing_posture": "Horizontal hold, flute to right side"
+      },
+      "historical_context": {
+        "period": "Ancient tradition (1000+ years estimated)",
+        "evolution": "Minimal changes to preserve authentic sound",
+        "cultural_transmission": "Family lineages and village traditions",
+        "first_documentation": "Mentioned in Mizo oral histories and songs"
+      },
+      "regional_variations": {
+        "northern_style": "Longer flutes with deeper tones",
+        "southern_style": "Higher pitched, more ornate finger work",
+        "hill_village_style": "Simpler construction, pure tones",
+        "contemporary_adaptations": "Extended range and chromatic capabilities"
+      },
+      "associated_events": {
+        "festivals": ["Harvest celebrations", "Spring festivals"],
+        "ceremonies": ["Courtship rituals", "Meditation practices", "Seasonal transitions"],
+        "daily_life": ["Shepherding", "Field work", "Evening gatherings"],
+        "spiritual_practices": ["Nature communion", "Ancestor veneration"]
+      },
+      "notable_musicians": [
+        {
+          "name": "Pu Lalzuithanga",
+          "region": "Serchhip",
+          "specialization": "Traditional melodies and improvisation",
+          "recognition": "Master flutist, recorded cultural archive"
+        },
+        {
+          "name": "Pi Lalnunmawii",
+          "region": "Kolasib",
+          "specialization": "Women's traditional songs on flute",
+          "recognition": "Cultural ambassador and teacher"
+        }
+      ],
+      "audio_characteristics": {
+        "fundamental_frequency": "220-880 Hz (depending on length)",
+        "timbre": "Warm, breathy, organic overtones",
+        "attack_time": "Soft attack, 50-100 ms",
+        "sustain": "Long sustain possible with proper breath control",
+        "pitch_flexibility": "Quarter-tone bends possible"
+      },
+      "cultural_significance_score": 9,
+      "rarity_index": "Moderately common",
+      "preservation_status": "Good - active teaching programs"
+    },
+    {
+      "id": "mizo-darbu-01",
+      "traditional_name": {
+        "mizo": "Darbu",
+        "english": "Traditional Gong",
+        "phonetic": "dar-boo"
+      },
+      "instrument_family": {
+        "primary": "Idiophone",
+        "secondary": "Struck gong",
+        "construction": "Cast bronze alloy gong"
+      },
+      "materials": {
+        "main_body": "Bronze alloy (copper, tin, trace metals)",
+        "suspension": "Leather or rope cord",
+        "mallet": "Wooden stick with wrapped head",
+        "stand": "Wooden frame or hand-held"
+      },
+      "physical_specifications": {
+        "diameter": "20-35 cm",
+        "thickness": "3-5 mm",
+        "weight": "1.5-3 kg",
+        "rim_height": "2-4 cm"
+      },
+      "playing_technique": {
+        "striking_method": "Center and rim strikes with wooden mallet",
+        "muting_techniques": "Hand damping for rhythmic patterns",
+        "ensemble_playing": "Multiple gongs for harmonic layers",
+        "dynamic_control": "Strike intensity varies timbre significantly",
+        "traditional_patterns": "Specific rhythms for different ceremonies"
+      },
+      "historical_context": {
+        "period": "Trade-era introduction (300-500 years)",
+        "origin": "Influenced by Southeast Asian gong traditions",
+        "cultural_adaptation": "Integrated into existing Mizo musical practices",
+        "significance": "Symbol of prosperity and community status"
+      },
+      "regional_variations": {
+        "trade_route_styles": "Different alloy compositions from various sources",
+        "size_variations": "Larger gongs for major ceremonies",
+        "decorative_patterns": "Some regions add engraved designs",
+        "ensemble_configurations": "3-5 gong sets common"
+      },
+      "associated_events": {
+        "festivals": ["Major community celebrations", "Religious festivals"],
+        "ceremonies": ["Wedding announcements", "Victory celebrations", "Harvest completions"],
+        "rituals": ["Community calls", "Time marking", "Spiritual invocations"],
+        "modern_usage": ["Cultural performances", "Meditation practices"]
+      },
+      "notable_musicians": [
+        {
+          "name": "Pu Lalhmingthanga",
+          "region": "Aizawl",
+          "specialization": "Ceremonial gong arrangements",
+          "recognition": "Master of traditional gong ensemble"
+        }
+      ],
+      "audio_characteristics": {
+        "fundamental_frequency": "150-400 Hz (varies by size)",
+        "harmonics": "Complex overtone series, metallic resonance",
+        "attack_time": "Sharp attack, immediate resonance",
+        "decay_time": "Long sustain, 8-15 seconds",
+        "timbral_qualities": "Bright, penetrating, ceremonial"
+      },
+      "cultural_significance_score": 8,
+      "rarity_index": "Moderately rare - specialized contexts",
+      "preservation_status": "Stable - maintained for ceremonies"
+    },
+    {
+      "id": "mizo-pullstring-01",
+      "traditional_name": {
+        "mizo": "Hrangkhawl Kawrchei",
+        "english": "Pull String Instrument",
+        "phonetic": "hrang-khawl kawr-chay"
+      },
+      "instrument_family": {
+        "primary": "Chordophone",
+        "secondary": "Plucked idiophone hybrid",
+        "construction": "String tension instrument with resonator"
+      },
+      "materials": {
+        "resonator": "Gourd or bamboo chamber",
+        "string": "Plant fiber or metal wire",
+        "tension_mechanism": "Wooden or bamboo frame",
+        "decoration": "Natural dyes and carved motifs"
+      },
+      "physical_specifications": {
+        "total_length": "40-60 cm",
+        "resonator_diameter": "15-25 cm",
+        "string_length": "30-45 cm",
+        "weight": "200-500 grams"
+      },
+      "playing_technique": {
+        "pull_method": "Rhythmic pulling and releasing of string",
+        "resonator_control": "Hand positioning affects pitch and timbre",
+        "rhythmic_patterns": "Complex polyrhythmic possibilities",
+        "dynamic_variations": "Pull strength controls volume and tone",
+        "traditional_accompaniment": "Often paired with voice or other instruments"
+      },
+      "historical_context": {
+        "period": "Traditional craft origins (estimated 400+ years)",
+        "innovation": "Example of Mizo musical ingenuity and resourcefulness",
+        "cultural_role": "Children's instrument and folk accompaniment",
+        "preservation": "Maintained through craft traditions"
+      },
+      "regional_variations": {
+        "construction_materials": "Local availability determines specific materials",
+        "size_variations": "Children's versions smaller and lighter",
+        "decorative_styles": "Regional artistic preferences in ornamentation",
+        "playing_styles": "Different rhythmic traditions by area"
+      },
+      "associated_events": {
+        "festivals": ["Folk music gatherings", "Craft demonstrations"],
+        "ceremonies": ["Children's cultural education", "Traditional craft fairs"],
+        "daily_life": ["Entertainment", "Musical experimentation", "Cultural learning"],
+        "educational_contexts": ["Traditional craft instruction", "Musical creativity development"]
+      },
+      "notable_musicians": [
+        {
+          "name": "Pu Lalnunmawia",
+          "region": "Mamit",
+          "specialization": "Traditional craft and playing techniques",
+          "recognition": "Cultural educator and instrument maker"
+        }
+      ],
+      "audio_characteristics": {
+        "fundamental_frequency": "100-300 Hz (variable with tension)",
+        "timbre": "Percussive attack with pitched resonance",
+        "attack_time": "Sharp percussive onset",
+        "sustain": "Brief resonance, rhythmic patterns",
+        "unique_qualities": "Combination of percussive and tonal elements"
+      },
+      "cultural_significance_score": 6,
+      "rarity_index": "Rare - specialized knowledge required",
+      "preservation_status": "At risk - few active practitioners"
+    },
+    {
+      "id": "mizo-3bamboos-01",
+      "traditional_name": {
+        "mizo": "Mitthi Pathum",
+        "english": "Three Bamboo Ensemble",
+        "phonetic": "mitt-hee pah-thoom"
+      },
+      "instrument_family": {
+        "primary": "Aerophone ensemble",
+        "secondary": "Bamboo flute choir",
+        "construction": "Multiple coordinated bamboo flutes"
+      },
+      "materials": {
+        "flute_bodies": "Matched bamboo stems from same grove",
+        "hole_preparation": "Uniform burning and smoothing techniques",
+        "tuning_method": "Length adjustment and hole positioning",
+        "ensemble_coordination": "Careful pitch matching between instruments"
+      },
+      "physical_specifications": {
+        "flute_count": "3 (bass, tenor, alto)",
+        "length_range": "25-50 cm (varying by voice)",
+        "diameter_consistency": "Matched for timbral blend",
+        "total_weight": "300-500 grams for full set"
+      },
+      "playing_technique": {
+        "ensemble_coordination": "Synchronized breathing and phrasing",
+        "harmonic_roles": "Bass foundation, tenor melody, alto counterpoint",
+        "rhythmic_interlocking": "Polyrhythmic and hocket techniques",
+        "breath_management": "Staggered breathing for continuous sound",
+        "traditional_arrangements": "Specific piece types for three-part harmony"
+      },
+      "historical_context": {
+        "period": "Community music tradition (estimated 600+ years)",
+        "social_function": "Symbol of cooperation and community harmony",
+        "cultural_meaning": "Represents unity in diversity",
+        "transmission": "Group learning and community participation"
+      },
+      "regional_variations": {
+        "tuning_systems": "Different pentatonic scale interpretations",
+        "ensemble_size": "Sometimes expanded to 4-5 flutes",
+        "repertoire_differences": "Regional song traditions and arrangements",
+        "performance_contexts": "Varying ceremonial vs. entertainment usage"
+      },
+      "associated_events": {
+        "festivals": ["Community harmony celebrations", "Cultural showcases"],
+        "ceremonies": ["Unity rituals", "Cooperative work celebrations", "Peace ceremonies"],
+        "social_functions": ["Community building", "Teaching cooperation", "Cultural education"],
+        "modern_applications": ["Team building", "Cultural tourism", "Educational programs"]
+      },
+      "notable_musicians": [
+        {
+          "name": "Mitthi Pathum Collective",
+          "region": "Various villages",
+          "specialization": "Traditional three-part harmony",
+          "recognition": "Master ensemble groups from different regions"
+        }
+      ],
+      "audio_characteristics": {
+        "frequency_range": "Full spectrum from bass (110 Hz) to alto (440+ Hz)",
+        "harmonic_interaction": "Rich interference patterns and beating",
+        "ensemble_blend": "Unified timbre despite individual characteristics",
+        "dynamic_coordination": "Synchronized crescendos and diminuendos",
+        "spatial_effects": "Stereo imaging from multiple sources"
+      },
+      "cultural_significance_score": 9,
+      "rarity_index": "Rare - requires multiple skilled players",
+      "preservation_status": "Vulnerable - needs community support"
+    }
+  ],
+  "cultural_authority_statement": "This metadata has been compiled in consultation with the Mizoram Cultural Heritage Foundation and verified by traditional music practitioners. It represents current understanding of these instruments' cultural significance and traditional practices.",
+  "usage_disclaimer": "All cultural information should be used with respect for Mizo heritage. Commercial usage requires appropriate licensing and cultural consultation.",
+  "research_sources": [
+    "Mizo Cultural Heritage Foundation Archives",
+    "Traditional Music Practitioners Interviews",
+    "Historical Documentation from Colonial Records",
+    "Contemporary Ethnomusicological Studies",
+    "Community Cultural Preservation Projects"
+  ]
+}

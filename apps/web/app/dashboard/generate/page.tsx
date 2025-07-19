@@ -11,6 +11,13 @@ import AdvancedParameters, { GenerationParameters } from "@/components/generatio
 import GenerationProgress, { GenerationStep } from "@/components/generation/GenerationProgress";
 import { Tooltip, HelpIcon, HelpPanel, generationHelpSections } from "@/components/generation/TooltipSystem";
 import { AudioSample } from "@/lib/types/audio";
+
+interface SelectedSample extends AudioSample {
+  volume: number;
+  isMuted: boolean;
+  isSolo: boolean;
+  position: number;
+}
 import { 
   Sparkles, 
   Music, 
@@ -34,6 +41,8 @@ const mockAudioSamples: AudioSample[] = [
     culturalOrigin: "Mizo",
     instrumentType: "Percussion",
     fileUrl: "/api/audio/samples/1",
+    audioUrl: "/api/audio/samples/1",
+    artist: "Traditional Mizo Artist",
     duration: 45,
     fileSize: 2200000,
     sampleRate: 44100,
@@ -43,7 +52,9 @@ const mockAudioSamples: AudioSample[] = [
       mood: "energetic",
       uploadedBy: "Cultural Music Archive",
       uploadedAt: "2024-01-15T10:30:00Z"
-    }
+    },
+    createdAt: "2024-01-15T10:30:00Z",
+    updatedAt: "2024-01-15T10:30:00Z"
   },
   {
     id: "2",
@@ -52,6 +63,8 @@ const mockAudioSamples: AudioSample[] = [
     culturalOrigin: "Mizo",
     instrumentType: "Wind",
     fileUrl: "/api/audio/samples/2",
+    audioUrl: "/api/audio/samples/2",
+    artist: "Traditional Mizo Artist",
     duration: 38,
     fileSize: 1900000,
     sampleRate: 44100,
@@ -61,7 +74,9 @@ const mockAudioSamples: AudioSample[] = [
       mood: "peaceful",
       uploadedBy: "Cultural Music Archive",
       uploadedAt: "2024-01-14T15:45:00Z"
-    }
+    },
+    createdAt: "2024-01-14T15:45:00Z",
+    updatedAt: "2024-01-14T15:45:00Z"
   },
   {
     id: "3",
@@ -70,6 +85,8 @@ const mockAudioSamples: AudioSample[] = [
     culturalOrigin: "Mizo",
     instrumentType: "String",
     fileUrl: "/api/audio/samples/3",
+    audioUrl: "/api/audio/samples/3",
+    artist: "Traditional Mizo Artist",
     duration: 52,
     fileSize: 2500000,
     sampleRate: 44100,
@@ -79,7 +96,9 @@ const mockAudioSamples: AudioSample[] = [
       mood: "melodic",
       uploadedBy: "Cultural Music Archive",
       uploadedAt: "2024-01-13T09:15:00Z"
-    }
+    },
+    createdAt: "2024-01-13T09:15:00Z",
+    updatedAt: "2024-01-13T09:15:00Z"
   },
   {
     id: "4",
@@ -88,6 +107,8 @@ const mockAudioSamples: AudioSample[] = [
     culturalOrigin: "Mizo",
     instrumentType: "Vocal",
     fileUrl: "/api/audio/samples/4",
+    audioUrl: "/api/audio/samples/4",
+    artist: "Traditional Mizo Artist",
     duration: 67,
     fileSize: 3200000,
     sampleRate: 44100,
@@ -97,7 +118,9 @@ const mockAudioSamples: AudioSample[] = [
       mood: "ceremonial",
       uploadedBy: "Cultural Music Archive",
       uploadedAt: "2024-01-12T14:20:00Z"
-    }
+    },
+    createdAt: "2024-01-12T14:20:00Z",
+    updatedAt: "2024-01-12T14:20:00Z"
   },
   {
     id: "5",
@@ -106,6 +129,8 @@ const mockAudioSamples: AudioSample[] = [
     culturalOrigin: "Mizo",
     instrumentType: "Wind",
     fileUrl: "/api/audio/samples/5",
+    audioUrl: "/api/audio/samples/5",
+    artist: "Traditional Mizo Artist",
     duration: 41,
     fileSize: 2000000,
     sampleRate: 44100,
@@ -115,7 +140,9 @@ const mockAudioSamples: AudioSample[] = [
       mood: "peaceful",
       uploadedBy: "Cultural Music Archive",
       uploadedAt: "2024-01-11T11:30:00Z"
-    }
+    },
+    createdAt: "2024-01-11T11:30:00Z",
+    updatedAt: "2024-01-11T11:30:00Z"
   },
   {
     id: "6",
@@ -124,6 +151,8 @@ const mockAudioSamples: AudioSample[] = [
     culturalOrigin: "Mizo",
     instrumentType: "Ensemble",
     fileUrl: "/api/audio/samples/6",
+    audioUrl: "/api/audio/samples/6",
+    artist: "Traditional Mizo Artist",
     duration: 89,
     fileSize: 4300000,
     sampleRate: 44100,
@@ -133,14 +162,16 @@ const mockAudioSamples: AudioSample[] = [
       mood: "uplifting",
       uploadedBy: "Cultural Music Archive",
       uploadedAt: "2024-01-10T16:45:00Z"
-    }
+    },
+    createdAt: "2024-01-10T16:45:00Z",
+    updatedAt: "2024-01-10T16:45:00Z"
   }
 ];
 
 export default function GeneratePage() {
   const [currentStep, setCurrentStep] = useState("select-samples");
   const [selectedType, setSelectedType] = useState<string>("");
-  const [selectedSamples, setSelectedSamples] = useState<any[]>([]);
+  const [selectedSamples, setSelectedSamples] = useState<SelectedSample[]>([]);
   const [generationParams, setGenerationParams] = useState<GenerationParameters>({
     mood: "peaceful",
     energy: 50,
@@ -204,7 +235,7 @@ export default function GeneratePage() {
     }
   ];
 
-  const handleSamplesChange = useCallback((samples: any[]) => {
+  const handleSamplesChange = useCallback((samples: SelectedSample[]) => {
     setSelectedSamples(samples);
   }, []);
 
@@ -330,7 +361,17 @@ export default function GeneratePage() {
     // Simulate step-by-step progress
     for (let i = 0; i < generationSteps.length; i++) {
       const step = generationSteps[i];
-      setCurrentGenerationStep({ ...step, status: "active" });
+      if (!step) continue;
+      
+      setCurrentGenerationStep({ 
+        id: step.id,
+        title: step.title,
+        description: step.description,
+        status: "active",
+        progress: step.progress || 0,
+        estimatedTime: step.estimatedTime,
+        icon: step.icon
+      });
       setEstimatedTimeRemaining((generationSteps.length - i) * 20);
       
       // Simulate step progress
@@ -340,7 +381,17 @@ export default function GeneratePage() {
         await new Promise(resolve => setTimeout(resolve, 200));
       }
       
-      setCurrentGenerationStep({ ...step, status: "completed", progress: 100 });
+      if (step) {
+        setCurrentGenerationStep({ 
+          id: step.id,
+          title: step.title,
+          description: step.description,
+          status: "completed",
+          progress: 100,
+          estimatedTime: step.estimatedTime,
+          icon: step.icon
+        });
+      }
     }
     
     // Complete generation
@@ -446,9 +497,9 @@ export default function GeneratePage() {
             <GenerationProgress
               isGenerating={isGenerating}
               progress={generationProgress}
-              currentStep={currentGenerationStep}
+              currentStep={currentGenerationStep || undefined}
               estimatedTimeRemaining={estimatedTimeRemaining}
-              generatedPreview={generatedResult}
+              generatedPreview={generatedResult || undefined}
               onCancel={handleCancelGeneration}
               onDownload={handleDownload}
               onRegenerate={handleRegenerate}

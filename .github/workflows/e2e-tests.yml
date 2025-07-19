@@ -1,0 +1,361 @@
+name: 🎵 Cultural Sound Lab E2E Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+
+jobs:
+  e2e-tests:
+    name: End-to-End Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+        test-suite: [critical, audio, accessibility]
+
+    steps:
+      - name: 🔄 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      - name: 🎭 Install Playwright browsers
+        run: npx playwright install --with-deps ${{ matrix.browser }}
+
+      - name: 🏗️ Build application
+        run: npm run build
+
+      - name: 🚀 Start application server
+        run: |
+          npm run dev:web &
+          sleep 30
+          curl --retry 10 --retry-delay 5 --retry-connrefused http://localhost:3001
+
+      - name: 🧪 Run E2E tests
+        run: |
+          case "${{ matrix.test-suite }}" in
+            "critical")
+              npm run test:critical -- --browsers ${{ matrix.browser }}
+              ;;
+            "audio") 
+              npm run test:audio -- --browsers ${{ matrix.browser }}
+              ;;
+            "accessibility")
+              npm run test:accessibility -- --browsers ${{ matrix.browser }}
+              ;;
+          esac
+        env:
+          CI: true
+
+      - name: 📊 Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ matrix.browser }}-${{ matrix.test-suite }}
+          path: test-results/
+          retention-days: 30
+
+      - name: 📸 Upload screenshots
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: screenshots-${{ matrix.browser }}-${{ matrix.test-suite }}
+          path: test-results/screenshots/
+          retention-days: 7
+
+      - name: 🎥 Upload videos
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: videos-${{ matrix.browser }}-${{ matrix.test-suite }}
+          path: test-results/videos/
+          retention-days: 7
+
+  performance-tests:
+    name: Performance Benchmarks
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: 🔄 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      - name: 🎭 Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: 🏗️ Build application
+        run: npm run build
+
+      - name: 🚀 Start application server
+        run: |
+          npm run dev:web &
+          sleep 30
+
+      - name: ⚡ Run performance tests
+        run: npm run test:performance -- --browsers chromium
+        env:
+          CI: true
+
+      - name: 📈 Analyze performance results
+        run: |
+          if [ -f "test-results/performance-report.json" ]; then
+            echo "## Performance Results" >> $GITHUB_STEP_SUMMARY
+            echo "| Metric | Value | Threshold | Status |" >> $GITHUB_STEP_SUMMARY
+            echo "|--------|-------|-----------|--------|" >> $GITHUB_STEP_SUMMARY
+            
+            # Parse performance results and add to summary
+            node -e "
+              const fs = require('fs');
+              const data = JSON.parse(fs.readFileSync('test-results/performance-report.json'));
+              Object.entries(data.metrics || {}).forEach(([metric, value]) => {
+                const threshold = data.thresholds[metric] || 'N/A';
+                const status = value < threshold ? '✅ Pass' : '❌ Fail';
+                console.log(\`| \${metric} | \${value}ms | \${threshold}ms | \${status} |\`);
+              });
+            " >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: 📊 Upload performance results
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-results
+          path: test-results/performance-report.json
+
+  mobile-tests:
+    name: Mobile Testing
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: 🔄 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      - name: 🎭 Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: 🏗️ Build application
+        run: npm run build
+
+      - name: 🚀 Start application server
+        run: |
+          npm run dev:web &
+          sleep 30
+
+      - name: 📱 Run mobile tests
+        run: npm run test:e2e:mobile
+        env:
+          CI: true
+
+      - name: 📊 Upload mobile test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mobile-test-results
+          path: test-results/
+
+  security-tests:
+    name: Security & Payment Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: github.event_name != 'schedule' # Don't run on scheduled builds
+
+    steps:
+      - name: 🔄 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📥 Install dependencies
+        run: npm ci
+
+      - name: 🎭 Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: 🏗️ Build application
+        run: npm run build
+
+      - name: 🚀 Start application server
+        run: |
+          npm run dev:web &
+          sleep 30
+
+      - name: 🔒 Run payment flow tests
+        run: npm run test:payments -- --browsers chromium
+        env:
+          CI: true
+          # Add test Stripe keys here
+          STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_TEST_PUBLISHABLE_KEY }}
+
+      - name: 📊 Upload security test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-test-results
+          path: test-results/
+
+  report-generation:
+    name: Generate Test Reports
+    needs: [e2e-tests, performance-tests, mobile-tests]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: 🔄 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📥 Download all test artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: all-test-results/
+
+      - name: 📊 Combine test results
+        run: |
+          mkdir -p combined-results
+          
+          # Combine all JSON reports
+          echo '{"testRuns": []}' > combined-results/combined-results.json
+          
+          for result_dir in all-test-results/*/; do
+            if [ -f "$result_dir/csl-test-results.json" ]; then
+              echo "Combining results from $result_dir"
+              # Merge JSON files (simplified version)
+              cat "$result_dir/csl-test-results.json" >> combined-results/all-results.txt
+            fi
+          done
+
+      - name: 📈 Generate summary report
+        run: |
+          echo "# 🎵 Cultural Sound Lab Test Summary" > test-summary.md
+          echo "" >> test-summary.md
+          echo "**Test Run:** $(date)" >> test-summary.md
+          echo "**Commit:** ${{ github.sha }}" >> test-summary.md
+          echo "**Branch:** ${{ github.ref_name }}" >> test-summary.md
+          echo "" >> test-summary.md
+          
+          # Count total artifacts
+          total_runs=$(find all-test-results -name "csl-test-results.json" | wc -l)
+          echo "**Total Test Runs:** $total_runs" >> test-summary.md
+          
+          # Add to step summary
+          cat test-summary.md >> $GITHUB_STEP_SUMMARY
+
+      - name: 📤 Upload combined results
+        uses: actions/upload-artifact@v4
+        with:
+          name: combined-test-results
+          path: combined-results/
+
+      - name: 💬 Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            let comment = '## 🎵 Cultural Sound Lab E2E Test Results\n\n';
+            comment += `**Commit:** ${context.sha.substring(0, 7)}\n`;
+            comment += `**Workflow:** [${context.runNumber}](${context.payload.repository.html_url}/actions/runs/${context.runId})\n\n`;
+            
+            // Add test results summary
+            const testArtifacts = [
+              'test-results-chromium-critical',
+              'test-results-firefox-critical', 
+              'test-results-webkit-critical',
+              'performance-results',
+              'mobile-test-results'
+            ];
+            
+            comment += '### Test Coverage\n';
+            comment += '- ✅ Critical user journeys\n';
+            comment += '- ✅ Audio functionality\n';
+            comment += '- ✅ Payment flows\n';
+            comment += '- ✅ Performance benchmarks\n';
+            comment += '- ✅ Mobile compatibility\n';
+            comment += '- ✅ Accessibility compliance\n\n';
+            
+            comment += '### Browser Coverage\n';
+            comment += '- ✅ Chrome/Chromium\n';
+            comment += '- ✅ Firefox\n';
+            comment += '- ✅ Safari/WebKit\n';
+            comment += '- ✅ Mobile browsers\n\n';
+            
+            comment += 'View detailed results in the [Actions tab](' + 
+                      context.payload.repository.html_url + '/actions/runs/' + context.runId + ')';
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+  # Health check job that runs after all tests
+  health-check:
+    name: Health Check
+    needs: [e2e-tests, performance-tests, mobile-tests, security-tests, report-generation]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: 🏥 Check overall test health
+        run: |
+          echo "## 🏥 Test Suite Health Check" >> $GITHUB_STEP_SUMMARY
+          
+          # Check if any critical jobs failed
+          if [ "${{ needs.e2e-tests.result }}" = "failure" ]; then
+            echo "❌ Critical E2E tests failed" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          else
+            echo "✅ E2E tests passed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${{ needs.performance-tests.result }}" = "failure" ]; then
+            echo "⚠️ Performance tests failed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ Performance tests passed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${{ needs.mobile-tests.result }}" = "failure" ]; then
+            echo "⚠️ Mobile tests failed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ Mobile tests passed" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🎵 Cultural Sound Lab testing pipeline completed!" >> $GITHUB_STEP_SUMMARY

@@ -1,18 +1,44 @@
 // Audio-related TypeScript types for Cultural Sound Lab
 
+export interface CulturalContext {
+  origin: string;
+  culturalSignificance: string;
+  traditionalUse: string;
+  restrictions?: string[];
+  attributionRequired: boolean;
+  community?: string;
+  region?: string;
+  language?: string;
+  historicalPeriod?: string;
+  ritualContext?: string;
+  socialContext?: string;
+  playingTechnique?: string;
+  materials?: string[];
+  craftsmanship?: string;
+}
+
 export interface AudioSample {
   id: string;
   title: string;
   description: string;
   culturalOrigin: string;
   instrumentType: string;
-  fileUrl: string;
+  fileUrl?: string;
+  audioUrl: string;
+  previewUrl?: string;
+  waveformUrl?: string;
   duration: number;
   fileSize: number;
   sampleRate: number;
   tags: string[];
-  metadata: {
-    key?: string;
+  price?: number;
+  bpm?: number;
+  key?: string;
+  artist: string;
+  culturalContext?: CulturalContext;
+  createdAt: string;
+  updatedAt: string;
+  metadata?: {
     tempo?: number;
     genre?: string;
     mood?: string;
@@ -163,4 +189,29 @@ export interface AudioPlaylist {
   updatedAt?: string;
   isPublic: boolean;
   tags: string[];
+}
+
+export interface Project {
+  id: string;
+  title: string;
+  description: string;
+  type: 'sound_logo' | 'playlist' | 'social_clip' | 'long_form';
+  status: 'pending' | 'processing' | 'completed' | 'failed';
+  duration: number;
+  sourceSamples: string[];
+  resultUrl?: string;
+  createdAt: string;
+  updatedAt?: string;
+  parameters: {
+    mood?: string;
+    tempo?: number;
+    energy_level?: number;
+    instruments?: string[];
+    cultural_style?: string;
+    key?: string;
+    description?: string;
+    brand_name?: string;
+    playlist_size?: number;
+    video_description?: string;
+  };
 }

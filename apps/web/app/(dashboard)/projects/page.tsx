@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Play, Download, Share, Trash2, Edit } from "lucide-react";
 import { formatDuration } from "@/lib/utils";
+import { Project } from "@/lib/types/audio";
 import mizoSamplesData from "@/../../assets/sample-audio/mizo-samples.json";
 
 const sampleNames = mizoSamplesData.samples.reduce((acc, sample) => {
@@ -14,17 +15,22 @@ const sampleNames = mizoSamplesData.samples.reduce((acc, sample) => {
   return acc;
 }, {} as Record<string, string>);
 
-const projects = [
+const projects: Project[] = [
   {
     id: "1",
     title: "Mizo Drum Sound Logo",
-    type: "sound-logo",
+    type: "sound_logo",
     status: "completed",
     duration: 12,
     createdAt: "2024-01-15T10:30:00Z",
-    downloadUrl: "/api/projects/1/download",
+    resultUrl: "/api/projects/1/download",
     description: "Energetic sound logo for tech startup",
-    sourceSamples: ["mizo-khuang-01", "mizo-tuibur-01"]
+    sourceSamples: ["mizo-khuang-01", "mizo-tuibur-01"],
+    parameters: {
+      mood: "energetic",
+      tempo: 120,
+      brand_name: "TechStart"
+    }
   },
   {
     id: "2",
@@ -33,42 +39,56 @@ const projects = [
     status: "completed",
     duration: 1800,
     createdAt: "2024-01-14T15:45:00Z",
-    downloadUrl: "/api/projects/2/download",
+    resultUrl: "/api/projects/2/download",
     description: "Ambient playlist for meditation app",
-    sourceSamples: ["mizo-tuibur-01"]
+    sourceSamples: ["mizo-tuibur-01"],
+    parameters: {
+      mood: "peaceful",
+      playlist_size: 10,
+      tempo: 60
+    }
   },
   {
     id: "3",
     title: "Instagram Reel Background",
-    type: "social-clip",
+    type: "social_clip",
     status: "processing",
     duration: 30,
     createdAt: "2024-01-16T09:15:00Z",
-    downloadUrl: null,
     description: "Upbeat clip for social media content",
-    sourceSamples: ["mizo-darbu-01"]
+    sourceSamples: ["mizo-darbu-01"],
+    parameters: {
+      mood: "upbeat",
+      video_description: "Dance video"
+    }
   },
   {
     id: "4",
     title: "Documentary Score",
-    type: "long-form",
+    type: "long_form",
     status: "completed",
     duration: 180,
     createdAt: "2024-01-13T14:20:00Z",
-    downloadUrl: "/api/projects/4/download",
+    resultUrl: "/api/projects/4/download",
     description: "Atmospheric score for cultural documentary",
-    sourceSamples: ["mizo-khuang-01", "mizo-tuibur-01", "mizo-darbu-01"]
+    sourceSamples: ["mizo-khuang-01", "mizo-tuibur-01", "mizo-darbu-01"],
+    parameters: {
+      mood: "atmospheric",
+      cultural_style: "traditional"
+    }
   },
   {
     id: "5",
     title: "Brand Jingle",
-    type: "sound-logo",
+    type: "sound_logo",
     status: "failed",
     duration: 8,
     createdAt: "2024-01-12T11:00:00Z",
-    downloadUrl: null,
     description: "Failed generation - insufficient parameters",
-    sourceSamples: ["mizo-khuang-01"]
+    sourceSamples: ["mizo-khuang-01"],
+    parameters: {
+      brand_name: "Unknown"
+    }
   }
 ];
 
@@ -87,13 +107,13 @@ const getStatusColor = (status: string) => {
 
 const getTypeLabel = (type: string) => {
   switch (type) {
-    case "sound-logo":
+    case "sound_logo":
       return "Sound Logo";
     case "playlist":
       return "Playlist";
-    case "social-clip":
+    case "social_clip":
       return "Social Clip";
-    case "long-form":
+    case "long_form":
       return "Long-Form";
     default:
       return type;
@@ -171,7 +191,7 @@ function ProjectList({
   onShare, 
   onDelete 
 }: {
-  projects: any[];
+  projects: Project[];
   onPlay: (id: string) => void;
   onDownload: (id: string) => void;
   onShare: (id: string) => void;

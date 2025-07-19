@@ -164,7 +164,7 @@ async function createTestUsers() {
       });
       
       if (authError) {
-        console.error(`Error creating auth user ${userData.email}:`, authError);
+        console.error(`Error creating auth user:`, authError.message);
         continue;
       }
       

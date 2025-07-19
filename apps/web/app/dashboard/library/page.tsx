@@ -27,6 +27,8 @@ const audioSamples: AudioSample[] = [
     culturalOrigin: "Mizo",
     instrumentType: "Percussion",
     fileUrl: "/api/audio/samples/1",
+    audioUrl: "/api/audio/samples/1",
+    artist: "Traditional Mizo Artist",
     duration: 45,
     fileSize: 2200000, // 2.2 MB in bytes
     sampleRate: 44100,
@@ -36,7 +38,9 @@ const audioSamples: AudioSample[] = [
       mood: "energetic",
       uploadedBy: "Cultural Music Archive",
       uploadedAt: "2024-01-15T10:30:00Z"
-    }
+    },
+    createdAt: "2024-01-15T10:30:00Z",
+    updatedAt: "2024-01-15T10:30:00Z"
   },
   {
     id: "2",
@@ -45,6 +49,8 @@ const audioSamples: AudioSample[] = [
     culturalOrigin: "Mizo",
     instrumentType: "Wind",
     fileUrl: "/api/audio/samples/2",
+    audioUrl: "/api/audio/samples/2",
+    artist: "Traditional Mizo Artist",
     duration: 38,
     fileSize: 1900000, // 1.9 MB in bytes
     sampleRate: 44100,
@@ -54,7 +60,9 @@ const audioSamples: AudioSample[] = [
       mood: "peaceful",
       uploadedBy: "Cultural Music Archive",
       uploadedAt: "2024-01-14T15:45:00Z"
-    }
+    },
+    createdAt: "2024-01-14T15:45:00Z",
+    updatedAt: "2024-01-14T15:45:00Z"
   },
   {
     id: "3",
@@ -63,6 +71,8 @@ const audioSamples: AudioSample[] = [
     culturalOrigin: "Mizo",
     instrumentType: "String",
     fileUrl: "/api/audio/samples/3",
+    audioUrl: "/api/audio/samples/3",
+    artist: "Traditional Mizo Artist",
     duration: 52,
     fileSize: 2500000, // 2.5 MB in bytes
     sampleRate: 44100,
@@ -72,7 +82,9 @@ const audioSamples: AudioSample[] = [
       mood: "melodic",
       uploadedBy: "Cultural Music Archive",
       uploadedAt: "2024-01-13T09:15:00Z"
-    }
+    },
+    createdAt: "2024-01-13T09:15:00Z",
+    updatedAt: "2024-01-13T09:15:00Z"
   },
   {
     id: "4",
@@ -81,6 +93,8 @@ const audioSamples: AudioSample[] = [
     culturalOrigin: "Mizo",
     instrumentType: "Vocal",
     fileUrl: "/api/audio/samples/4",
+    audioUrl: "/api/audio/samples/4",
+    artist: "Traditional Mizo Artist",
     duration: 67,
     fileSize: 3200000, // 3.2 MB in bytes
     sampleRate: 44100,
@@ -90,7 +104,9 @@ const audioSamples: AudioSample[] = [
       mood: "ceremonial",
       uploadedBy: "Cultural Music Archive",
       uploadedAt: "2024-01-12T14:20:00Z"
-    }
+    },
+    createdAt: "2024-01-12T14:20:00Z",
+    updatedAt: "2024-01-12T14:20:00Z"
   },
   {
     id: "5",
@@ -99,6 +115,8 @@ const audioSamples: AudioSample[] = [
     culturalOrigin: "Mizo",
     instrumentType: "Wind",
     fileUrl: "/api/audio/samples/5",
+    audioUrl: "/api/audio/samples/5",
+    artist: "Traditional Mizo Artist",
     duration: 41,
     fileSize: 2000000, // 2.0 MB in bytes
     sampleRate: 44100,
@@ -108,7 +126,9 @@ const audioSamples: AudioSample[] = [
       mood: "peaceful",
       uploadedBy: "Cultural Music Archive",
       uploadedAt: "2024-01-11T11:30:00Z"
-    }
+    },
+    createdAt: "2024-01-11T11:30:00Z",
+    updatedAt: "2024-01-11T11:30:00Z"
   },
   {
     id: "6",
@@ -117,6 +137,8 @@ const audioSamples: AudioSample[] = [
     culturalOrigin: "Mizo",
     instrumentType: "Ensemble",
     fileUrl: "/api/audio/samples/6",
+    audioUrl: "/api/audio/samples/6",
+    artist: "Traditional Mizo Artist",
     duration: 89,
     fileSize: 4300000, // 4.3 MB in bytes
     sampleRate: 44100,
@@ -126,7 +148,9 @@ const audioSamples: AudioSample[] = [
       mood: "uplifting",
       uploadedBy: "Cultural Music Archive",
       uploadedAt: "2024-01-10T16:45:00Z"
-    }
+    },
+    createdAt: "2024-01-10T16:45:00Z",
+    updatedAt: "2024-01-10T16:45:00Z"
   }
 ];
 
@@ -369,7 +393,7 @@ export default function LibraryPage() {
                         <span className="text-sm text-muted-foreground">Sort by:</span>
                         <select
                           value={sortBy}
-                          onChange={(e) => setSortBy(e.target.value as any)}
+                          onChange={(e) => setSortBy(e.target.value as "newest" | "oldest" | "name" | "duration")}
                           className="text-sm border rounded px-2 py-1 bg-white"
                         >
                           <option value="newest">Newest First</option>
@@ -448,7 +472,7 @@ export default function LibraryPage() {
 
           <TabsContent value="upload" className="space-y-6">
             {audioSamples.length === 0 ? (
-              <EmptyStates type="upload-prompt" onUpload={handleFileUpload} />
+              <EmptyStates type="upload-prompt" onUpload={() => {}} />
             ) : (
               <div className="max-w-2xl mx-auto">
                 <div className="text-center mb-6">
@@ -500,9 +524,9 @@ export default function LibraryPage() {
                     </div>
                     
                     <AudioPlayer
-                      src={currentlyPlaying.fileUrl}
+                      src={currentlyPlaying.fileUrl || currentlyPlaying.audioUrl}
                       title={currentlyPlaying.title}
-                      artist={currentlyPlaying.culturalOrigin}
+                      artist={currentlyPlaying.artist || currentlyPlaying.culturalOrigin || 'Unknown Artist'}
                       duration={currentlyPlaying.duration}
                     />
                   </div>
@@ -510,7 +534,7 @@ export default function LibraryPage() {
                   <div className="bg-white rounded-lg border p-6 shadow-sm">
                     <h5 className="font-medium mb-4">Waveform Visualization</h5>
                     <WaveformDisplay
-                      audioUrl={currentlyPlaying.fileUrl}
+                      audioUrl={currentlyPlaying.fileUrl || currentlyPlaying.audioUrl}
                       height={150}
                       waveColor="#e5e7eb"
                       progressColor="#3b82f6"

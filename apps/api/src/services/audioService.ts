@@ -120,9 +120,9 @@ class AudioService {
       await fs.writeFile(tempFilePath, buffer);
 
       // Use ffprobe to extract metadata
-      const metadata = await ffprobe(tempFilePath);
+      const metadata = await ffprobe(tempFilePath, { path: 'ffprobe' });
 
-      const audioStream = metadata.streams.find(stream => stream.codec_type === 'audio');
+      const audioStream = metadata.streams.find((stream: any) => stream.codec_type === 'audio');
       if (!audioStream) {
         throw new Error('No audio stream found in file');
       }
@@ -132,7 +132,7 @@ class AudioService {
         sample_rate: parseInt(audioStream.sample_rate || '0'),
         bitrate: parseInt(audioStream.bit_rate || '0'),
         channels: audioStream.channels || 0,
-        format: metadata.format.format_name || 'unknown',
+        format: (metadata as any).format.format_name || 'unknown',
         codec: audioStream.codec_name,
         file_size: buffer.length,
       };
@@ -348,6 +348,93 @@ class AudioService {
     } catch (error) {
       console.error('Failed to get audio info:', error);
       throw new Error(`Failed to get audio info: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  /**
+   * Get audio stream with range request support for efficient streaming
+   */
+  async getAudioStream(fileUrl: string, range?: string): Promise<{
+    stream: NodeJS.ReadableStream;
+    fileSize: number;
+    contentRange: string;
+    statusCode: number;
+  } | null> {
+    try {
+      // Extract file path from URL
+      const url = new URL(fileUrl);
+      const filePath = url.pathname.replace('/storage/v1/object/public/audio-samples/', '');
+
+      // Get file info first
+      const fileInfo = await this.getAudioInfo(filePath);
+      const fileSize = fileInfo.size;
+
+      if (!range) {
+        // No range requested, return full file stream
+        const { data, error } = await supabaseAdmin.storage
+          .from(this.bucketName)
+          .download(filePath);
+
+        if (error || !data) {
+          throw new Error('Failed to download audio file');
+        }
+
+        // Convert Blob to ReadableStream
+        const stream = data.stream();
+        return {
+          stream: stream as NodeJS.ReadableStream,
+          fileSize,
+          contentRange: `bytes 0-${fileSize - 1}/${fileSize}`,
+          statusCode: 200
+        };
+      }
+
+      // Parse range header
+      const rangeMatch = range.match(/bytes=(\d*)-(\d*)/);
+      if (!rangeMatch) {
+        throw new Error('Invalid range header');
+      }
+
+      const start = parseInt(rangeMatch[1]) || 0;
+      const end = parseInt(rangeMatch[2]) || fileSize - 1;
+
+      // Validate range
+      if (start >= fileSize || end >= fileSize || start > end) {
+        throw new Error('Range not satisfiable');
+      }
+
+      const chunkSize = end - start + 1;
+      const contentRange = `bytes ${start}-${end}/${fileSize}`;
+
+      // For range requests, we need to handle this differently
+      // Since Supabase doesn't directly support range downloads,
+      // we'll download the full file and create a partial stream
+      const { data, error } = await supabaseAdmin.storage
+        .from(this.bucketName)
+        .download(filePath);
+
+      if (error || !data) {
+        throw new Error('Failed to download audio file');
+      }
+
+      // Convert to buffer and slice the range
+      const buffer = await data.arrayBuffer();
+      const rangeBuffer = buffer.slice(start, end + 1);
+      
+      // Create readable stream from buffer slice
+      const { Readable } = await import('stream');
+      const stream = Readable.from(Buffer.from(rangeBuffer));
+
+      return {
+        stream,
+        fileSize: chunkSize,
+        contentRange,
+        statusCode: 206 // Partial Content
+      };
+
+    } catch (error) {
+      console.error('Failed to get audio stream:', error);
+      return null;
     }
   }
 

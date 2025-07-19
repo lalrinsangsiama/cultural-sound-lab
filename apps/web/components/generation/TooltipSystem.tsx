@@ -15,7 +15,8 @@ import {
   Volume2,
   Music,
   Settings,
-  Brain
+  Brain,
+  type LucideIcon
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -44,38 +45,38 @@ interface HelpSection {
   title: string;
   content: string;
   type?: "text" | "video" | "demo" | "tips";
-  icon?: React.ElementType;
+  icon?: LucideIcon;
 }
 
 const tooltipStyles = {
   info: {
     bg: "bg-blue-50 border-blue-200",
     text: "text-blue-800",
-    icon: Info,
+    icon: Info as LucideIcon,
     iconColor: "text-blue-500"
   },
   help: {
     bg: "bg-purple-50 border-purple-200", 
     text: "text-purple-800",
-    icon: HelpCircle,
+    icon: HelpCircle as LucideIcon,
     iconColor: "text-purple-500"
   },
   warning: {
     bg: "bg-amber-50 border-amber-200",
     text: "text-amber-800", 
-    icon: AlertCircle,
+    icon: AlertCircle as LucideIcon as LucideIcon,
     iconColor: "text-amber-500"
   },
   success: {
     bg: "bg-green-50 border-green-200",
     text: "text-green-800",
-    icon: CheckCircle2,
+    icon: CheckCircle2 as LucideIcon,
     iconColor: "text-green-500"
   },
   tip: {
     bg: "bg-yellow-50 border-yellow-200",
     text: "text-yellow-800",
-    icon: Lightbulb,
+    icon: Lightbulb as LucideIcon,
     iconColor: "text-yellow-500"
   }
 };
@@ -98,7 +99,7 @@ export const Tooltip = ({
   const timeoutRef = useRef<NodeJS.Timeout>();
 
   const style = tooltipStyles[type];
-  const IconComponent = style.icon;
+  const IconComponent = style.icon as React.ComponentType<{ className?: string }>;
 
   const showTooltip = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -234,7 +235,7 @@ export const HelpIcon = ({
   };
   
   const style = tooltipStyles[type];
-  const IconComponent = style.icon;
+  const IconComponent = style.icon as React.ComponentType<{ className?: string }>;
   
   return (
     <Tooltip content={tooltip} type={type} trigger="hover">
@@ -361,7 +362,7 @@ The generation process consists of 5 main steps:
 
 Each step has been designed to preserve cultural authenticity while giving you creative control over the final output.`,
     type: "text",
-    icon: BookOpen
+    icon: BookOpen as LucideIcon
   },
   {
     id: "sample-selection",
@@ -377,7 +378,7 @@ Tips for better results:
 
 The AI will analyze the cultural characteristics, musical patterns, and tonal qualities of your selected samples to create new content that respects the original traditions.`,
     type: "tips",
-    icon: Volume2
+    icon: Volume2 as LucideIcon
   },
   {
     id: "generation-types",
@@ -396,7 +397,7 @@ Full Track Composition (2-8min): Complete musical pieces for documentaries, film
 
 Retail Playlist (30-120min): Extended background music collections for commercial spaces with seamless transitions.`,
     type: "text",
-    icon: Music
+    icon: Music as LucideIcon
   },
   {
     id: "parameters",
@@ -417,7 +418,7 @@ Style Intensity: How strongly the AI applies stylistic transformations to your s
 
 Reference Track: Upload a track with similar style for the AI to analyze and incorporate characteristics from.`,
     type: "text",
-    icon: Settings
+    icon: Settings as LucideIcon
   },
   {
     id: "generation-process",
@@ -436,7 +437,7 @@ Reference Track: Upload a track with similar style for the AI to analyze and inc
 
 The entire process typically takes 2-15 minutes depending on the complexity and length of your chosen generation type. You can cancel at any time if needed.`,
     type: "text",
-    icon: Brain
+    icon: Brain as LucideIcon
   },
   {
     id: "troubleshooting",
@@ -465,7 +466,7 @@ Can't hear the preview:
 • Ensure your device volume is up
 • Try a different browser if issues persist`,
     type: "text",
-    icon: AlertCircle
+    icon: AlertCircle as LucideIcon
   }
 ];
 

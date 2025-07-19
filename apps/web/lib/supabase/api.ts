@@ -226,7 +226,7 @@ export const generationsApi = {
   // Update generation status
   async updateStatus(id: string, status: GenerationStatus, output_url?: string): Promise<ApiResponse<Generation>> {
     try {
-      const updateData: any = { status };
+      const updateData: { status: GenerationStatus; output_url?: string } = { status };
       if (output_url) {
         updateData.output_url = output_url;
       }

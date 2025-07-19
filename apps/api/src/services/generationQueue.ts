@@ -2,6 +2,8 @@ import Bull from 'bull';
 import { queueRedis } from '@/config/redis';
 import { supabase } from '@/config/supabase';
 import axios from 'axios';
+import { webSocketService } from '@/config/websocket';
+import { aiServiceBreaker } from '@/config/circuit-breaker';
 
 export interface GenerationJobData {
   generationId: string;
@@ -94,7 +96,7 @@ class GenerationQueueService {
   async addGenerationJob(data: GenerationJobData, options: Partial<Bull.JobOptions> = {}): Promise<Bull.Job<GenerationJobData>> {
     try {
       // Update generation status to 'processing'
-      await this.updateGenerationStatus(data.generationId, 'processing');
+      await this.updateGenerationStatus(data.generationId, 'processing', undefined, undefined, undefined, data.userId);
 
       // Add job to queue with priority based on type
       const priority = this.getJobPriority(data.type);
@@ -108,7 +110,7 @@ class GenerationQueueService {
       return job;
     } catch (error) {
       console.error('Failed to add generation job:', error);
-      await this.updateGenerationStatus(data.generationId, 'failed', 'Failed to queue generation job');
+      await this.updateGenerationStatus(data.generationId, 'failed', 'Failed to queue generation job', undefined, undefined, data.userId);
       throw error;
     }
   }
@@ -159,7 +161,7 @@ class GenerationQueueService {
       
       // Update generation status to failed
       if (job.data?.generationId) {
-        await this.updateGenerationStatus(job.data.generationId, 'failed', 'Job cancelled by user');
+        await this.updateGenerationStatus(job.data.generationId, 'failed', 'Job cancelled by user', undefined, undefined, job.data.userId);
       }
 
       console.log(`❌ Generation job cancelled: ${jobId}`);
@@ -227,6 +229,11 @@ class GenerationQueueService {
         
         // Update progress
         await job.progress(10);
+        webSocketService.emitGenerationProgress(data.generationId, data.userId, {
+          status: 'processing',
+          progress: 10,
+          message: 'Preparing audio generation...'
+        });
 
         // Prepare AI service request
         const aiRequest = {
@@ -238,7 +245,15 @@ class GenerationQueueService {
 
         // Call AI service
         await job.progress(20);
-        const response = await axios.post(`${this.aiServiceUrl}/generate`, aiRequest, {
+        webSocketService.emitGenerationProgress(data.generationId, data.userId, {
+          status: 'processing',
+          progress: 20,
+          message: 'Sending request to AI service...'
+        });
+        const response = await aiServiceBreaker.fire({
+          url: '/generate',
+          method: 'POST',
+          data: aiRequest,
           timeout: 300000, // 5 minutes timeout
           headers: {
             'Content-Type': 'application/json',
@@ -247,9 +262,14 @@ class GenerationQueueService {
         });
 
         await job.progress(50);
+        webSocketService.emitGenerationProgress(data.generationId, data.userId, {
+          status: 'processing',
+          progress: 50,
+          message: 'AI is generating your audio...'
+        });
 
-        if (!response.data.success) {
-          throw new Error(response.data.error || 'AI service returned error');
+        if (!(response as any).data.success) {
+          throw new Error((response as any).data.error || 'AI service returned error');
         }
 
         // Poll for completion
@@ -263,7 +283,8 @@ class GenerationQueueService {
           'completed',
           undefined,
           result.result_url,
-          processingTime
+          processingTime,
+          data.userId
         );
 
         await job.progress(100);
@@ -283,7 +304,8 @@ class GenerationQueueService {
           'failed',
           errorMessage,
           undefined,
-          processingTime
+          processingTime,
+          data.userId
         );
 
         throw error;
@@ -326,13 +348,16 @@ class GenerationQueueService {
 
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
       try {
-        const response = await axios.get(`${this.aiServiceUrl}/generate/${generationId}/status`, {
+        const response = await aiServiceBreaker.fire({
+          url: `/generate/${generationId}/status`,
+          method: 'GET',
+          timeout: 15000, // 15 seconds for status checks
           headers: {
             'Authorization': `Bearer ${process.env.AI_SERVICE_API_KEY || ''}`,
           },
         });
 
-        const status = response.data.status;
+        const status = (response as any).data.status;
         const progress = Math.min(50 + (attempt / maxAttempts) * 40, 90); // 50-90% progress
         
         await job.progress(progress);
@@ -340,12 +365,12 @@ class GenerationQueueService {
         if (status === 'completed') {
           return {
             success: true,
-            result_url: response.data.result_url,
-            processing_time: response.data.processing_time || 0,
-            metadata: response.data.metadata,
+            result_url: (response as any).data.result_url,
+            processing_time: (response as any).data.processing_time || 0,
+            metadata: (response as any).data.metadata,
           };
         } else if (status === 'failed') {
-          throw new Error(response.data.error_message || 'AI generation failed');
+          throw new Error((response as any).data.error_message || 'AI generation failed');
         }
 
         // Wait before next poll
@@ -363,14 +388,15 @@ class GenerationQueueService {
   }
 
   /**
-   * Update generation status in database
+   * Update generation status in database and emit WebSocket event
    */
   private async updateGenerationStatus(
     generationId: string,
     status: 'pending' | 'processing' | 'completed' | 'failed',
     errorMessage?: string,
     resultUrl?: string,
-    processingTime?: number
+    processingTime?: number,
+    userId?: string
   ): Promise<void> {
     try {
       const updateData: any = {
@@ -389,9 +415,38 @@ class GenerationQueueService {
 
       if (error) {
         console.error('Failed to update generation status:', error);
+        return;
+      }
+
+      // Emit WebSocket event for real-time updates
+      if (userId) {
+        const progress = status === 'completed' ? 100 : 
+                        status === 'failed' ? 0 : 
+                        status === 'processing' ? 20 : 0;
+
+        webSocketService.emitGenerationProgress(generationId, userId, {
+          status,
+          progress,
+          message: this.getStatusMessage(status),
+          result_url: resultUrl,
+          error: errorMessage,
+        });
       }
     } catch (error) {
       console.error('Failed to update generation status:', error);
+    }
+  }
+
+  /**
+   * Get user-friendly status message
+   */
+  private getStatusMessage(status: string): string {
+    switch (status) {
+      case 'pending': return 'Generation request queued';
+      case 'processing': return 'AI is generating your audio...';
+      case 'completed': return 'Generation completed successfully!';
+      case 'failed': return 'Generation failed. Please try again.';
+      default: return 'Unknown status';
     }
   }
 

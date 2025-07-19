@@ -1,0 +1,344 @@
+// Cultural Sound Lab Database Schema
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User management and authentication
+model User {
+  id                  String  @id @default(uuid())
+  email              String  @unique
+  name               String
+  role               UserRole @default(USER)
+  avatarUrl          String? @map("avatar_url")
+  culturalBackground String? @map("cultural_background")
+  stripeCustomerId   String? @map("stripe_customer_id")
+  subscriptionStatus String  @default("inactive") @map("subscription_status")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  audioSamples       AudioSample[]
+  generations        Generation[]
+  licenses           License[]
+  revenueSplits      RevenueSplit[]
+  paymentIntents     PaymentIntent[]
+  subscriptions      Subscription[]
+
+  @@index([email])
+  @@index([stripeCustomerId])
+  @@map("users")
+}
+
+// Audio samples with cultural metadata
+model AudioSample {
+  id                 String   @id @default(uuid())
+  title              String
+  description        String?
+  fileUrl            String   @map("file_url")
+  fileSize           Int      @map("file_size")
+  duration           Float
+  format             String
+  sampleRate         Int?     @map("sample_rate")
+  culturalOrigin     String   @map("cultural_origin")
+  instrumentType     String   @map("instrument_type")
+  moodTags           String[] @map("mood_tags")
+  usageRights        UsageRights @map("usage_rights")
+  pricePersonal      Float?   @map("price_personal")
+  priceCommercial    Float?   @map("price_commercial")
+  priceEnterprise    Float?   @map("price_enterprise")
+  contributorId      String   @map("contributor_id")
+  culturalContext    String?  @map("cultural_context")
+  attributionRequired Boolean @default(true) @map("attribution_required")
+  approved           Boolean  @default(false)
+  downloadCount      Int      @default(0) @map("download_count")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  contributor        User     @relation(fields: [contributorId], references: [id], onDelete: Cascade)
+  licenses           License[]
+  generations        Generation[] @relation("GenerationSources")
+
+  @@index([contributorId])
+  @@index([culturalOrigin])
+  @@index([instrumentType])
+  @@index([approved])
+  @@index([usageRights])
+  @@map("audio_samples")
+}
+
+// AI-generated audio tracks
+model Generation {
+  id               String         @id @default(uuid())
+  userId           String         @map("user_id")
+  type             GenerationType
+  status           GenerationStatus @default(PENDING)
+  parameters       Json
+  resultUrl        String?        @map("result_url")
+  errorMessage     String?        @map("error_message")
+  processingTime   Int?           @map("processing_time")
+  sourceSamples    String[]       @map("source_samples")
+  createdAt        DateTime       @default(now()) @map("created_at")
+  updatedAt        DateTime       @updatedAt @map("updated_at")
+
+  // Relations
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  audioSources     AudioSample[]  @relation("GenerationSources")
+  licenses         License[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([type])
+  @@index([createdAt])
+  @@map("generations")
+}
+
+// Licensing and usage rights
+model License {
+  id                String          @id @default(uuid())
+  userId            String          @map("user_id")
+  audioSampleId     String?         @map("audio_sample_id")
+  generationId      String?         @map("generation_id")
+  licenseType       LicenseType     @map("license_type")
+  price             Float
+  paymentStatus     PaymentStatus   @default(PENDING) @map("payment_status")
+  paymentIntentId   String?         @map("payment_intent_id")
+  usageTerms        String          @map("usage_terms")
+  expiryDate        DateTime?       @map("expiry_date")
+  downloadLimit     Int?            @map("download_limit")
+  downloadsUsed     Int             @default(0) @map("downloads_used")
+  active            Boolean         @default(true)
+  createdAt         DateTime        @default(now()) @map("created_at")
+  updatedAt         DateTime        @updatedAt @map("updated_at")
+
+  // Relations
+  user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  audioSample       AudioSample?    @relation(fields: [audioSampleId], references: [id], onDelete: Cascade)
+  generation        Generation?     @relation(fields: [generationId], references: [id], onDelete: Cascade)
+  revenueSplits     RevenueSplit[]
+  licenseEvents     LicenseEvent[]
+
+  @@index([userId])
+  @@index([audioSampleId])
+  @@index([generationId])
+  @@index([paymentStatus])
+  @@index([active])
+  @@map("licenses")
+}
+
+// Revenue distribution and royalties
+model RevenueSplit {
+  id             String        @id @default(uuid())
+  licenseId      String        @map("license_id")
+  contributorId  String        @map("contributor_id")
+  amount         Float
+  percentage     Float
+  status         SplitStatus   @default(PENDING)
+  paymentDate    DateTime?     @map("payment_date")
+  createdAt      DateTime      @default(now()) @map("created_at")
+
+  // Relations
+  license        License       @relation(fields: [licenseId], references: [id], onDelete: Cascade)
+  contributor    User          @relation(fields: [contributorId], references: [id], onDelete: Cascade)
+
+  @@index([licenseId])
+  @@index([contributorId])
+  @@index([status])
+  @@map("revenue_splits")
+}
+
+// Payment processing with Stripe
+model PaymentIntent {
+  id                  String    @id
+  userId              String    @map("user_id")
+  amount              Float
+  currency            String    @default("usd")
+  status              String
+  metadata            Json?
+  failureReason       String?   @map("failure_reason")
+  cancellationReason  String?   @map("cancellation_reason")
+  createdAt           DateTime  @map("created_at")
+  updatedAt           DateTime  @default(now()) @map("updated_at")
+
+  // Relations
+  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refunds             Refund[]
+
+  @@index([userId])
+  @@index([status])
+  @@map("payment_intents")
+}
+
+// Subscription management
+model Subscription {
+  id                    String    @id
+  userId                String    @map("user_id")
+  customerId            String    @map("customer_id")
+  priceId               String    @map("price_id")
+  status                String
+  currentPeriodStart    DateTime  @map("current_period_start")
+  currentPeriodEnd      DateTime  @map("current_period_end")
+  trialEnd              DateTime? @map("trial_end")
+  cancelAtPeriodEnd     Boolean   @default(false) @map("cancel_at_period_end")
+  canceledAt            DateTime? @map("canceled_at")
+  metadata              Json?
+  createdAt             DateTime  @map("created_at")
+  updatedAt             DateTime  @default(now()) @map("updated_at")
+
+  // Relations
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  invoices              Invoice[]
+
+  @@index([userId])
+  @@index([status])
+  @@map("subscriptions")
+}
+
+// Invoice management
+model Invoice {
+  id              String       @id
+  customerId      String       @map("customer_id")
+  subscriptionId  String?      @map("subscription_id")
+  amountDue       Float        @map("amount_due")
+  amountPaid      Float        @default(0) @map("amount_paid")
+  currency        String       @default("usd")
+  status          String
+  invoiceUrl      String?      @map("invoice_url")
+  invoicePdf      String?      @map("invoice_pdf")
+  dueDate         DateTime?    @map("due_date")
+  paidAt          DateTime?    @map("paid_at")
+  metadata        Json?
+  createdAt       DateTime     @map("created_at")
+  updatedAt       DateTime     @default(now()) @map("updated_at")
+
+  // Relations
+  subscription    Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+
+  @@index([customerId])
+  @@index([subscriptionId])
+  @@map("invoices")
+}
+
+// Refund tracking
+model Refund {
+  id               String        @id
+  paymentIntentId  String        @map("payment_intent_id")
+  amount           Float
+  currency         String        @default("usd")
+  reason           String?
+  status           String
+  createdAt        DateTime      @map("created_at")
+
+  // Relations
+  paymentIntent    PaymentIntent @relation(fields: [paymentIntentId], references: [id], onDelete: Cascade)
+
+  @@index([paymentIntentId])
+  @@map("refunds")
+}
+
+// Dispute tracking
+model Dispute {
+  id             String    @id
+  chargeId       String    @map("charge_id")
+  amount         Float
+  currency       String    @default("usd")
+  reason         String
+  status         String
+  evidenceDueBy  DateTime? @map("evidence_due_by")
+  createdAt      DateTime  @map("created_at")
+
+  @@index([chargeId])
+  @@map("disputes")
+}
+
+// License audit trail
+model LicenseEvent {
+  id         String   @id @default(uuid())
+  licenseId  String   @map("license_id")
+  eventType  String   @map("event_type")
+  eventData  Json?    @map("event_data")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  // Relations
+  license    License  @relation(fields: [licenseId], references: [id], onDelete: Cascade)
+
+  @@index([licenseId])
+  @@index([eventType])
+  @@map("license_events")
+}
+
+// Subscription product definitions
+model SubscriptionProduct {
+  id               String   @id @default(uuid())
+  stripeProductId  String   @unique @map("stripe_product_id")
+  stripePriceId    String   @unique @map("stripe_price_id")
+  name             String
+  description      String?
+  price            Float
+  currency         String   @default("usd")
+  interval         String
+  intervalCount    Int      @default(1) @map("interval_count")
+  features         Json?
+  active           Boolean  @default(true)
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @default(now()) @map("updated_at")
+
+  @@index([stripeProductId])
+  @@index([stripePriceId])
+  @@index([active])
+  @@map("subscription_products")
+}
+
+// Enums
+enum UserRole {
+  USER                @map("user")
+  ADMIN               @map("admin")
+  CULTURAL_CONTRIBUTOR @map("cultural_contributor")
+}
+
+enum UsageRights {
+  PERSONAL    @map("personal")
+  COMMERCIAL  @map("commercial")
+  ENTERPRISE  @map("enterprise")
+}
+
+enum GenerationType {
+  SOUND_LOGO  @map("sound_logo")
+  PLAYLIST    @map("playlist")
+  SOCIAL_CLIP @map("social_clip")
+  LONG_FORM   @map("long_form")
+}
+
+enum GenerationStatus {
+  PENDING     @map("pending")
+  PROCESSING  @map("processing")
+  COMPLETED   @map("completed")
+  FAILED      @map("failed")
+}
+
+enum LicenseType {
+  PERSONAL    @map("personal")
+  COMMERCIAL  @map("commercial")
+  ENTERPRISE  @map("enterprise")
+}
+
+enum PaymentStatus {
+  PENDING     @map("pending")
+  COMPLETED   @map("completed")
+  FAILED      @map("failed")
+  REFUNDED    @map("refunded")
+}
+
+enum SplitStatus {
+  PENDING     @map("pending")
+  PAID        @map("paid")
+  FAILED      @map("failed")
+}

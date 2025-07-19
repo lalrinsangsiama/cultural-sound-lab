@@ -1,4 +1,4 @@
-import { Navigation } from '@/components/landing/navigation';
+import { SimpleNavigation } from '@/components/landing/simple-navigation';
 import { HeroSection } from '@/components/landing/hero-section';
 import { FeaturesSection } from '@/components/landing/features-section';
 import { InteractiveDemoSection } from '@/components/landing/interactive-demo-section';
@@ -9,7 +9,7 @@ import { ScrollToTop } from '@/components/landing/scroll-to-top';
 export default function LandingPage() {
   return (
     <main className="min-h-screen">
-      <Navigation />
+      <SimpleNavigation />
       <HeroSection />
       <FeaturesSection />
       <InteractiveDemoSection />

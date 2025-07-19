@@ -2,22 +2,11 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import { generation } from "@/lib/api-client";
+import type { GenerationParameters } from "@/lib/api-client";
 
 export interface GenerationParams {
   type: 'sound_logo' | 'playlist' | 'social_clip' | 'long_form';
-  parameters: {
-    duration?: number;
-    mood?: string;
-    energy_level?: number;
-    instruments?: string[];
-    cultural_style?: string;
-    tempo?: number;
-    key?: string;
-    description?: string;
-    brand_name?: string;
-    playlist_size?: number;
-    video_description?: string;
-  };
+  parameters: GenerationParameters;
   source_samples: string[];
 }
 
@@ -26,7 +15,7 @@ export interface GenerationResult {
   user_id: string;
   type: string;
   status: "pending" | "processing" | "completed" | "failed";
-  parameters: any;
+  parameters: GenerationParameters;
   source_samples: string[];
   result_url?: string;
   error_message?: string;
@@ -36,6 +25,15 @@ export interface GenerationResult {
   estimated_completion_time?: number;
   created_at: string;
   updated_at: string;
+}
+
+interface JobStatus {
+  generation_id: string;
+  status: string;
+  progress?: number;
+  result_url?: string;
+  error_message?: string;
+  processing_time?: number;
 }
 
 export function useGeneration() {
@@ -51,7 +49,7 @@ export function useGeneration() {
     
     try {
       // Create generation request
-      const response = await generation.create(params);
+      const response = await generation.create(params) as GenerationResult;
       
       const newGeneration: GenerationResult = {
         id: response.id,
@@ -84,7 +82,7 @@ export function useGeneration() {
   const startPolling = useCallback((jobId: string, generationId: string) => {
     const pollInterval = setInterval(async () => {
       try {
-        const status = await generation.getJobStatus(jobId);
+        const status = await generation.getJobStatus(jobId) as JobStatus;
         
         if (status) {
           setProgress(status.progress || 0);
@@ -94,7 +92,7 @@ export function useGeneration() {
             id: generationId,
             user_id: "", // Will be filled from current state
             type: status.generation_id,
-            status: status.status as any,
+            status: status.status as "pending" | "processing" | "completed" | "failed",
             parameters: {},
             source_samples: [],
             result_url: status.result_url,
@@ -118,7 +116,7 @@ export function useGeneration() {
           setGenerations(prev => prev.map(g => 
             g.id === generationId ? {
               ...g,
-              status: status.status as any,
+              status: status.status as "pending" | "processing" | "completed" | "failed",
               result_url: status.result_url,
               error_message: status.error_message,
               processing_time: status.processing_time,
@@ -212,7 +210,7 @@ export function useGeneration() {
 
     // Retry with the same parameters
     const params: GenerationParams = {
-      type: gen.type as any,
+      type: gen.type as 'sound_logo' | 'playlist' | 'social_clip' | 'long_form',
       parameters: gen.parameters,
       source_samples: gen.source_samples,
     };

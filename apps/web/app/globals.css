@@ -127,6 +127,66 @@
   50% { background-position: 100% 50%; }
 }
 
+/* Mobile Enhancements */
+.landscape-mode {
+  --mobile-landscape-padding: 1rem;
+}
+
+/* Safe area support for mobile devices */
+@supports (padding: max(0px)) {
+  .pb-safe {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+  
+  .pt-safe {
+    padding-top: max(1rem, env(safe-area-inset-top));
+  }
+  
+  .pl-safe {
+    padding-left: max(1rem, env(safe-area-inset-left));
+  }
+  
+  .pr-safe {
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+}
+
+/* Touch enhancements */
+@media (hover: none) and (pointer: coarse) {
+  /* Mobile touch optimizations */
+  button, [role="button"] {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  
+  /* Increase touch targets for mobile */
+  .mobile-touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Landscape orientation adjustments */
+@media screen and (orientation: landscape) and (max-height: 500px) {
+  .landscape\:max-h-screen {
+    max-height: 100vh;
+  }
+  
+  .landscape\:overflow-y-auto {
+    overflow-y: auto;
+  }
+  
+  .landscape\:compact {
+    padding: 0.5rem;
+  }
+}
+
+/* Pull to refresh animation */
+@keyframes pull-to-refresh-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 .glass-morphism {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(20px);
@@ -293,6 +353,145 @@
 /* Focus States */
 .focus-ring {
   @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background;
+}
+
+/* Enhanced Focus Indicators for Accessibility */
+.focus-visible-only {
+  outline: none;
+}
+
+.focus-visible-only:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* High contrast focus for interactive elements */
+button:focus-visible,
+[role="button"]:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--ring));
+}
+
+/* Ensure minimum touch target size for accessibility */
+.min-touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Screen Reader Only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+    --primary: 220 100% 30%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 90%;
+    --secondary-foreground: 0 0% 0%;
+    --muted: 0 0% 90%;
+    --muted-foreground: 0 0% 20%;
+    --accent: 0 0% 90%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 0 100% 40%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 50%;
+    --input: 0 0% 50%;
+    --ring: 220 100% 30%;
+  }
+  
+  .dark {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 0%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 0%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 220 100% 70%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 0 0% 20%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 80%;
+    --accent: 0 0% 20%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 100% 60%;
+    --destructive-foreground: 0 0% 0%;
+    --border: 0 0% 50%;
+    --input: 0 0% 50%;
+    --ring: 220 100% 70%;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .animate-spin,
+  .animate-pulse,
+  .animate-bounce {
+    animation: none !important;
+  }
+}
+
+/* Color Contrast Enhancements */
+.text-contrast-safe {
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
+}
+
+.bg-contrast-safe {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+/* Link color with sufficient contrast */
+.link-accessible {
+  color: hsl(220 100% 40%);
+  text-decoration: underline;
+}
+
+.dark .link-accessible {
+  color: hsl(220 100% 70%);
+}
+
+@media (prefers-contrast: high) {
+  .link-accessible {
+    color: hsl(220 100% 30%);
+    font-weight: 600;
+  }
+  
+  .dark .link-accessible {
+    color: hsl(220 100% 80%);
+    font-weight: 600;
+  }
 }
 
 /* Landing Page Specific Animations */
@@ -618,6 +817,172 @@
 .stagger-5 { animation-delay: 0.5s; }
 .stagger-6 { animation-delay: 0.6s; }
 
+/* Mobile-specific styles and safe areas */
+@supports (padding: env(safe-area-inset-top)) {
+  .safe-area-inset-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .safe-area-inset-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .safe-area-inset-left {
+    padding-left: env(safe-area-inset-left);
+  }
+  
+  .safe-area-inset-right {
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* Scrollbar hiding utilities */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Touch-friendly minimum sizes */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Smooth momentum scrolling for iOS */
+.momentum-scroll {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Fix for iOS viewport height */
+.mobile-viewport {
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* Swipe indicator */
+.swipe-indicator {
+  position: relative;
+}
+
+.swipe-indicator::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 3px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+}
+
+/* Pull to refresh styles */
+.pull-to-refresh {
+  transform: translateY(0);
+  transition: transform 0.3s ease;
+}
+
+.pull-to-refresh.pulling {
+  transform: translateY(60px);
+}
+
+/* Mobile-optimized buttons */
+.btn-mobile {
+  min-height: 48px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* Card swipe animations */
+.card-swipe-left {
+  animation: swipe-left 0.3s ease-out forwards;
+}
+
+.card-swipe-right {
+  animation: swipe-right 0.3s ease-out forwards;
+}
+
+@keyframes swipe-left {
+  0% { transform: translateX(0) rotateZ(0deg); opacity: 1; }
+  100% { transform: translateX(-100vw) rotateZ(-15deg); opacity: 0; }
+}
+
+@keyframes swipe-right {
+  0% { transform: translateX(0) rotateZ(0deg); opacity: 1; }
+  100% { transform: translateX(100vw) rotateZ(15deg); opacity: 0; }
+}
+
+/* Enhanced mobile animations */
+@keyframes mobile-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes mobile-slide-down {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+}
+
+.mobile-slide-up {
+  animation: mobile-slide-up 0.3s ease-out forwards;
+}
+
+.mobile-slide-down {
+  animation: mobile-slide-down 0.3s ease-out forwards;
+}
+
+/* Bottom sheet styles */
+.bottom-sheet {
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.bottom-sheet.open {
+  transform: translateY(0);
+}
+
+/* Mobile step transitions */
+.step-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.step-enter {
+  opacity: 0;
+  transform: translateX(100px);
+}
+
+.step-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.step-exit {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.step-exit-active {
+  opacity: 0;
+  transform: translateX(-100px);
+}
+
 /* Responsive Utilities */
 @media (max-width: 768px) {
   .hide-mobile {
@@ -628,10 +993,36 @@
     transform: none;
     box-shadow: inherit;
   }
+  
+  /* Disable hover effects on mobile */
+  .no-mobile-hover:hover {
+    transform: none !important;
+  }
+  
+  /* Larger touch targets */
+  .mobile-touch {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Mobile typography adjustments */
+  .mobile-text-adjust {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
 }
 
 @media (min-width: 769px) {
   .show-mobile {
+    display: none;
+  }
+  
+  .desktop-only {
+    display: block;
+  }
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
     display: none;
   }
 }

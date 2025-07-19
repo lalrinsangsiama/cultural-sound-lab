@@ -6,12 +6,39 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "check-types": "turbo run check-types",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "test": "turbo run test",
+    "test:unit": "turbo run test:unit",
+    "test:integration": "turbo run test:integration",
+    "test:coverage": "turbo run test:coverage",
+    "test:visual": "npm run test:e2e -- --suites visual",
+    "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e && npm run test:visual",
+    "test:ci": "npm run test:all && ts-node tests/comprehensive-test-reporter.ts",
+    "test:e2e": "ts-node tests/test-runner.ts",
+    "test:e2e:headed": "ts-node tests/test-runner.ts --headed",
+    "test:e2e:chrome": "ts-node tests/test-runner.ts --browsers chromium",
+    "test:e2e:firefox": "ts-node tests/test-runner.ts --browsers firefox",
+    "test:e2e:safari": "ts-node tests/test-runner.ts --browsers webkit",
+    "test:e2e:mobile": "ts-node tests/test-runner.ts --browsers \"Mobile Chrome,Mobile Safari\"",
+    "test:journeys": "ts-node tests/test-runner.ts --suites user-journeys",
+    "test:audio": "ts-node tests/test-runner.ts --suites audio-functionality",
+    "test:payments": "ts-node tests/test-runner.ts --suites payment-flows",
+    "test:performance": "ts-node tests/test-runner.ts --suites performance",
+    "test:accessibility": "ts-node tests/test-runner.ts --suites accessibility",
+    "test:critical": "ts-node tests/test-runner.ts --suites user-journeys,audio-functionality,payment-flows",
+    "test:report": "open test-results/csl-test-report.html"
   },
   "devDependencies": {
+    "@playwright/test": "^1.54.1",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@vitejs/plugin-react": "^4.7.0",
+    "jsdom": "^26.1.0",
     "prettier": "^3.6.0",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "turbo": "^2.5.4"
+    "turbo": "^2.5.4",
+    "vitest": "^3.2.4"
   },
   "engines": {
     "node": ">=18"

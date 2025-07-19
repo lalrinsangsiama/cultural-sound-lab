@@ -72,12 +72,17 @@ const MiniWaveform = ({ isPlaying, progress = 0.3 }: { isPlaying?: boolean; prog
   const waveformPath = generateWaveformPath(80, 20);
   
   return (
-    <div className="relative w-20 h-5 bg-gray-100 rounded overflow-hidden">
+    <div 
+      className="relative w-20 h-5 bg-gray-100 rounded overflow-hidden"
+      role="img"
+      aria-label={`Audio waveform${isPlaying ? ', currently playing' : ''}`}
+    >
       <svg 
         width="80" 
         height="20" 
         className="absolute inset-0"
         viewBox="0 0 80 20"
+        aria-hidden="true"
       >
         {/* Background waveform */}
         <path
@@ -168,6 +173,8 @@ const PlayButton = ({ isPlaying, isLoading, onClick }: {
       size="sm"
       onClick={handleClick}
       disabled={isLoading}
+      aria-label={isLoading ? "Loading audio" : isPlaying ? "Pause audio" : "Play audio"}
+      aria-pressed={isPlaying}
       className={cn(
         "relative overflow-hidden w-12 h-12 rounded-full p-0 border-2 transition-all duration-200",
         isPlaying 
@@ -176,11 +183,11 @@ const PlayButton = ({ isPlaying, isLoading, onClick }: {
       )}
     >
       {isLoading ? (
-        <Loader2 className="h-5 w-5 animate-spin" />
+        <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
       ) : isPlaying ? (
-        <Pause className="h-5 w-5" />
+        <Pause className="h-5 w-5" aria-hidden="true" />
       ) : (
-        <Play className="h-5 w-5 ml-0.5" />
+        <Play className="h-5 w-5 ml-0.5" aria-hidden="true" />
       )}
       
       {/* Ripple effects */}
@@ -246,6 +253,16 @@ export default function EnhancedAudioCard({
         onClick={() => onSelect?.(sample)}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        tabIndex={0}
+        role="button"
+        aria-label={`Select ${sample.title} from ${sample.culturalOrigin}`}
+        aria-pressed={isSelected}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onSelect?.(sample);
+          }
+        }}
       >
         <CardContent className="p-4">
           <div className="flex items-center gap-4">
@@ -292,30 +309,34 @@ export default function EnhancedAudioCard({
                       variant="ghost"
                       size="sm"
                       onClick={(e) => handleAction(() => onFavorite?.(sample), e)}
+                      aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
+                      aria-pressed={isFavorited}
                       className={cn(
                         "opacity-0 group-hover:opacity-100 transition-opacity",
                         isFavorited && "opacity-100 text-red-500"
                       )}
                     >
-                      <Heart className={cn("h-4 w-4", isFavorited && "fill-current")} />
+                      <Heart className={cn("h-4 w-4", isFavorited && "fill-current")} aria-hidden="true" />
                     </Button>
                     
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={(e) => handleAction(() => onAddToProject?.(sample), e)}
+                      aria-label="Add to project"
                       className="opacity-0 group-hover:opacity-100 transition-opacity"
                     >
-                      <Plus className="h-4 w-4" />
+                      <Plus className="h-4 w-4" aria-hidden="true" />
                     </Button>
                     
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={(e) => handleAction(() => onInfo?.(sample), e)}
+                      aria-label="View more information"
                       className="opacity-0 group-hover:opacity-100 transition-opacity"
                     >
-                      <Info className="h-4 w-4" />
+                      <Info className="h-4 w-4" aria-hidden="true" />
                     </Button>
                   </div>
                 </div>
@@ -339,6 +360,16 @@ export default function EnhancedAudioCard({
       onClick={() => onSelect?.(sample)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      tabIndex={0}
+      role="button"
+      aria-label={`Select ${sample.title} from ${sample.culturalOrigin}`}
+      aria-pressed={isSelected}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onSelect?.(sample);
+        }
+      }}
     >
       {/* Floating shadow effect */}
       <div className={cn(
@@ -378,21 +409,24 @@ export default function EnhancedAudioCard({
               variant="ghost"
               size="sm"
               onClick={(e) => handleAction(() => onFavorite?.(sample), e)}
+              aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
+              aria-pressed={isFavorited}
               className={cn(
                 "opacity-0 group-hover:opacity-100 transition-all duration-200 transform hover:scale-110",
                 isFavorited && "opacity-100 text-red-500"
               )}
             >
-              <Heart className={cn("h-4 w-4", isFavorited && "fill-current")} />
+              <Heart className={cn("h-4 w-4", isFavorited && "fill-current")} aria-hidden="true" />
             </Button>
             
             <Button
               variant="ghost"
               size="sm"
               onClick={(e) => handleAction(() => onShare?.(sample), e)}
+              aria-label="Share audio sample"
               className="opacity-0 group-hover:opacity-100 transition-all duration-200 transform hover:scale-110"
             >
-              <Share className="h-4 w-4" />
+              <Share className="h-4 w-4" aria-hidden="true" />
             </Button>
           </div>
         </div>
@@ -453,33 +487,37 @@ export default function EnhancedAudioCard({
                 variant="outline"
                 size="sm"
                 onClick={(e) => handleAction(() => onInfo?.(sample), e)}
+                aria-label="View more information"
                 className="transition-all duration-200 hover:bg-blue-50 hover:border-blue-300"
               >
-                <Info className="h-3 w-3" />
+                <Info className="h-3 w-3" aria-hidden="true" />
               </Button>
               
               <Button
                 variant="outline"
                 size="sm"
                 onClick={(e) => handleAction(() => onDownload?.(sample), e)}
+                aria-label="Download audio sample"
                 className="transition-all duration-200 hover:bg-green-50 hover:border-green-300"
               >
-                <Download className="h-3 w-3" />
+                <Download className="h-3 w-3" aria-hidden="true" />
               </Button>
               
               <Button
                 variant="outline"
                 size="sm"
                 onClick={(e) => handleAction(() => onAddToProject?.(sample), e)}
+                aria-label="Add to project"
                 className="transition-all duration-200 hover:bg-purple-50 hover:border-purple-300"
               >
-                <Star className="h-3 w-3" />
+                <Star className="h-3 w-3" aria-hidden="true" />
               </Button>
             </div>
           </div>
 
           <Button
             onClick={(e) => handleAction(() => onAddToProject?.(sample), e)}
+            aria-label={isSelected ? "Already added to project" : "Add to project"}
             className={cn(
               "w-full transition-all duration-200",
               isSelected 
@@ -488,7 +526,7 @@ export default function EnhancedAudioCard({
             )}
             disabled={isSelected}
           >
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="h-4 w-4 mr-2" aria-hidden="true" />
             {isSelected ? "Added to Project" : "Add to Project"}
           </Button>
         </div>

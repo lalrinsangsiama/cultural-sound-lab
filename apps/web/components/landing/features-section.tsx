@@ -220,7 +220,7 @@ const features = [
     description: 'Transform traditional sounds into modern compositions using cutting-edge AI technology.',
     animation: <AIAnimation />,
     stats: null,
-    link: '/generate',
+    link: '/dashboard/generate',
     cta: 'Try AI Generation',
   },
   {
@@ -245,7 +245,7 @@ const features = [
     description: 'Every sound comes with rich cultural context and stories, preserving heritage for future generations.',
     animation: <GlobeAnimation />,
     stats: null,
-    link: '/library',
+    link: '/dashboard/library',
     cta: 'Explore Cultures',
   },
   {
@@ -264,7 +264,7 @@ export function FeaturesSection() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="py-24 bg-gradient-to-br from-gray-50 to-white">
+    <section ref={ref} id="about" data-section="features" className="py-24 bg-gradient-to-br from-gray-50 to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section header */}
         <motion.div

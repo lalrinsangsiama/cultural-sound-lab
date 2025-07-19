@@ -115,6 +115,39 @@ const AudioWaveVisualization = () => {
     }
   };
 
+  const drawDemoVisualization = () => {
+    if (!canvasRef.current) return;
+
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const barCount = 50;
+    const barWidth = canvas.width / barCount;
+    
+    const drawFrame = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const gradient = ctx.createLinearGradient(0, canvas.height, 0, 0);
+      gradient.addColorStop(0, '#8B5CF6');
+      gradient.addColorStop(0.5, '#A78BFA');
+      gradient.addColorStop(1, '#C4B5FD');
+
+      for (let i = 0; i < barCount; i++) {
+        const barHeight = (Math.sin(Date.now() * 0.005 + i * 0.2) * 0.5 + 0.5) * canvas.height * 0.8;
+        
+        ctx.fillStyle = gradient;
+        ctx.fillRect(i * barWidth, canvas.height - barHeight, barWidth - 1, barHeight);
+      }
+
+      if (isPlaying) {
+        animationRef.current = requestAnimationFrame(drawFrame);
+      }
+    };
+
+    drawFrame();
+  };
+
   const togglePlay = async () => {
     if (!audioRef.current) return;
 
@@ -125,17 +158,24 @@ const AudioWaveVisualization = () => {
         cancelAnimationFrame(animationRef.current);
       }
     } else {
-      if (!audioContextRef.current) {
-        await initAudioVisualization();
+      try {
+        if (!audioContextRef.current) {
+          await initAudioVisualization();
+        }
+        
+        if (audioContextRef.current?.state === 'suspended') {
+          await audioContextRef.current.resume();
+        }
+        
+        await audioRef.current.play();
+        setIsPlaying(true);
+        drawVisualization();
+      } catch (error) {
+        console.warn('Audio playback failed, showing demo visualization instead');
+        // Show demo visualization even without audio
+        setIsPlaying(true);
+        drawDemoVisualization();
       }
-      
-      if (audioContextRef.current?.state === 'suspended') {
-        await audioContextRef.current.resume();
-      }
-      
-      audioRef.current.play();
-      setIsPlaying(true);
-      drawVisualization();
     }
   };
 
@@ -157,6 +197,10 @@ const AudioWaveVisualization = () => {
         src="/audio/demo-preview.mp3"
         loop
         onEnded={() => setIsPlaying(false)}
+        onError={() => {
+          console.warn('Demo audio file not found, using fallback visualization');
+          setIsPlaying(false);
+        }}
       />
       
       <div className="bg-black/20 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
@@ -290,7 +334,7 @@ export function HeroSection() {
               <Button
                 size="lg"
                 className="bg-white text-purple-600 hover:bg-gray-100 font-semibold px-8 py-4 text-lg rounded-full shadow-lg"
-                onClick={() => window.location.href = '/library'}
+                onClick={() => window.location.href = '/dashboard/library'}
               >
                 Explore Sounds
               </Button>
@@ -303,7 +347,7 @@ export function HeroSection() {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-white text-white hover:bg-white hover:text-purple-600 font-semibold px-8 py-4 text-lg rounded-full backdrop-blur-sm"
+                className="border-white bg-white/10 text-white hover:bg-white hover:text-purple-600 font-semibold px-8 py-4 text-lg rounded-full backdrop-blur-sm shadow-lg"
                 onClick={() => window.location.href = '/register'}
               >
                 Start Creating
@@ -328,7 +372,13 @@ export function HeroSection() {
                 className="text-center cursor-pointer"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => window.location.href = stat.link}
+                onClick={() => {
+                  if (stat.link === '/library') {
+                    window.location.href = '/dashboard/library';
+                  } else {
+                    window.location.href = stat.link;
+                  }
+                }}
               >
                 <div className="text-2xl md:text-3xl font-bold text-white">
                   {stat.value}
