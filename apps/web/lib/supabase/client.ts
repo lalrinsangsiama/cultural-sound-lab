@@ -10,34 +10,66 @@ const createMockSupabaseClient = () => ({
     getSession: async () => ({ data: { session: null }, error: null }),
     getUser: async () => ({ data: { user: null }, error: null }),
     signInWithPassword: async ({ email, password }: { email: string; password: string }) => {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      
-      if (!response.ok) {
-        const error = await response.json();
-        return { data: { user: null, session: null }, error };
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          return { 
+            data: { user: null, session: null }, 
+            error: { message: errorData.error || 'Login failed' }
+          };
+        }
+        
+        const responseData = await response.json();
+        return { 
+          data: { 
+            user: responseData.user, 
+            session: responseData.session 
+          }, 
+          error: null 
+        };
+      } catch (error) {
+        return { 
+          data: { user: null, session: null }, 
+          error: { message: 'Network error' }
+        };
       }
-      
-      const data = await response.json();
-      return { data, error: null };
     },
     signUp: async ({ email, password, options }: { email: string; password: string; options?: any }) => {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, name: options?.data?.name }),
-      });
-      
-      if (!response.ok) {
-        const error = await response.json();
-        return { data: { user: null, session: null }, error };
+      try {
+        const response = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password, name: options?.data?.name }),
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          return { 
+            data: { user: null, session: null }, 
+            error: { message: errorData.error || 'Registration failed' }
+          };
+        }
+        
+        const responseData = await response.json();
+        return { 
+          data: { 
+            user: responseData.user, 
+            session: responseData.session 
+          }, 
+          error: null 
+        };
+      } catch (error) {
+        return { 
+          data: { user: null, session: null }, 
+          error: { message: 'Network error' }
+        };
       }
-      
-      const data = await response.json();
-      return { data, error: null };
     },
     signOut: async () => {
       await fetch('/api/auth/logout', { method: 'POST' });

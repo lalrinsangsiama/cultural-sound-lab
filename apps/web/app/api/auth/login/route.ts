@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+export async function GET() {
+  return NextResponse.json({ 
+    message: 'Login endpoint available. Use POST with email and password.' 
+  });
+}
+
 // Mock users database (in a real app, this would be in a database)
 const mockUsers = [
   {
