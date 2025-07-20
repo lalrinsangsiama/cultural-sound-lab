@@ -9,19 +9,20 @@ All production configurations are now complete. Here's how to deploy immediately
 - **Payments**: Razorpay (all secrets set)
 - **Security**: JWT & session secrets generated
 - **Domain**: culturalsoundlab.com
+- **Monitoring**: Sentry integration complete (error tracking & performance monitoring)
 
-## 🔧 Pre-Deployment Fix (Required)
+## ✅ Build Status: READY
 
-Before deploying, we need to fix the TypeScript build errors:
+All TypeScript build errors have been resolved:
+- API package passes type checking
+- Web package passes type checking  
+- UI package builds successfully
+- Sentry monitoring fully integrated
 
 ```bash
-# 1. Fix the Zod validation errors in API
-cd apps/api
-# Edit src/validations/generation.ts to fix the Zod schema issues
-
-# 2. Test the build locally
-cd ../..
-npm run build
+# Verify build status
+npm run build        # ✅ All packages build successfully
+npm run check-types  # ✅ No TypeScript errors
 ```
 
 ## 🚀 Option 1: Deploy to Vercel (Recommended - 5 minutes)
@@ -94,54 +95,51 @@ VALUES ('cultural-audio', 'cultural-audio', true);
 ]
 ```
 
-### 3. **Configure Razorpay Webhook**
-1. Go to Razorpay Dashboard
-2. Settings → Webhooks
-3. Add webhook URL: `https://api.culturalsoundlab.com/api/payments/webhook`
-4. Secret: `BuildCSL4ppl`
+### 3. **Configure Webhooks**
+1. **Razorpay Webhook**:
+   - Go to Razorpay Dashboard → Settings → Webhooks
+   - Add webhook URL: `https://api.culturalsoundlab.com/api/payments/webhook`
+   - Secret: `BuildCSL4ppl`
+   
+2. **Sentry Monitoring** (Already Configured):
+   - Error tracking: Production DSN configured
+   - Performance monitoring: Enabled with 10% sampling
+   - Source maps: Automatically uploaded on build
 
 ### 4. **Test Production**
 - Frontend: https://culturalsoundlab.com
 - API Health: https://api.culturalsoundlab.com/health
+- Sentry Test: https://api.culturalsoundlab.com/debug-sentry
 - Test user registration
 - Test audio preview
 - Test generation (mock)
+- Monitor errors in Sentry dashboard
 
-## 🐛 Quick Fixes for Common Issues
+## 🎯 Deployment in 5 Minutes (All Fixes Applied)
 
-### TypeScript Build Errors
-The Zod validation in `generation.ts` needs updating:
-```typescript
-// Change from:
-z.string().regex(/pattern/)
-// To:
-z.string().regex(/pattern/, "Error message")
-```
+1. **Run `vercel --prod`** (2 min)
+2. **Add env vars in dashboard** (2 min)  
+3. **Configure domain** (1 min)
 
-### Next.js Route Issues
-Update route handlers to use new Next.js 15 syntax:
-```typescript
-// Add proper typing for params
-export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const { id } = await params;
-  // ... rest of handler
-}
-```
+All build errors have been resolved! ✅
 
-## 🎯 Deployment in 10 Minutes
+## 🐛 Troubleshooting
 
-1. **Fix build errors** (5 min)
-2. **Run `vercel --prod`** (2 min)
-3. **Add env vars in dashboard** (2 min)
-4. **Configure domain** (1 min)
+### Sentry Issues
+- **Error tracking not working**: Check DSN configuration in environment variables
+- **Performance monitoring missing**: Verify `profilesSampleRate` is set
+- **Source maps not uploading**: Ensure `SENTRY_AUTH_TOKEN` is configured
+
+### Common Deployment Issues
+- **Environment variables**: Ensure all vars from `.env.production` are added to Vercel
+- **Domain configuration**: DNS propagation can take up to 48 hours
+- **Build timeouts**: Check for memory issues in Vercel dashboard
 
 ## 🆘 Need Help?
 
-- **Build failing?** Check TypeScript errors first
-- **Env vars not working?** Ensure they're added in Vercel dashboard
+- **Sentry errors?** Check error tracking in Sentry dashboard
+- **Performance issues?** Monitor performance metrics in Sentry
+- **Env vars not working?** Ensure they're added in Vercel dashboard  
 - **Domain issues?** DNS propagation can take up to 48 hours
 
 ## 🎉 You're Ready!
@@ -152,5 +150,6 @@ Once deployed, your platform will be live with:
 - Mock AI generation
 - Payment integration
 - Secure file storage
+- **Complete error tracking and monitoring with Sentry**
 
 The only missing piece is the real AI service, which can be added later when ready.

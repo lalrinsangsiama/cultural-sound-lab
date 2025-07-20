@@ -2,10 +2,10 @@ import { Router } from 'express';
 import { z } from 'zod';
 import crypto from 'crypto';
 import { validateRequest } from '../middleware/validation';
-import { authenticateToken } from '../middleware/auth';
-import { supabase } from '../lib/supabase';
-import { AppError } from '../middleware/errorHandler';
-import { logger } from '../lib/logger';
+import { authenticateUser, AuthenticatedRequest } from '../middleware/auth';
+import { supabase } from '../config/supabase';
+import { AppError } from '../middleware/error';
+import { logger } from '../config/logger';
 
 const router = Router();
 
@@ -26,7 +26,7 @@ const razorpayWebhookSchema = z.object({
         method: z.string(),
         captured: z.boolean(),
         description: z.string().optional(),
-        notes: z.record(z.string()).optional(),
+        notes: z.record(z.string(), z.string()).optional(),
         created_at: z.number(),
       }),
     }),
@@ -35,7 +35,7 @@ const razorpayWebhookSchema = z.object({
 });
 
 // Create payment order
-router.post('/create-order', authenticateToken, async (req, res, next) => {
+router.post('/create-order', authenticateUser, async (req: AuthenticatedRequest, res, next) => {
   try {
     const { amount, currency = 'INR', notes } = req.body;
     const userId = req.user?.id;
@@ -126,7 +126,7 @@ router.post('/webhook', async (req, res, next) => {
     if (error instanceof z.ZodError) {
       return res.status(400).json({ 
         error: 'Invalid webhook data', 
-        details: error.errors 
+        details: error.issues 
       });
     }
     
@@ -220,7 +220,7 @@ async function handlePaymentFailed(payment: any) {
 }
 
 // Get payment status
-router.get('/status/:paymentId', authenticateToken, async (req, res, next) => {
+router.get('/status/:paymentId', authenticateUser, async (req: AuthenticatedRequest, res, next) => {
   try {
     const { paymentId } = req.params;
     const userId = req.user?.id;

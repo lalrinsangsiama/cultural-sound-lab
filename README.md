@@ -5,6 +5,7 @@ Cultural Sound Lab is an innovative platform that enables musicians and cultural
 ## 🎵 Current Status
 
 **MVP Implementation Complete** - Functional web application, API backend, and mock generation services ready for demo.
+**Monitoring Integration Complete** - Sentry error tracking and performance monitoring fully configured.
 
 ### Current Applications
 - **Web App** (`apps/web/`) - Complete Next.js dashboard with authentication, audio library, AI generation workflows, and user management
@@ -36,7 +37,7 @@ Cultural Sound Lab is an innovative platform that enables musicians and cultural
    ```
 
 3. **Access the application**:
-   - Web App: http://localhost:3000
+   - Web App: http://localhost:3001 (updated port)
    - API: http://localhost:3001/api
 
 ### Available Scripts
@@ -90,10 +91,11 @@ cultural-sound-lab/
 - **TypeScript** for type safety
 - **In-memory queue** for job processing
 
-#### Development
+#### Development & Monitoring
 - **Turborepo 2.5.4** for monorepo management
 - **ESLint** and **Prettier** for code quality
 - **100% TypeScript** across all packages
+- **Sentry** for error tracking and performance monitoring
 
 ## 🎯 Core Features
 
@@ -104,6 +106,7 @@ cultural-sound-lab/
 - **Authentication** - Complete login/register system with Supabase Auth
 - **Dashboard** - User management, earnings tracking, and project overview
 - **Responsive Design** - Mobile-first approach with touch-friendly controls
+- **Error Monitoring** - Complete Sentry integration for production monitoring
 
 ### 🔄 Mock Services
 - **Generation Queue** - Simulated AI processing with realistic progress tracking
@@ -161,15 +164,22 @@ This project uses **npm workspaces** with **Turborepo** for efficient monorepo m
 
 ## 🚀 Deployment
 
-Ready for deployment on:
-- **Vercel** (recommended for Next.js)
+**Production Ready** with complete monitoring and error tracking:
+- **Vercel** (recommended for Next.js) - Ready to deploy
 - **Railway** (for full-stack deployment)
 - **Netlify** (frontend)
 - **Heroku** (API backend)
 
+**Monitoring Configured**:
+- Sentry error tracking and performance monitoring
+- Production environment variables set
+- Source map uploads configured
+
 ## 📖 Documentation
 
 - `CLAUDE.md` - Complete project guide and development instructions
+- `DEPLOY_NOW.md` - Production deployment guide (ready to deploy)
+- `DEPLOYMENT_CHECKLIST.md` - Complete deployment checklist
 - `apps/web/README.md` - Frontend application documentation
 - `apps/api/README.md` - Backend API documentation
 - `apps/web/components/generation/README.md` - AI generation component guide

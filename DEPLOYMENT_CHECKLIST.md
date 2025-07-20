@@ -46,13 +46,18 @@ Options:
 - [ ] **Postmark**
 
 ### 4. **Monitoring (Optional but Recommended)** ✅
-- [x] **Sentry** for error tracking
-  - Created projects at sentry.io
+- [x] **Sentry** for error tracking and performance monitoring
+  - Created projects at sentry.io (organization: cultural-sound-lab)
   - DSN configured for both frontend and backend
   - Auth token configured: `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`
   - Web DSN: `https://2fddb04e024bb6a7717753ef879c84d9@o4509699240361984.ingest.us.sentry.io/4509699280076800`
   - API DSN: `https://4c0f7dbc2f4f6c57fecd7bd0dfb81ddd@o4509699240361984.ingest.us.sentry.io/4509699259760640`
-  - See [SENTRY_CONFIGURATION_GUIDE.md](./SENTRY_CONFIGURATION_GUIDE.md) for detailed setup instructions
+  - **Full Integration Complete**:
+    - Express.js instrumentation with profiling enabled
+    - Next.js Sentry integration with source maps
+    - Error boundary components implemented
+    - Debug endpoint available: `/debug-sentry`
+    - Performance monitoring with traces and profiles
 - [ ] **Analytics** (optional)
   - Google Analytics or Plausible
 

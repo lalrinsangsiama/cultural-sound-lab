@@ -17,7 +17,7 @@ docker-compose up -d
 
 | Service | URL | Credentials |
 |---------|-----|-------------|
-| Web App | http://localhost:3000 | - |
+| Web App | http://localhost:3001 | - |
 | API | http://localhost:3001 | - |
 | Grafana | http://localhost:3002 | admin:admin123 |
 | Prometheus | http://localhost:9090 | - |

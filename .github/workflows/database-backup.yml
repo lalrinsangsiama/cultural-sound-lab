@@ -15,20 +15,36 @@ on:
         required: false
         type: boolean
         default: false
+      runner_type:
+        description: 'Runner type (ubuntu-latest, self-hosted, or custom labels)'
+        required: false
+        default: 'ubuntu-latest'
 
 jobs:
   backup:
     name: Backup Supabase Database
-    runs-on: ubuntu-latest
+    runs-on: ${{ github.event.inputs.runner_type || 'ubuntu-latest' }}
     
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
       
-      - name: Install PostgreSQL client
+      - name: Install PostgreSQL client (Ubuntu)
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get update
           sudo apt-get install -y postgresql-client-16
+          pg_dump --version
+      
+      - name: Install PostgreSQL client (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          # Check if PostgreSQL is already installed
+          if ! command -v pg_dump &> /dev/null; then
+            echo "Installing PostgreSQL client tools..."
+            brew install postgresql@16
+            echo "/opt/homebrew/opt/postgresql@16/bin" >> $GITHUB_PATH
+          fi
           pg_dump --version
       
       - name: Create backup directory

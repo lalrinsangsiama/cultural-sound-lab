@@ -1,0 +1,83 @@
+name: Deploy API with Sentry Release
+
+on:
+  push:
+    branches: [main]
+    paths: ['apps/api/**']
+  workflow_dispatch:
+
+env:
+  SENTRY_ORG: cultural-sound-lab
+  SENTRY_PROJECT: express-api
+
+jobs:
+  deploy-api:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          cd apps/api
+          npm ci
+
+      - name: Install Sentry CLI
+        run: |
+          curl -sL https://sentry.io/get-cli/ | bash
+
+      - name: Build API
+        run: |
+          cd apps/api
+          npm run build
+        env:
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN_API }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
+      - name: Create Sentry Release for API
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        run: |
+          cd apps/api
+          
+          # Create version with API prefix
+          VERSION="api-$(sentry-cli releases propose-version)"
+          echo "Creating API Sentry release: $VERSION"
+          
+          # Create the release
+          sentry-cli releases new "$VERSION"
+          
+          # Associate commits with the release
+          sentry-cli releases set-commits "$VERSION" --auto
+          
+          # Upload source maps if they exist
+          if [ -d "./dist" ]; then
+            sentry-cli releases files "$VERSION" upload-sourcemaps ./dist --url-prefix "~/dist"
+          fi
+          
+          # Set deploy information
+          sentry-cli releases deploys "$VERSION" new -e production
+          
+          # Finalize the release
+          sentry-cli releases finalize "$VERSION"
+          
+          echo "API Sentry release $VERSION created successfully"
+
+      # Add your specific API deployment steps here
+      # For example, if you're using a specific hosting provider
+      
+      - name: Notify API deployment success
+        if: success()
+        run: |
+          echo "🚀 API Deployment successful!"
+          echo "Version: api-$(sentry-cli releases propose-version)"
+          echo "Check your Sentry dashboard for the new API release"

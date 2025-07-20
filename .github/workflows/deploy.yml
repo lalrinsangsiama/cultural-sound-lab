@@ -1,0 +1,80 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  SENTRY_ORG: cultural-sound-lab
+  SENTRY_PROJECT: javascript-nextjs
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full git history for Sentry
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Install Sentry CLI
+        run: |
+          curl -sL https://sentry.io/get-cli/ | bash
+          
+      - name: Build project
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
+      - name: Deploy to Vercel
+        run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
+        
+      - name: Create Sentry Release
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        run: |
+          # Create a unique version using git commit
+          VERSION=$(sentry-cli releases propose-version)
+          echo "Creating Sentry release: $VERSION"
+          
+          # Create the release
+          sentry-cli releases new "$VERSION"
+          
+          # Associate commits with the release
+          sentry-cli releases set-commits "$VERSION" --auto
+          
+          # Upload source maps for both web and API
+          sentry-cli releases files "$VERSION" upload-sourcemaps ./apps/web/.next/static --url-prefix "~/_next/static"
+          
+          # Set deploy information
+          sentry-cli releases deploys "$VERSION" new -e production
+          
+          # Finalize the release
+          sentry-cli releases finalize "$VERSION"
+          
+          echo "Sentry release $VERSION created successfully"
+
+      - name: Notify deployment success
+        if: success()
+        run: |
+          echo "🚀 Deployment successful!"
+          echo "Version: $(sentry-cli releases propose-version)"
+          echo "Check your Sentry dashboard for the new release"

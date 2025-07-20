@@ -12,7 +12,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **CSL**: The user-facing platform that consumes TSRR data and provides creative tools
 - **Current MVP**: Uses 8 sample Mizo audio files as mock TSRR data
 
-**Current Status**: MVP implementation complete with functional web application, API backend, and mock generation services ready for demo. All TypeScript build errors have been resolved and the codebase passes type checking across all packages.
+**Current Status**: MVP implementation complete with functional web application, API backend, and mock generation services ready for demo. All TypeScript build errors have been resolved and the codebase passes type checking across all packages. Sentry monitoring integration complete with error tracking and performance monitoring fully configured for production deployment.
 
 ## Core Features
 
@@ -224,6 +224,7 @@ The web app runs on port 3001 by default. Features complete dashboard with:
 - AI generation workflows (sound logos, playlists, social clips, long-form)
 - Health monitoring dashboard
 - User earnings and project management
+- **Complete Sentry integration** with error boundaries and performance tracking
 
 ### UI Package Build Commands
 ```bash
@@ -285,6 +286,13 @@ SUPABASE_SERVICE_KEY=your-service-key
 JWT_SECRET=your-secret-key
 STRIPE_SECRET_KEY=sk_test_...
 
+# Monitoring (Sentry)
+SENTRY_DSN=https://your-sentry-dsn@sentry.io/project-id
+SENTRY_AUTH_TOKEN=your-sentry-auth-token
+SENTRY_ORG=cultural-sound-lab
+SENTRY_PROJECT=your-project-name
+SENTRY_ENVIRONMENT=development
+
 # Storage
 MINIO_ENDPOINT=localhost
 MINIO_PORT=9000
@@ -305,6 +313,8 @@ MODEL_PATH=/models/audiocraft
 - The web app transpiles UI components directly using Next.js `transpilePackages`
 - TypeScript strict mode is enabled and all packages pass type checking without errors
 - Type safety has been implemented across components, hooks, and API interfaces
+- **Sentry monitoring** is fully integrated with proper instrumentation files and error boundaries
+- **Production ready** with complete error tracking and performance monitoring
 
 ## Implementation Phases
 
@@ -345,3 +355,4 @@ MODEL_PATH=/models/audiocraft
 - AI service: http://localhost:8000 (target, mock endpoints implemented)
 - Database: Supabase cloud (current)
 - MinIO: localhost:9000 (target)
+- Sentry monitoring: Fully configured with production DSNs
