@@ -1,28 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { mockDb } from '@/lib/mock-db';
+
+export async function OPTIONS(request: NextRequest) {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    },
+  });
+}
 
 export async function GET() {
   return NextResponse.json({ 
     message: 'Register endpoint available. Use POST with email, password, and optional name.' 
   });
 }
-
-// Mock users database (in a real app, this would be in a database)
-let mockUsers = [
-  {
-    id: '1',
-    email: 'demo@culturalsoundlab.com',
-    password: 'demo123',
-    name: 'Demo User',
-    created_at: new Date().toISOString(),
-  },
-  {
-    id: '2', 
-    email: 'admin@culturalsoundlab.com',
-    password: 'admin123',
-    name: 'Admin User',
-    created_at: new Date().toISOString(),
-  }
-];
 
 export async function POST(request: NextRequest) {
   try {
@@ -36,7 +30,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user already exists
-    const existingUser = mockUsers.find(u => u.email === email);
+    const existingUser = mockDb.users.findByEmail(email);
     if (existingUser) {
       return NextResponse.json(
         { error: 'User with this email already exists' },
@@ -45,15 +39,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Create new user
-    const newUser = {
-      id: String(Date.now()), // Simple ID generation
+    const newUser = mockDb.users.create({
       email,
       password, // In real app, this would be hashed
       name: name || email.split('@')[0],
-      created_at: new Date().toISOString(),
-    };
-
-    mockUsers.push(newUser);
+    });
 
     // Create mock session token
     const sessionToken = btoa(JSON.stringify({
@@ -82,6 +72,7 @@ export async function POST(request: NextRequest) {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 24 * 60 * 60, // 24 hours
+      path: '/',
     });
 
     return response;

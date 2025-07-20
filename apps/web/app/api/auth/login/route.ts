@@ -1,28 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { mockDb } from '@/lib/mock-db';
+
+export async function OPTIONS(request: NextRequest) {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    },
+  });
+}
 
 export async function GET() {
   return NextResponse.json({ 
     message: 'Login endpoint available. Use POST with email and password.' 
   });
 }
-
-// Mock users database (in a real app, this would be in a database)
-const mockUsers = [
-  {
-    id: '1',
-    email: 'demo@culturalsoundlab.com',
-    password: 'demo123', // In real app, this would be hashed
-    name: 'Demo User',
-    created_at: new Date().toISOString(),
-  },
-  {
-    id: '2', 
-    email: 'admin@culturalsoundlab.com',
-    password: 'admin123',
-    name: 'Admin User',
-    created_at: new Date().toISOString(),
-  }
-];
 
 export async function POST(request: NextRequest) {
   try {
@@ -35,8 +29,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Find user (in real app, compare hashed passwords)
-    const user = mockUsers.find(u => u.email === email && u.password === password);
+    // Find and validate user
+    const user = mockDb.users.validateCredentials(email, password);
 
     if (!user) {
       return NextResponse.json(
@@ -72,6 +66,7 @@ export async function POST(request: NextRequest) {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 24 * 60 * 60, // 24 hours
+      path: '/',
     });
 
     return response;

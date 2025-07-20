@@ -4,6 +4,16 @@ import { Database } from './types';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
+// Helper to get base URL for API calls
+const getApiUrl = () => {
+  if (typeof window !== 'undefined') {
+    // Client-side: use relative URLs
+    return '';
+  }
+  // Server-side: use absolute URL
+  return process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001';
+};
+
 // Create a mock Supabase client if environment variables are missing
 const createMockSupabaseClient = () => ({
   auth: {
@@ -11,7 +21,7 @@ const createMockSupabaseClient = () => ({
     getUser: async () => ({ data: { user: null }, error: null }),
     signInWithPassword: async ({ email, password }: { email: string; password: string }) => {
       try {
-        const response = await fetch('/api/auth/login', {
+        const response = await fetch(`${getApiUrl()}/api/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password }),
@@ -42,7 +52,7 @@ const createMockSupabaseClient = () => ({
     },
     signUp: async ({ email, password, options }: { email: string; password: string; options?: any }) => {
       try {
-        const response = await fetch('/api/auth/register', {
+        const response = await fetch(`${getApiUrl()}/api/auth/register`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password, name: options?.data?.name }),
@@ -72,7 +82,7 @@ const createMockSupabaseClient = () => ({
       }
     },
     signOut: async () => {
-      await fetch('/api/auth/logout', { method: 'POST' });
+      await fetch(`${getApiUrl()}/api/auth/logout`, { method: 'POST' });
       return { error: null };
     },
     onAuthStateChange: (callback: (event: string, session: any) => void) => {
