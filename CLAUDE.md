@@ -141,7 +141,6 @@ cultural-sound-lab/
 │   ├── sample-audio/         # 8 Mizo sample files for MVP
 │   └── cultural-context/     # Cultural context data
 │
-├── docker/                   # Docker configurations
 ├── scripts/                  # Setup and utility scripts
 └── docs/                    # Documentation
 ```

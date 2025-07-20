@@ -1,0 +1,114 @@
+name: Database Backup
+
+on:
+  schedule:
+    # Run daily at 2:00 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      retention_days:
+        description: 'Number of days to retain backups'
+        required: false
+        default: '30'
+      upload_to_s3:
+        description: 'Upload backup to S3'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  backup:
+    name: Backup Supabase Database
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client-16
+          pg_dump --version
+      
+      - name: Create backup directory
+        run: mkdir -p ./backups/database
+      
+      - name: Run backup script
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          BACKUP_RETENTION_DAYS: ${{ github.event.inputs.retention_days || '30' }}
+          BACKUP_S3_BUCKET: ${{ secrets.BACKUP_S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION || 'us-east-1' }}
+        run: |
+          chmod +x ./scripts/backup-supabase.sh
+          ./scripts/backup-supabase.sh
+      
+      - name: Upload backup artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: database-backup-${{ github.run_id }}
+          path: ./backups/database/*.sql.gz
+          retention-days: 30
+      
+      - name: Send notification on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Database Backup Failed - ${new Date().toISOString().split('T')[0]}`,
+              body: `The automated database backup failed. Please check the [workflow run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) for details.`,
+              labels: ['backup', 'automated', 'failure']
+            });
+      
+      - name: Backup summary
+        if: success()
+        run: |
+          echo "## Backup Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: ✅ Success" >> $GITHUB_STEP_SUMMARY
+          echo "- **Timestamp**: $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Retention**: ${{ github.event.inputs.retention_days || '30' }} days" >> $GITHUB_STEP_SUMMARY
+          echo "- **S3 Upload**: ${{ github.event.inputs.upload_to_s3 && '✅ Enabled' || '❌ Disabled' }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Backup Files" >> $GITHUB_STEP_SUMMARY
+          ls -lh ./backups/database/*.sql.gz | awk '{print "- "$9" ("$5")"}' >> $GITHUB_STEP_SUMMARY
+
+  cleanup:
+    name: Cleanup Old Artifacts
+    runs-on: ubuntu-latest
+    needs: backup
+    if: success()
+    
+    steps:
+      - name: Delete old backup artifacts
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const artifacts = await github.rest.actions.listArtifactsForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100
+            });
+            
+            const backupArtifacts = artifacts.data.artifacts.filter(
+              artifact => artifact.name.startsWith('database-backup-')
+            );
+            
+            // Keep only the last 10 backup artifacts
+            const artifactsToDelete = backupArtifacts
+              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+              .slice(10);
+            
+            for (const artifact of artifactsToDelete) {
+              await github.rest.actions.deleteArtifact({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                artifact_id: artifact.id
+              });
+              console.log(`Deleted old backup artifact: ${artifact.name}`);
+            }

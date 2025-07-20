@@ -171,7 +171,7 @@ export const generationsApi = {
 
       // Get source samples for each generation
       const generationsWithSamples = await Promise.all(
-        (data || []).map(async (generation) => {
+        (data || []).map(async (generation: any) => {
           const samplesResponse = await audioSamplesApi.getByIds(generation.source_samples);
           return {
             ...generation,
@@ -382,11 +382,11 @@ export const analyticsApi = {
       const now = new Date();
       const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-      const totalEarnings = licenses?.reduce((sum, license) => sum + (license.price_paid || 0), 0) || 0;
-      const monthlyLicenses = licenses?.filter(license => 
+      const totalEarnings = licenses?.reduce((sum: number, license: any) => sum + (license.price_paid || 0), 0) || 0;
+      const monthlyLicenses = licenses?.filter((license: any) => 
         new Date(license.valid_from) >= thisMonth
       ) || [];
-      const monthlyEarnings = monthlyLicenses.reduce((sum, license) => sum + (license.price_paid || 0), 0);
+      const monthlyEarnings = monthlyLicenses.reduce((sum: number, license: any) => sum + (license.price_paid || 0), 0);
 
       return {
         data: {
@@ -426,9 +426,9 @@ export const analyticsApi = {
 
       const stats = {
         totalGenerations: generations?.length || 0,
-        completedGenerations: generations?.filter(g => g.status === 'completed').length || 0,
-        pendingGenerations: generations?.filter(g => g.status === 'pending' || g.status === 'processing').length || 0,
-        failedGenerations: generations?.filter(g => g.status === 'failed').length || 0
+        completedGenerations: generations?.filter((g: any) => g.status === 'completed').length || 0,
+        pendingGenerations: generations?.filter((g: any) => g.status === 'pending' || g.status === 'processing').length || 0,
+        failedGenerations: generations?.filter((g: any) => g.status === 'failed').length || 0
       };
 
       return { data: stats, error: null, success: true };
