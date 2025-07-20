@@ -23,6 +23,10 @@
   "peerDependencies": {
     "react": "^18"
   },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.5.4"
+  },
   "devDependencies": {
     "@repo/eslint-config": "*",
     "@repo/tailwind-config": "*",

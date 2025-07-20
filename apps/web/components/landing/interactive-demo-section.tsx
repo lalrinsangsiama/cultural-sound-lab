@@ -233,10 +233,10 @@ const GenerationDemo = ({ selectedSample }: { selectedSample: typeof mizoSamples
       <CardHeader>
         <CardTitle className="flex items-center space-x-2">
           <Wand2 className="w-5 h-5 text-purple-600" />
-          <span>AI Generation Demo</span>
+          <span>Cultural Sound Transformation</span>
         </CardTitle>
         <CardDescription>
-          Transform cultural sounds into modern business assets
+          Witness how traditional melodies evolve into contemporary compositions
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -381,11 +381,11 @@ export function InteractiveDemoSection() {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Try It Now
+            Experience the Journey
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Experience the power of AI-driven cultural music generation. 
-            Select a Mizo sample and create your own sound logo instantly.
+            Discover how traditional Mizo sounds transform into contemporary compositions. 
+            Select an authentic recording and witness cultural music reimagined.
           </p>
         </motion.div>
 
@@ -400,10 +400,10 @@ export function InteractiveDemoSection() {
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <Volume2 className="w-5 h-5 text-purple-600" />
-                  <span>Select a Cultural Sample</span>
+                  <span>Authentic Heritage Recordings</span>
                 </CardTitle>
                 <CardDescription>
-                  Choose from authentic Mizo instruments and sounds
+                  Experience the beauty of traditional Mizo musical instruments
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -443,14 +443,14 @@ export function InteractiveDemoSection() {
           transition={{ duration: 0.6, delay: 0.6 }}
         >
           <p className="text-gray-600 mb-6">
-            Ready to explore the full library and advanced generation features?
+            Ready to explore our complete heritage collection and advanced creation tools?
           </p>
           <Button 
             size="lg" 
             className="bg-purple-600 hover:bg-purple-700"
             onClick={() => window.location.href = '/register'}
           >
-            Start Creating for Free
+            Begin Your Journey
           </Button>
         </motion.div>
       </div>

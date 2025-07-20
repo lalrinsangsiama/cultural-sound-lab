@@ -5,7 +5,7 @@ import { AudioWaveform, Heart, Github, Twitter, Instagram } from 'lucide-react';
 
 export function Footer() {
   return (
-    <footer className="bg-gray-900 text-white py-16">
+    <footer className="bg-obsidian border-t border-charcoal py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand */}
@@ -16,22 +16,22 @@ export function Footer() {
             viewport={{ once: true }}
             className="col-span-1 md:col-span-2"
           >
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
-                <AudioWaveform className="w-4 h-4 text-white" />
+            <div className="flex items-center space-x-3 mb-6">
+              <div className="w-10 h-10 bg-gold rounded-medium flex items-center justify-center">
+                <AudioWaveform className="w-5 h-5 text-obsidian" />
               </div>
-              <span className="font-display text-xl font-bold">
+              <span className="font-display text-h3 font-bold text-white">
                 Cultural Sound Lab
               </span>
             </div>
-            <p className="text-gray-300 mb-6 max-w-md">
+            <p className="text-ash text-body mb-6 max-w-md leading-relaxed">
               Empowering traditional musicians to monetize their heritage through AI-powered 
               generation, licensing, and creative tools. Preserving culture while enabling innovation.
             </p>
-            <div className="flex items-center space-x-1 text-gray-400">
-              <span>Made with</span>
-              <Heart className="w-4 h-4 text-red-500" />
-              <span>for cultural preservation</span>
+            <div className="flex items-center space-x-2 text-silver">
+              <span className="text-small">Made with</span>
+              <Heart className="w-4 h-4 text-gold" />
+              <span className="text-small">for cultural preservation</span>
             </div>
           </motion.div>
 
@@ -42,12 +42,12 @@ export function Footer() {
             transition={{ duration: 0.6, delay: 0.1 }}
             viewport={{ once: true }}
           >
-            <h3 className="text-lg font-semibold mb-4">Platform</h3>
-            <ul className="space-y-2">
+            <h3 className="text-h4 font-medium text-white mb-6">Platform</h3>
+            <ul className="space-y-3">
               <li>
                 <button 
                   onClick={() => window.location.href = '/library'}
-                  className="text-gray-300 hover:text-white transition-colors"
+                  className="text-ash hover:text-gold transition-colors text-small"
                 >
                   Browse Library
                 </button>
@@ -55,7 +55,7 @@ export function Footer() {
               <li>
                 <button 
                   onClick={() => window.location.href = '/generate'}
-                  className="text-gray-300 hover:text-white transition-colors"
+                  className="text-ash hover:text-gold transition-colors text-small"
                 >
                   AI Generation
                 </button>
@@ -63,7 +63,7 @@ export function Footer() {
               <li>
                 <button 
                   onClick={() => window.location.href = '/dashboard'}
-                  className="text-gray-300 hover:text-white transition-colors"
+                  className="text-ash hover:text-gold transition-colors text-small"
                 >
                   Dashboard
                 </button>
@@ -71,7 +71,7 @@ export function Footer() {
               <li>
                 <button 
                   onClick={() => window.location.href = '/health'}
-                  className="text-gray-300 hover:text-white transition-colors"
+                  className="text-ash hover:text-gold transition-colors text-small"
                 >
                   System Status
                 </button>
@@ -86,12 +86,12 @@ export function Footer() {
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            <h3 className="text-lg font-semibold mb-4">Community</h3>
-            <ul className="space-y-2">
+            <h3 className="text-h4 font-medium text-white mb-6">Community</h3>
+            <ul className="space-y-3">
               <li>
                 <button 
                   onClick={() => window.location.href = '/register'}
-                  className="text-gray-300 hover:text-white transition-colors"
+                  className="text-ash hover:text-gold transition-colors text-small"
                 >
                   Become a Contributor
                 </button>
@@ -99,7 +99,7 @@ export function Footer() {
               <li>
                 <button 
                   onClick={() => window.location.href = '/register'}
-                  className="text-gray-300 hover:text-white transition-colors"
+                  className="text-ash hover:text-gold transition-colors text-small"
                 >
                   Creator Program
                 </button>
@@ -107,7 +107,7 @@ export function Footer() {
               <li>
                 <button 
                   onClick={() => window.location.href = '/dashboard/help'}
-                  className="text-gray-300 hover:text-white transition-colors"
+                  className="text-ash hover:text-gold transition-colors text-small"
                 >
                   Cultural Guidelines
                 </button>
@@ -115,7 +115,7 @@ export function Footer() {
               <li>
                 <button 
                   onClick={() => window.location.href = '/dashboard/case-studies'}
-                  className="text-gray-300 hover:text-white transition-colors"
+                  className="text-ash hover:text-gold transition-colors text-small"
                 >
                   Success Stories
                 </button>
@@ -130,18 +130,18 @@ export function Footer() {
             transition={{ duration: 0.6, delay: 0.3 }}
             viewport={{ once: true }}
           >
-            <h3 className="text-lg font-semibold mb-4">Stay Updated</h3>
-            <p className="text-gray-300 text-sm mb-4">
+            <h3 className="text-h4 font-medium text-white mb-6">Stay Updated</h3>
+            <p className="text-ash text-small mb-6 leading-relaxed">
               Get the latest cultural sounds and platform updates.
             </p>
             <div className="flex space-x-2">
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                className="flex-1 px-4 py-3 bg-charcoal border border-slate rounded-small text-white placeholder-ash text-small focus:outline-none focus:ring-2 focus:ring-gold focus:border-gold transition-colors"
               />
               <button
-                className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg transition-all duration-300"
+                className="px-6 py-3 bg-gold hover:bg-champagne text-obsidian text-small font-medium rounded-small transition-all duration-200"
                 onClick={() => {
                   // TODO: Implement newsletter signup
                   alert('Newsletter signup coming soon!');
@@ -157,20 +157,20 @@ export function Footer() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
           viewport={{ once: true }}
-          className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center"
+          className="border-t border-charcoal mt-12 pt-8 flex flex-col md:flex-row justify-between items-center"
         >
-          <div className="text-gray-400 text-sm mb-4 md:mb-0">
+          <div className="text-silver text-small font-mono mb-4 md:mb-0">
             © 2024 Cultural Sound Lab. Preserving heritage, enabling innovation.
           </div>
           
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-6">
             <a 
               href="https://twitter.com/culturalsoundlab" 
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-ash hover:text-gold transition-colors duration-200"
               aria-label="Twitter"
             >
               <Twitter className="w-5 h-5" />
@@ -179,7 +179,7 @@ export function Footer() {
               href="https://instagram.com/culturalsoundlab" 
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-ash hover:text-gold transition-colors duration-200"
               aria-label="Instagram"
             >
               <Instagram className="w-5 h-5" />
@@ -188,7 +188,7 @@ export function Footer() {
               href="https://github.com/culturalsoundlab" 
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-ash hover:text-gold transition-colors duration-200"
               aria-label="GitHub"
             >
               <Github className="w-5 h-5" />

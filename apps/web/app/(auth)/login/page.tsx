@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/components/providers/AuthProvider";
-import { Button } from "@/components/ui/button";
+import { Button } from "@repo/ui";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card } from "@repo/ui";
 import { Separator } from "@/components/ui/separator";
 import { 
   Eye, 
@@ -16,7 +16,8 @@ import {
   AudioWaveform,
   ArrowLeft,
   Sparkles,
-  Music
+  Music,
+  Headphones
 } from "lucide-react";
 import Link from "next/link";
 
@@ -49,12 +50,11 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background cultural-pattern flex items-center justify-center p-4">
-      {/* Background Elements */}
+    <div className="min-h-screen bg-obsidian flex items-center justify-center p-6">
+      {/* Subtle background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-cultural-purple/10 rounded-full blur-3xl animate-float" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-cultural-teal/10 rounded-full blur-3xl animate-float" style={{ animationDelay: "1s" }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cultural-orange/5 rounded-full blur-3xl animate-float" style={{ animationDelay: "2s" }} />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gold/5 rounded-full blur-3xl animate-gold-glow" />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gold/3 rounded-full blur-3xl animate-gold-glow" style={{ animationDelay: "2s" }} />
       </div>
 
       <div className="relative w-full max-w-md">
@@ -66,33 +66,31 @@ export default function LoginPage() {
         >
           <Link 
             href="/" 
-            className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors"
+            className="inline-flex items-center text-ash hover:text-gold transition-colors text-small"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Home
           </Link>
         </motion.div>
 
-        {/* Logo */}
+        {/* Studio Branding */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.1 }}
-          className="flex items-center justify-center mb-8"
+          className="text-center mb-8"
         >
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-primary rounded-xl flex items-center justify-center animate-pulse-glow">
-              <AudioWaveform className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h1 className="font-display text-2xl font-bold text-gradient">
-                Cultural Sound Lab
-              </h1>
-              <p className="text-sm text-muted-foreground">
-                Welcome back to your creative journey
-              </p>
+          <div className="flex items-center justify-center mb-4">
+            <div className="w-16 h-16 bg-gold rounded-medium flex items-center justify-center shadow-gold">
+              <Headphones className="w-8 h-8 text-obsidian" />
             </div>
           </div>
+          <h1 className="font-display text-display font-bold text-white mb-2">
+            Studio Access
+          </h1>
+          <p className="text-body text-ash">
+            Welcome back to your cultural music sanctuary
+          </p>
         </motion.div>
 
         {/* Login Card */}
@@ -101,30 +99,31 @@ export default function LoginPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <Card className="card-cultural glass-morphism backdrop-blur-xl">
-            <CardHeader className="text-center space-y-2">
-              <CardTitle className="text-2xl font-display font-bold">
-                Sign In
-              </CardTitle>
-              <CardDescription>
-                Access your cultural music creation studio
-              </CardDescription>
-            </CardHeader>
-            
-            <CardContent className="space-y-6">
+          <Card variant="refined" className="glass-refined border-glow">
+            <div className="p-8">
+              <div className="text-center mb-8">
+                <h2 className="text-h2 font-display font-bold text-white mb-2">
+                  Sign In
+                </h2>
+                <p className="text-body text-ash">
+                  Continue your cultural music preservation journey
+                </p>
+              </div>
+              
               {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                  <p className="text-sm text-red-600">{error}</p>
+                <div className="bg-ruby/10 border border-ruby/20 rounded-medium p-4 mb-6">
+                  <p className="text-small text-ruby">{error}</p>
                 </div>
               )}
-              <form onSubmit={handleSubmit} className="space-y-4">
+
+              <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Email Field */}
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sm font-medium">
+                  <Label htmlFor="email" className="text-small font-medium text-silver">
                     Email Address
                   </Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ash" />
                     <Input
                       id="email"
                       name="email"
@@ -132,7 +131,7 @@ export default function LoginPage() {
                       placeholder="your@email.com"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className="pl-10 focus-ring"
+                      className="pl-10 input-refined h-12"
                       required
                     />
                   </div>
@@ -140,11 +139,11 @@ export default function LoginPage() {
 
                 {/* Password Field */}
                 <div className="space-y-2">
-                  <Label htmlFor="password" className="text-sm font-medium">
+                  <Label htmlFor="password" className="text-small font-medium text-silver">
                     Password
                   </Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ash" />
                     <Input
                       id="password"
                       name="password"
@@ -152,13 +151,13 @@ export default function LoginPage() {
                       placeholder="Enter your password"
                       value={formData.password}
                       onChange={handleInputChange}
-                      className="pl-10 pr-10 focus-ring"
+                      className="pl-10 pr-10 input-refined h-12"
                       required
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-ash hover:text-gold transition-colors"
                     >
                       {showPassword ? (
                         <EyeOff className="w-4 h-4" />
@@ -173,7 +172,7 @@ export default function LoginPage() {
                 <div className="flex justify-end">
                   <Link 
                     href="/forgot-password" 
-                    className="text-sm text-primary hover:text-primary/80 transition-colors"
+                    className="text-small text-gold hover:text-champagne transition-colors"
                   >
                     Forgot password?
                   </Link>
@@ -182,39 +181,40 @@ export default function LoginPage() {
                 {/* Submit Button */}
                 <Button
                   type="submit"
+                  variant="gold"
                   size="lg"
-                  className="w-full btn-primary group"
+                  className="w-full"
                   disabled={loading}
                 >
                   {loading ? (
                     <div className="flex items-center">
-                      <div className="loading-dots mr-2">Signing in</div>
-                      <div className="animate-spin w-4 h-4 border-2 border-white/30 border-t-white rounded-full" />
+                      <div className="animate-spin w-4 h-4 border-2 border-obsidian/30 border-t-obsidian rounded-full mr-2" />
+                      Signing in...
                     </div>
                   ) : (
                     <>
-                      Sign In
-                      <Sparkles className="w-4 h-4 ml-2 group-hover:rotate-12 transition-transform" />
+                      Access Studio
+                      <Sparkles className="w-4 h-4 ml-2" />
                     </>
                   )}
                 </Button>
               </form>
 
               {/* Divider */}
-              <div className="relative">
+              <div className="relative my-8">
                 <div className="absolute inset-0 flex items-center">
-                  <Separator className="w-full" />
+                  <div className="w-full border-t border-charcoal" />
                 </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">
+                <div className="relative flex justify-center text-caption uppercase">
+                  <span className="bg-charcoal px-3 text-ash">
                     Or continue with
                   </span>
                 </div>
               </div>
 
               {/* Social Login */}
-              <div className="grid grid-cols-2 gap-3">
-                <Button variant="outline" className="focus-ring">
+              <div className="grid grid-cols-2 gap-4">
+                <Button variant="secondary" className="border-gold/20 hover:border-gold">
                   <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24">
                     <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                     <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -223,25 +223,25 @@ export default function LoginPage() {
                   </svg>
                   Google
                 </Button>
-                <Button variant="outline" className="focus-ring">
+                <Button variant="secondary" className="border-gold/20 hover:border-gold">
                   <Music className="w-4 h-4 mr-2" />
                   Spotify
                 </Button>
               </div>
 
               {/* Sign Up Link */}
-              <div className="text-center pt-4">
-                <p className="text-sm text-muted-foreground">
+              <div className="text-center pt-6 border-t border-charcoal mt-8">
+                <p className="text-small text-ash">
                   Don't have an account?{" "}
                   <Link 
                     href="/register" 
-                    className="text-primary hover:text-primary/80 font-medium transition-colors"
+                    className="text-gold hover:text-champagne font-medium transition-colors"
                   >
-                    Sign up for free
+                    Join the studio
                   </Link>
                 </p>
               </div>
-            </CardContent>
+            </div>
           </Card>
         </motion.div>
 
@@ -250,10 +250,10 @@ export default function LoginPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="text-center mt-8 text-sm text-muted-foreground"
+          className="text-center mt-8 text-small text-ash"
         >
           <p>© 2024 Cultural Sound Lab</p>
-          <p className="mt-1">Preserving culture, enabling innovation</p>
+          <p className="mt-1 text-caption">Preserving heritage, enabling innovation</p>
         </motion.div>
       </div>
     </div>

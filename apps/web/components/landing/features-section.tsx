@@ -3,6 +3,7 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState, useEffect } from 'react';
 import { Brain, DollarSign, Globe, Building2 } from 'lucide-react';
+import { Button } from '@repo/ui';
 import CountUp from 'react-countup';
 
 // Animated percentage counter component
@@ -39,14 +40,16 @@ const AIAnimation = () => {
         animate={{ scale: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <Brain className="w-16 h-16 text-purple-500" />
+        <div className="w-16 h-16 bg-gold rounded-medium flex items-center justify-center">
+          <Brain className="w-10 h-10 text-obsidian" />
+        </div>
       </motion.div>
       
       {/* Pulsing rings */}
       {[0, 1, 2].map((index) => (
         <motion.div
           key={index}
-          className="absolute inset-0 border-2 border-purple-300 rounded-full"
+          className="absolute inset-0 border-2 border-gold/30 rounded-full"
           initial={{ scale: 0, opacity: 1 }}
           animate={{
             scale: [0, 1.5, 2],
@@ -64,7 +67,7 @@ const AIAnimation = () => {
       {['♪', '♫', '♬'].map((note, index) => (
         <motion.div
           key={index}
-          className="absolute text-purple-400 text-xl font-bold"
+          className="absolute text-gold/60 text-xl font-mono"
           style={{
             top: '10%',
             left: '10%',
@@ -101,7 +104,7 @@ const GlobeAnimation = () => {
     <div className="relative w-32 h-32 mx-auto">
       {/* Globe */}
       <motion.div
-        className="w-32 h-32 rounded-full bg-gradient-to-br from-blue-400 to-green-400 relative overflow-hidden"
+        className="w-32 h-32 rounded-full bg-gradient-to-br from-charcoal to-slate relative overflow-hidden border-2 border-gold/20"
         animate={{ rotate: 360 }}
         transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
       >
@@ -110,7 +113,7 @@ const GlobeAnimation = () => {
           {[...Array(6)].map((_, i) => (
             <motion.div
               key={i}
-              className="absolute bg-green-600 rounded-full opacity-70"
+              className="absolute bg-gold/30 rounded-full"
               style={{
                 width: `${Math.random() * 20 + 10}px`,
                 height: `${Math.random() * 15 + 8}px`,
@@ -134,7 +137,7 @@ const GlobeAnimation = () => {
       {pins.map((pin, index) => (
         <motion.div
           key={index}
-          className="absolute w-4 h-4 bg-red-500 rounded-full shadow-lg flex items-center justify-center"
+          className="absolute w-4 h-4 bg-gold rounded-full shadow-gold flex items-center justify-center"
           style={{ top: pin.top, left: pin.left }}
           initial={{ scale: 0, y: -20 }}
           animate={{ 
@@ -147,7 +150,7 @@ const GlobeAnimation = () => {
           }}
         >
           <motion.span
-            className="text-white text-xs"
+            className="text-obsidian text-xs font-mono"
             animate={{ rotate: [0, 10, -10, 0] }}
             transition={{ duration: 2, repeat: Infinity, delay: pin.delay }}
           >
@@ -156,7 +159,7 @@ const GlobeAnimation = () => {
           
           {/* Pin wave effect */}
           <motion.div
-            className="absolute inset-0 border-2 border-red-300 rounded-full"
+            className="absolute inset-0 border-2 border-gold/30 rounded-full"
             animate={{
               scale: [1, 2, 1],
               opacity: [0.8, 0, 0.8],
@@ -176,18 +179,18 @@ const GlobeAnimation = () => {
 // Business logos animation
 const BusinessLogosAnimation = () => {
   const logos = [
-    { name: 'Spotify', color: 'bg-green-500' },
-    { name: 'Apple', color: 'bg-gray-800' },
-    { name: 'YouTube', color: 'bg-red-500' },
-    { name: 'TikTok', color: 'bg-black' },
+    { name: 'Spotify', icon: '♪' },
+    { name: 'Apple', icon: '🎵' },
+    { name: 'YouTube', icon: '🎬' },
+    { name: 'TikTok', icon: '📱' },
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-4 w-32 h-32 mx-auto">
+    <div className="grid grid-cols-2 gap-3 w-32 h-32 mx-auto">
       {logos.map((logo, index) => (
         <motion.div
           key={index}
-          className={`${logo.color} rounded-lg flex items-center justify-center text-white text-xs font-bold shadow-lg`}
+          className="bg-charcoal border border-gold/20 rounded-medium flex items-center justify-center text-gold text-xs font-mono shadow-subtle"
           initial={{ opacity: 0, scale: 0, rotate: -180 }}
           animate={{ 
             opacity: 1, 
@@ -203,10 +206,11 @@ const BusinessLogosAnimation = () => {
           whileHover={{
             scale: 1.1,
             rotate: 5,
+            borderColor: '#D4AF37',
             transition: { duration: 0.2 }
           }}
         >
-          {logo.name.slice(0, 2)}
+          {logo.icon}
         </motion.div>
       ))}
     </div>
@@ -216,46 +220,46 @@ const BusinessLogosAnimation = () => {
 const features = [
   {
     icon: Brain,
-    title: 'AI-Powered Generation',
-    description: 'Transform traditional sounds into modern compositions using cutting-edge AI technology.',
+    title: 'AI-Powered Creation',
+    description: 'Transform authentic traditional sounds into contemporary compositions while preserving their cultural essence.',
     animation: <AIAnimation />,
     stats: null,
     link: '/dashboard/generate',
-    cta: 'Try AI Generation',
+    cta: 'Experience the Magic',
   },
   {
     icon: DollarSign,
-    title: 'Fair Revenue Sharing',
-    description: 'Creators receive up to 85% of revenue through transparent blockchain-based distribution.',
+    title: 'Ethical Compensation',
+    description: 'Artists and cultural keepers receive fair compensation through transparent revenue sharing.',
     animation: null,
     stats: (
-      <div className="text-center space-y-2">
-        <div className="text-4xl font-bold text-green-500">
+      <div className="text-center space-y-3">
+        <div className="text-h1 font-display font-bold text-gold font-mono">
           <AnimatedCounter end={85} />
         </div>
-        <div className="text-sm text-gray-600">Revenue to Creators</div>
+        <div className="text-small text-ash">Revenue to Artists</div>
       </div>
     ),
     link: '/register',
-    cta: 'Start Earning',
+    cta: 'Support Artists',
   },
   {
     icon: Globe,
-    title: 'Cultural Preservation',
-    description: 'Every sound comes with rich cultural context and stories, preserving heritage for future generations.',
+    title: 'Heritage Preservation',
+    description: 'Each recording includes rich cultural stories and context, ensuring traditions live on for future generations.',
     animation: <GlobeAnimation />,
     stats: null,
     link: '/dashboard/library',
-    cta: 'Explore Cultures',
+    cta: 'Explore Heritage',
   },
   {
     icon: Building2,
-    title: 'Business Solutions',
-    description: 'Ready-to-use audio for brands, content creators, and enterprises across all major platforms.',
+    title: 'Professional Licensing',
+    description: 'Access authentic cultural audio with clear licensing for your creative and business projects.',
     animation: <BusinessLogosAnimation />,
     stats: null,
     link: '/register',
-    cta: 'For Business',
+    cta: 'License Respectfully',
   },
 ];
 
@@ -264,21 +268,21 @@ export function FeaturesSection() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} id="about" data-section="features" className="py-24 bg-gradient-to-br from-gray-50 to-white">
+    <section ref={ref} id="about" data-section="features" className="py-24 bg-gradient-to-br from-graphite to-charcoal">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section header */}
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-20"
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Revolutionizing Cultural Music
+          <h2 className="text-display md:text-hero font-display font-bold text-white mb-6">
+            Where Tradition Meets Innovation
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Our platform bridges traditional heritage with modern technology, 
-            creating new opportunities for artists and preserving cultural legacy.
+          <p className="text-h3 md:text-h2 text-ash max-w-4xl mx-auto leading-relaxed">
+            Experience centuries-old musical traditions reimagined for the modern world. 
+            Every sound tells a story, every creation honors its source.
           </p>
         </motion.div>
 
@@ -287,72 +291,75 @@ export function FeaturesSection() {
           {features.map((feature, index) => (
             <motion.div
               key={index}
-              className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100"
+              className="studio-panel brushed-metal group cursor-pointer hover-lift"
               initial={{ opacity: 0, y: 50 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
+              transition={{ duration: 0.6, delay: index * 0.1, ease: [0.4, 0, 0.2, 1] }}
               whileHover={{ 
-                y: -5,
-                transition: { duration: 0.2 }
+                y: -8,
+                transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] }
               }}
             >
-              {/* Icon */}
-              <motion.div
-                className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-6"
-                whileHover={{ rotate: 5, scale: 1.1 }}
-                transition={{ duration: 0.2 }}
-              >
-                <feature.icon className="w-6 h-6 text-purple-600" />
-              </motion.div>
-
-              {/* Animation or Stats */}
-              {feature.animation && (
+              <div className="p-6">
+                {/* Icon */}
                 <motion.div
-                  className="mb-6"
-                  initial={{ opacity: 0 }}
-                  animate={isInView ? { opacity: 1 } : {}}
-                  transition={{ duration: 0.8, delay: index * 0.2 + 0.3 }}
+                  className="w-14 h-14 knob-control flex items-center justify-center mb-6"
+                  whileHover={{ rotate: 5, scale: 1.1 }}
+                  transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
                 >
-                  {feature.animation}
+                  <feature.icon className="w-7 h-7 text-gold" />
+                  <div className="led-indicator absolute -top-1 -right-1"></div>
                 </motion.div>
-              )}
-              
-              {feature.stats && (
+
+                {/* Animation or Stats */}
+                {feature.animation && (
+                  <motion.div
+                    className="mb-6 spectrum-analyzer p-4 rounded-medium"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                    transition={{ duration: 0.8, delay: index * 0.2 + 0.3, ease: [0.4, 0, 0.2, 1] }}
+                  >
+                    {feature.animation}
+                  </motion.div>
+                )}
+                
+                {feature.stats && (
+                  <motion.div
+                    className="mb-6 vu-meter p-4 rounded-medium"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                    transition={{ duration: 0.8, delay: index * 0.2 + 0.3, ease: [0.4, 0, 0.2, 1] }}
+                  >
+                    {feature.stats}
+                  </motion.div>
+                )}
+
+                {/* Content */}
+                <h3 className="text-h4 font-display font-bold text-white mb-4 group-hover:text-gold transition-all duration-200 ease-refined">
+                  {feature.title}
+                </h3>
+                <p className="text-body text-ash leading-relaxed mb-6 group-hover:text-silver transition-all duration-200 ease-refined">
+                  {feature.description}
+                </p>
+
+                {/* CTA Button */}
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="w-full group-hover:border-gold group-hover:text-gold border-glow"
+                  onClick={() => window.location.href = feature.link}
+                >
+                  {feature.cta}
+                </Button>
+
+                {/* Hover effect indicator */}
                 <motion.div
-                  className="mb-6"
-                  initial={{ opacity: 0 }}
-                  animate={isInView ? { opacity: 1 } : {}}
-                  transition={{ duration: 0.8, delay: index * 0.2 + 0.3 }}
-                >
-                  {feature.stats}
-                </motion.div>
-              )}
-
-              {/* Content */}
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                {feature.title}
-              </h3>
-              <p className="text-gray-600 leading-relaxed mb-6">
-                {feature.description}
-              </p>
-
-              {/* CTA Button */}
-              <motion.button
-                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-2 px-4 rounded-lg font-medium transition-all duration-300 text-sm"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => window.location.href = feature.link}
-              >
-                {feature.cta}
-              </motion.button>
-
-              {/* Hover effect indicator */}
-              <motion.div
-                className="h-1 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mt-4 origin-left"
-                initial={{ scaleX: 0 }}
-                whileHover={{ scaleX: 1 }}
-                transition={{ duration: 0.3 }}
-              />
+                  className="h-px bg-gradient-to-r from-transparent via-gold to-transparent mt-6 origin-center"
+                  initial={{ scaleX: 0 }}
+                  whileHover={{ scaleX: 1 }}
+                  transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                />
+              </div>
             </motion.div>
           ))}
         </div>

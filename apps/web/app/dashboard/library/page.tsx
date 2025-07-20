@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button, SearchInput, Card, AudioCard } from "@repo/ui";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AudioGrid from "@/components/audio/AudioGrid";
@@ -284,30 +283,34 @@ export default function LibraryPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50/30">
-      <div className="max-w-7xl mx-auto p-6 space-y-6">
+    <div className="min-h-screen bg-obsidian">
+      <div className="max-w-7xl mx-auto p-6 space-y-8">
         {/* Header */}
         {isLoading ? (
           <LoadingSkeleton variant="header" className="mb-6" />
         ) : (
           <div className="flex justify-between items-start">
             <div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">Audio Library</h1>
-              <p className="text-gray-600 text-lg">Discover and explore cultural sound samples from around the world</p>
+              <h1 className="text-h1 font-display font-bold text-white mb-3">Audio Library</h1>
+              <p className="text-body text-ash max-w-2xl">Discover and explore cultural sound samples from around the world</p>
             </div>
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="text-sm px-3 py-1">
-                  {sortedSamples.length} sample{sortedSamples.length !== 1 ? 's' : ''}
-                </Badge>
+              <div className="flex items-center gap-3">
+                <div className="px-4 py-2 bg-charcoal rounded-medium border border-slate">
+                  <span className="text-small text-silver font-mono">
+                    {sortedSamples.length} sample{sortedSamples.length !== 1 ? 's' : ''}
+                  </span>
+                </div>
                 {selectedSamples.length > 0 && (
-                  <Badge variant="default" className="text-sm px-3 py-1">
-                    {selectedSamples.length} selected
-                  </Badge>
+                  <div className="px-4 py-2 bg-gold/10 border border-gold/20 rounded-medium">
+                    <span className="text-small text-gold font-mono">
+                      {selectedSamples.length} selected
+                    </span>
+                  </div>
                 )}
               </div>
               <Button
-                variant="outline"
+                variant="secondary"
                 size="sm"
                 onClick={() => setShowFilters(!showFilters)}
                 className="flex items-center gap-2"
@@ -320,20 +323,29 @@ export default function LibraryPage() {
         )}
 
         <Tabs defaultValue="browse" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 max-w-md">
-            <TabsTrigger value="browse" className="flex items-center gap-2">
+          <div className="flex items-center gap-2 mb-8 bg-charcoal p-2 rounded-medium border border-slate w-fit">
+            <TabsTrigger 
+              value="browse" 
+              className="flex items-center gap-2 px-6 py-3 rounded-small bg-transparent text-ash hover:text-white data-[state=active]:bg-gold data-[state=active]:text-obsidian font-medium transition-all"
+            >
               <Music className="h-4 w-4" />
               Browse
             </TabsTrigger>
-            <TabsTrigger value="upload" className="flex items-center gap-2">
+            <TabsTrigger 
+              value="upload" 
+              className="flex items-center gap-2 px-6 py-3 rounded-small bg-transparent text-ash hover:text-white data-[state=active]:bg-gold data-[state=active]:text-obsidian font-medium transition-all"
+            >
               <Upload className="h-4 w-4" />
               Upload
             </TabsTrigger>
-            <TabsTrigger value="player" className="flex items-center gap-2">
+            <TabsTrigger 
+              value="player" 
+              className="flex items-center gap-2 px-6 py-3 rounded-small bg-transparent text-ash hover:text-white data-[state=active]:bg-gold data-[state=active]:text-obsidian font-medium transition-all"
+            >
               <Music className="h-4 w-4" />
               Player
             </TabsTrigger>
-          </TabsList>
+          </div>
 
           <TabsContent value="browse" className="space-y-6">
             {isLoading ? (
@@ -368,10 +380,10 @@ export default function LibraryPage() {
                   />
                   
                   {/* Controls */}
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-4">
+                  <div className="flex justify-between items-center p-6 bg-charcoal rounded-medium border border-slate">
+                    <div className="flex items-center gap-6">
                       <Button
-                        variant="outline"
+                        variant="secondary"
                         size="sm"
                         onClick={() => setViewMode(viewMode === "grid" ? "list" : "grid")}
                         className="flex items-center gap-2"
@@ -389,12 +401,12 @@ export default function LibraryPage() {
                         )}
                       </Button>
                       
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm text-muted-foreground">Sort by:</span>
+                      <div className="flex items-center gap-3">
+                        <span className="text-small text-silver">Sort by:</span>
                         <select
                           value={sortBy}
                           onChange={(e) => setSortBy(e.target.value as "newest" | "oldest" | "name" | "duration")}
-                          className="text-sm border rounded px-2 py-1 bg-white"
+                          className="input-refined text-small py-2 px-3 bg-slate border-iron focus:border-gold"
                         >
                           <option value="newest">Newest First</option>
                           <option value="oldest">Oldest First</option>
@@ -405,7 +417,7 @@ export default function LibraryPage() {
                     </div>
                     
                     <Button
-                      variant="outline"
+                      variant="secondary"
                       size="sm"
                       onClick={() => {
                         const shuffled = [...sortedSamples].sort(() => Math.random() - 0.5);
@@ -434,34 +446,62 @@ export default function LibraryPage() {
                       showFilters ? "grid-cols-1 lg:grid-cols-2 xl:grid-cols-3" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
                     )}>
                       {sortedSamples.map((sample) => (
-                        <EnhancedAudioCard
+                        <AudioCard
                           key={sample.id}
-                          sample={sample}
-                          isSelected={selectedSamples.includes(sample.id)}
+                          title={sample.title}
+                          artist={sample.artist || sample.culturalOrigin}
+                          duration={`${Math.floor(sample.duration / 60)}:${(sample.duration % 60).toString().padStart(2, '0')}`}
+                          culture={sample.culturalOrigin}
                           isPlaying={currentlyPlaying?.id === sample.id}
-                          isFavorited={favorites.includes(sample.id)}
-                          onSelect={handleSampleSelect}
-                          onPlay={handleSamplePlay}
-                          onFavorite={handleFavorite}
-                          onAddToProject={handleUseInGeneration}
-                        />
+                          onPlay={() => handleSamplePlay(sample)}
+                          className="hover-lift"
+                        >
+                          <div className="mt-4 space-y-2">
+                            <p className="text-caption text-ash line-clamp-2">{sample.description}</p>
+                            <div className="flex flex-wrap gap-1">
+                              {sample.tags.slice(0, 3).map((tag) => (
+                                <span key={tag} className="px-2 py-1 bg-slate text-ash text-caption rounded-small">
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </AudioCard>
                       ))}
                     </div>
                   ) : (
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                       {sortedSamples.map((sample) => (
-                        <EnhancedAudioCard
-                          key={sample.id}
-                          sample={sample}
-                          isSelected={selectedSamples.includes(sample.id)}
-                          isPlaying={currentlyPlaying?.id === sample.id}
-                          isFavorited={favorites.includes(sample.id)}
-                          isListView={true}
-                          onSelect={handleSampleSelect}
-                          onPlay={handleSamplePlay}
-                          onFavorite={handleFavorite}
-                          onAddToProject={handleUseInGeneration}
-                        />
+                        <div key={sample.id} className="card-refined p-6">
+                          <div className="flex items-center gap-6">
+                            <div className="flex-1">
+                              <h3 className="text-h4 font-medium text-white">{sample.title}</h3>
+                              <p className="text-small text-silver">{sample.artist || sample.culturalOrigin}</p>
+                              <p className="text-caption text-ash mt-1">{sample.description}</p>
+                            </div>
+                            <div className="flex items-center gap-4">
+                              <span className="text-caption text-ash font-mono">
+                                {Math.floor(sample.duration / 60)}:{(sample.duration % 60).toString().padStart(2, '0')}
+                              </span>
+                              <Button
+                                variant="gold"
+                                size="sm"
+                                onClick={() => handleSamplePlay(sample)}
+                                className="w-10 h-10 rounded-full p-0"
+                              >
+                                {currentlyPlaying?.id === sample.id ? (
+                                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                                  </svg>
+                                ) : (
+                                  <svg className="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                                  </svg>
+                                )}
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
                       ))}
                     </div>
                   )}
@@ -470,54 +510,60 @@ export default function LibraryPage() {
             )}
           </TabsContent>
 
-          <TabsContent value="upload" className="space-y-6">
+          <TabsContent value="upload" className="space-y-8">
             {audioSamples.length === 0 ? (
               <EmptyStates type="upload-prompt" onUpload={() => {}} />
             ) : (
-              <div className="max-w-2xl mx-auto">
-                <div className="text-center mb-6">
-                  <Upload className="h-12 w-12 mx-auto mb-4 text-primary" />
-                  <h3 className="text-xl font-semibold mb-2">Upload Your Audio Samples</h3>
-                  <p className="text-gray-600">
-                    Share your cultural music with the community and help preserve cultural heritage
+              <div className="max-w-3xl mx-auto">
+                <div className="text-center mb-8 space-y-4">
+                  <div className="w-16 h-16 mx-auto bg-gold rounded-medium flex items-center justify-center">
+                    <Upload className="h-8 w-8 text-obsidian" />
+                  </div>
+                  <h3 className="text-h2 font-display font-bold text-white">Upload Your Audio Samples</h3>
+                  <p className="text-body text-ash max-w-xl mx-auto">
+                    Share your cultural music with the community and help preserve cultural heritage for future generations
                   </p>
                 </div>
                 
-                <AudioUploader
-                  onUpload={handleFileUpload}
-                  maxFiles={10}
-                  maxFileSize={100 * 1024 * 1024} // 100MB
-                  allowedExtensions={['mp3', 'wav', 'ogg', 'm4a', 'flac']}
-                />
+                <div className="studio-panel">
+                  <AudioUploader
+                    onUpload={handleFileUpload}
+                    maxFiles={10}
+                    maxFileSize={100 * 1024 * 1024} // 100MB
+                    allowedExtensions={['mp3', 'wav', 'ogg', 'm4a', 'flac']}
+                  />
+                </div>
               </div>
             )}
           </TabsContent>
 
-          <TabsContent value="player" className="space-y-6">
-            <div className="max-w-4xl mx-auto space-y-6">
-              <div className="text-center">
-                <Music className="h-12 w-12 mx-auto mb-4 text-primary" />
-                <h3 className="text-xl font-semibold mb-2">Enhanced Audio Player</h3>
-                <p className="text-gray-600">
+          <TabsContent value="player" className="space-y-8">
+            <div className="max-w-5xl mx-auto space-y-8">
+              <div className="text-center space-y-4">
+                <div className="w-16 h-16 mx-auto bg-gold rounded-medium flex items-center justify-center">
+                  <Music className="h-8 w-8 text-obsidian" />
+                </div>
+                <h3 className="text-h2 font-display font-bold text-white">Enhanced Audio Player</h3>
+                <p className="text-body text-ash max-w-2xl mx-auto">
                   Professional audio playback with waveform visualization and cultural context
                 </p>
               </div>
 
               {currentlyPlaying ? (
-                <div className="space-y-6">
-                  <div className="bg-white rounded-lg border p-6 shadow-sm">
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg flex items-center justify-center">
-                        <Music className="h-8 w-8 text-blue-600" />
+                <div className="space-y-8">
+                  <div className="studio-panel">
+                    <div className="flex items-center gap-6 mb-6">
+                      <div className="w-20 h-20 bg-gradient-to-br from-gold/20 to-champagne/20 rounded-medium flex items-center justify-center border border-gold/20">
+                        <Music className="h-10 w-10 text-gold" />
                       </div>
                       <div className="flex-1">
-                        <h4 className="text-lg font-semibold">{currentlyPlaying.title}</h4>
-                        <p className="text-muted-foreground">{currentlyPlaying.culturalOrigin} • {currentlyPlaying.instrumentType}</p>
-                        <div className="flex gap-2 mt-2">
+                        <h4 className="text-h3 font-bold text-white">{currentlyPlaying.title}</h4>
+                        <p className="text-body text-silver">{currentlyPlaying.culturalOrigin} • {currentlyPlaying.instrumentType}</p>
+                        <div className="flex gap-2 mt-3">
                           {currentlyPlaying.tags.map((tag) => (
-                            <Badge key={tag} variant="secondary" className="text-xs">
+                            <span key={tag} className="px-3 py-1 bg-slate text-ash text-small rounded-small">
                               {tag}
-                            </Badge>
+                            </span>
                           ))}
                         </div>
                       </div>
@@ -531,33 +577,44 @@ export default function LibraryPage() {
                     />
                   </div>
                   
-                  <div className="bg-white rounded-lg border p-6 shadow-sm">
-                    <h5 className="font-medium mb-4">Waveform Visualization</h5>
-                    <WaveformDisplay
-                      audioUrl={currentlyPlaying.fileUrl || currentlyPlaying.audioUrl}
-                      height={150}
-                      waveColor="#e5e7eb"
-                      progressColor="#3b82f6"
-                      cursorColor="#ef4444"
-                    />
+                  <div className="studio-panel">
+                    <h5 className="text-h4 font-bold text-white mb-6">Waveform Visualization</h5>
+                    <div className="spectrum-analyzer">
+                      <WaveformDisplay
+                        audioUrl={currentlyPlaying.fileUrl || currentlyPlaying.audioUrl}
+                        height={150}
+                        waveColor="#2A2A2A"
+                        progressColor="#D4AF37"
+                        cursorColor="#DC2626"
+                      />
+                    </div>
                   </div>
                   
-                  <div className="bg-white rounded-lg border p-6 shadow-sm">
-                    <h5 className="font-medium mb-4">Cultural Context</h5>
-                    <p className="text-muted-foreground leading-relaxed">
+                  <div className="studio-panel">
+                    <h5 className="text-h4 font-bold text-white mb-6">Cultural Context</h5>
+                    <p className="text-body text-ash leading-relaxed">
                       {currentlyPlaying.description}
                     </p>
                   </div>
                 </div>
               ) : (
-                <EmptyStates 
-                  type="no-samples" 
-                  onExploreLibrary={() => {
-                    // Switch to browse tab
-                    const browseTab = document.querySelector('[value="browse"]') as HTMLElement;
-                    browseTab?.click();
-                  }}
-                />
+                <div className="text-center py-16">
+                  <div className="w-24 h-24 mx-auto bg-charcoal rounded-medium flex items-center justify-center mb-6">
+                    <Music className="h-12 w-12 text-silver" />
+                  </div>
+                  <h4 className="text-h3 font-bold text-white mb-3">No Audio Selected</h4>
+                  <p className="text-body text-ash mb-6">Select a sample from the Browse tab to start listening</p>
+                  <Button
+                    variant="gold"
+                    onClick={() => {
+                      // Switch to browse tab
+                      const browseTab = document.querySelector('[value="browse"]') as HTMLElement;
+                      browseTab?.click();
+                    }}
+                  >
+                    Explore Library
+                  </Button>
+                </div>
               )}
             </div>
           </TabsContent>

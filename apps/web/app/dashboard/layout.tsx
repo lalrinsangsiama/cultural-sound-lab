@@ -3,8 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { Button } from "@repo/ui";
 import { 
   Music, 
   Sparkles, 
@@ -12,15 +11,21 @@ import {
   DollarSign, 
   Settings, 
   LogOut,
-  User
+  User,
+  Headphones,
+  BarChart3,
+  Mic,
+  Radio,
+  Volume2
 } from "lucide-react";
 
 const navigation = [
-  { name: "Library", href: "/dashboard/library", icon: Library },
-  { name: "Generate", href: "/dashboard/generate", icon: Sparkles },
-  { name: "Projects", href: "/dashboard/projects", icon: Music },
-  { name: "Earnings", href: "/dashboard/earnings", icon: DollarSign },
-  { name: "Settings", href: "/dashboard/settings", icon: Settings },
+  { name: "Dashboard", href: "/dashboard", icon: BarChart3, description: "Studio overview" },
+  { name: "Library", href: "/dashboard/library", icon: Library, description: "Cultural samples" },
+  { name: "Generate", href: "/dashboard/generate", icon: Sparkles, description: "AI creation" },
+  { name: "Projects", href: "/dashboard/projects", icon: Music, description: "Your creations" },
+  { name: "Earnings", href: "/dashboard/earnings", icon: DollarSign, description: "Revenue tracking" },
+  { name: "Settings", href: "/dashboard/settings", icon: Settings, description: "Studio preferences" },
 ];
 
 export default function DashboardLayout({
@@ -31,58 +36,106 @@ export default function DashboardLayout({
   const pathname = usePathname();
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
-      <div className="hidden md:flex md:w-64 md:flex-col">
-        <div className="flex flex-col flex-grow pt-5 overflow-y-auto bg-white border-r">
-          <div className="flex items-center flex-shrink-0 px-4">
-            <Music className="h-8 w-8 text-primary" />
-            <span className="ml-2 text-xl font-bold text-gray-900">
-              Cultural Sound Lab
-            </span>
+    <div className="flex h-screen bg-obsidian">
+      {/* Studio Console Sidebar */}
+      <div className="hidden md:flex md:w-80 md:flex-col">
+        <div className="flex flex-col flex-grow bg-charcoal border-r border-slate">
+          {/* Studio Branding */}
+          <div className="flex items-center flex-shrink-0 p-6 border-b border-slate">
+            <div className="w-12 h-12 bg-gold rounded-medium flex items-center justify-center shadow-gold mr-4">
+              <Headphones className="h-6 w-6 text-obsidian" />
+            </div>
+            <div>
+              <span className="text-h4 font-display font-bold text-white">
+                Studio Console
+              </span>
+              <p className="text-caption text-ash mt-1">
+                Professional Workspace
+              </p>
+            </div>
           </div>
-          <div className="mt-5 flex-1 flex flex-col">
-            <nav className="flex-1 px-2 pb-4 space-y-1">
+
+          {/* Studio Status */}
+          <div className="p-6 border-b border-slate">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-3 h-3 bg-emerald rounded-full animate-pulse"></div>
+                <span className="text-small text-emerald font-mono">LIVE</span>
+              </div>
+              <Button variant="ghost" size="sm">
+                <Radio className="w-4 h-4 mr-2 text-gold" />
+                <span className="text-small text-gold">Session</span>
+              </Button>
+            </div>
+            <div className="grid grid-cols-2 gap-3 text-center">
+              <div className="bg-obsidian/50 rounded-small p-3 border border-gold/10">
+                <div className="text-body font-mono text-white">12</div>
+                <div className="text-caption text-ash">Tracks</div>
+              </div>
+              <div className="bg-obsidian/50 rounded-small p-3 border border-gold/10">
+                <div className="text-body font-mono text-white">2:34</div>
+                <div className="text-caption text-ash">Session</div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Navigation */}
+          <div className="flex-1 flex flex-col p-6">
+            <nav className="flex-1 space-y-2">
               {navigation.map((item) => {
-                const isActive = pathname === item.href;
+                const isActive = pathname === item.href || (item.href === "/dashboard" && pathname === "/dashboard");
                 return (
                   <Link
                     key={item.name}
                     href={item.href}
                     className={cn(
-                      "group flex items-center px-2 py-2 text-sm font-medium rounded-md",
+                      "group flex items-center px-4 py-3 text-small font-medium rounded-small transition-all duration-200",
                       isActive
-                        ? "bg-primary text-primary-foreground"
-                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                        ? "bg-gold/10 text-gold border border-gold/20"
+                        : "text-silver hover:text-white hover:bg-slate border border-transparent hover:border-iron"
                     )}
                   >
                     <item.icon
                       className={cn(
-                        "mr-3 h-5 w-5",
-                        isActive ? "text-primary-foreground" : "text-gray-400 group-hover:text-gray-500"
+                        "mr-3 h-5 w-5 transition-colors",
+                        isActive ? "text-gold" : "text-ash group-hover:text-white"
                       )}
                     />
-                    {item.name}
+                    <div className="flex-1">
+                      <div className={cn(
+                        "font-medium",
+                        isActive ? "text-gold" : "text-silver group-hover:text-white"
+                      )}>
+                        {item.name}
+                      </div>
+                      <div className="text-caption text-ash group-hover:text-silver transition-colors">
+                        {item.description}
+                      </div>
+                    </div>
+                    {isActive && (
+                      <div className="w-2 h-2 bg-gold rounded-full"></div>
+                    )}
                   </Link>
                 );
               })}
             </nav>
           </div>
-          <Separator />
-          <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
+
+          {/* User Profile */}
+          <div className="flex-shrink-0 border-t border-slate p-6">
             <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <User className="h-8 w-8 text-gray-400" />
+              <div className="w-10 h-10 bg-gold/10 border border-gold/20 rounded-medium flex items-center justify-center">
+                <User className="h-5 w-5 text-gold" />
               </div>
-              <div className="ml-3">
-                <p className="text-sm font-medium text-gray-700">
+              <div className="ml-3 flex-1">
+                <p className="text-small font-medium text-white">
                   Demo User
                 </p>
-                <p className="text-xs font-medium text-gray-500">
+                <p className="text-caption text-ash">
                   demo@culturalsoundlab.com
                 </p>
               </div>
-              <Button variant="ghost" size="sm" className="ml-auto">
+              <Button variant="ghost" size="sm" className="hover:text-gold">
                 <LogOut className="h-4 w-4" />
               </Button>
             </div>
@@ -90,33 +143,52 @@ export default function DashboardLayout({
         </div>
       </div>
 
-      {/* Main content */}
+      {/* Main Studio Area */}
       <div className="flex flex-col flex-1 overflow-hidden">
-        <header className="bg-white shadow-sm border-b">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center py-6">
+        {/* Studio Control Bar */}
+        <header className="bg-gradient-to-r from-charcoal to-slate border-b border-slate">
+          <div className="max-w-7xl mx-auto px-6 py-4">
+            <div className="flex justify-between items-center">
               <div className="flex items-center">
-                <div className="md:hidden">
-                  <Music className="h-8 w-8 text-primary" />
+                {/* Mobile menu button */}
+                <div className="md:hidden mr-4">
+                  <Button variant="ghost" size="sm">
+                    <Headphones className="h-5 w-5 text-gold" />
+                  </Button>
                 </div>
-                <h1 className="ml-2 text-2xl font-bold text-gray-900 md:ml-0">
-                  {navigation.find(item => item.href === pathname)?.name || "Dashboard"}
-                </h1>
+                <div>
+                  <h1 className="text-h2 font-display font-bold text-white">
+                    {navigation.find(item => item.href === pathname)?.name || 
+                     (pathname === "/dashboard" ? "Dashboard" : "Studio")}
+                  </h1>
+                  <p className="text-small text-ash">
+                    {navigation.find(item => item.href === pathname)?.description || 
+                     "Professional audio workspace"}
+                  </p>
+                </div>
               </div>
-              <div className="flex items-center space-x-4">
-                <Button variant="outline" size="sm">
-                  <User className="h-4 w-4 mr-2" />
-                  Profile
+              
+              {/* Studio Controls */}
+              <div className="flex items-center space-x-3">
+                <div className="hidden sm:flex items-center space-x-2 text-small text-silver">
+                  <Volume2 className="w-4 h-4 text-gold" />
+                  <span className="font-mono">96kHz</span>
+                </div>
+                <Button variant="secondary" size="sm" className="border-gold/20 hover:border-gold">
+                  <Mic className="h-4 w-4 mr-2" />
+                  Record
+                </Button>
+                <Button variant="ghost" size="sm" className="hover:text-gold">
+                  <User className="h-4 w-4" />
                 </Button>
               </div>
             </div>
           </div>
         </header>
 
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            {children}
-          </div>
+        {/* Studio Workspace */}
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-obsidian">
+          {children}
         </main>
       </div>
     </div>

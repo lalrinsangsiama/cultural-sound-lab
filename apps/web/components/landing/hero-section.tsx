@@ -1,11 +1,11 @@
 'use client';
 
-import { motion, useAnimation } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Play, Pause, Volume2 } from 'lucide-react';
+import { Button, PlayButton } from '@repo/ui';
+import { Volume2 } from 'lucide-react';
 
-// Floating musical notes component
+// Refined floating musical notes component
 const FloatingNotes = () => {
   const notes = ['♪', '♫', '♬', '♩', '♭', '♯'];
   const [dimensions, setDimensions] = useState({ width: 1200, height: 800 });
@@ -25,10 +25,10 @@ const FloatingNotes = () => {
   
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {Array.from({ length: 12 }).map((_, i) => (
+      {Array.from({ length: 8 }).map((_, i) => (
         <motion.div
           key={i}
-          className="absolute text-white/20 text-2xl font-bold"
+          className="absolute text-gold/10 text-2xl font-mono"
           initial={{
             x: Math.random() * dimensions.width,
             y: dimensions.height + 50,
@@ -40,9 +40,9 @@ const FloatingNotes = () => {
             rotate: 360,
           }}
           transition={{
-            duration: 15 + Math.random() * 10,
+            duration: 20 + Math.random() * 10,
             repeat: Infinity,
-            delay: Math.random() * 20,
+            delay: Math.random() * 15,
             ease: "linear",
           }}
         >
@@ -98,9 +98,9 @@ const AudioWaveVisualization = () => {
     let x = 0;
 
     const gradient = ctx.createLinearGradient(0, canvas.height, 0, 0);
-    gradient.addColorStop(0, '#8B5CF6');
-    gradient.addColorStop(0.5, '#A78BFA');
-    gradient.addColorStop(1, '#C4B5FD');
+    gradient.addColorStop(0, '#D4AF37');
+    gradient.addColorStop(0.5, '#F4D03F');
+    gradient.addColorStop(1, '#FFF8DC');
 
     for (let i = 0; i < dataArray.length; i++) {
       const barHeight = ((dataArray[i] ?? 0) / 255) * canvas.height * 0.8;
@@ -130,9 +130,9 @@ const AudioWaveVisualization = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       const gradient = ctx.createLinearGradient(0, canvas.height, 0, 0);
-      gradient.addColorStop(0, '#8B5CF6');
-      gradient.addColorStop(0.5, '#A78BFA');
-      gradient.addColorStop(1, '#C4B5FD');
+      gradient.addColorStop(0, '#D4AF37');
+      gradient.addColorStop(0.5, '#F4D03F');
+      gradient.addColorStop(1, '#FFF8DC');
 
       for (let i = 0; i < barCount; i++) {
         const barHeight = (Math.sin(Date.now() * 0.005 + i * 0.2) * 0.5 + 0.5) * canvas.height * 0.8;
@@ -204,66 +204,65 @@ const AudioWaveVisualization = () => {
         }}
       />
       
-      <div className="bg-black/20 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
-        <div className="flex items-center justify-between mb-4">
+      <div className="glass-refined rounded-medium p-6 hover-audio-glow animate-studio-breathe">
+        <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
-            <Volume2 className="w-5 h-5 text-white" />
-            <span className="text-white font-medium">Cultural Sound Preview</span>
+            <div className="knob-control w-6 h-6 flex items-center justify-center">
+              <Volume2 className="w-3 h-3 text-gold" />
+              <div className="led-indicator absolute -top-1 -right-1"></div>
+            </div>
+            <span className="text-white font-display font-medium text-body">Cultural Sound Preview</span>
           </div>
           
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={togglePlay}
-            className="text-white hover:bg-white/10"
-          >
-            {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-          </Button>
+          <div className="flex items-center space-x-2">
+            <div className="led-indicator"></div>
+            <PlayButton
+              isPlaying={isPlaying}
+              onToggle={togglePlay}
+              size="sm"
+              className="click-ripple"
+            />
+          </div>
         </div>
         
-        <canvas
-          ref={canvasRef}
-          width={400}
-          height={100}
-          className="w-full h-20 rounded-lg"
-        />
+        <div className="relative">
+          <canvas
+            ref={canvasRef}
+            width={400}
+            height={100}
+            className="w-full h-20 rounded-small bg-charcoal/50 border border-gold/10"
+          />
+          
+          {/* Professional Studio Overlay */}
+          <div className="absolute top-2 left-2 flex space-x-1">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="knob-control w-2 h-2" />
+            ))}
+          </div>
+          
+          <div className="absolute top-2 right-2 frequency-analyzer w-8 h-3">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="frequency-bar spectrum-bar" />
+            ))}
+          </div>
+          
+          <div className="absolute bottom-2 left-2 flex items-center space-x-2">
+            <div className="led-indicator amber"></div>
+            <span className="text-caption text-gold font-mono">96kHz</span>
+          </div>
+          
+          <div className="absolute bottom-2 right-2 data-visualization w-12 h-1"></div>
+        </div>
       </div>
     </div>
   );
 };
 
 export function HeroSection() {
-  const controls = useAnimation();
-
-  useEffect(() => {
-    controls.start({
-      background: [
-        'linear-gradient(45deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
-        'linear-gradient(45deg, #764ba2 0%, #667eea 50%, #f093fb 100%)',
-        'linear-gradient(45deg, #f093fb 0%, #f5576c 50%, #4facfe 100%)',
-        'linear-gradient(45deg, #4facfe 0%, #00f2fe 50%, #667eea 100%)',
-      ],
-      transition: {
-        duration: 8,
-        repeat: Infinity,
-        ease: "linear",
-      }
-    });
-  }, [controls]);
-
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Animated gradient background */}
-      <motion.div
-        className="absolute inset-0 opacity-90"
-        animate={controls}
-        style={{
-          background: 'linear-gradient(45deg, #667eea 0%, #764ba2 50%, #f093fb 100%)'
-        }}
-      />
-      
-      {/* Overlay for better text readability */}
-      <div className="absolute inset-0 bg-black/20" />
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-obsidian">
+      {/* Subtle gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-obsidian via-graphite to-charcoal" />
       
       {/* Floating musical notes */}
       <FloatingNotes />
@@ -274,41 +273,31 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="space-y-8"
+          className="space-y-12"
         >
           {/* Main headline */}
           <motion.h1
-            className="text-5xl md:text-7xl font-bold text-white leading-tight"
+            className="text-hero md:text-hero font-display font-bold text-white leading-tight"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.2 }}
           >
-            Monetize Your
+            Preserve & Share
             <br />
-            <motion.span
-              className="bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent"
-              animate={{
-                backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: "linear",
-              }}
-            >
-              Cultural Heritage
-            </motion.span>
+            <span className="text-gradient-gold">
+              Musical Heritage
+            </span>
           </motion.h1>
           
           {/* Subtitle */}
           <motion.p
-            className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed"
+            className="text-h3 md:text-h2 text-ash max-w-4xl mx-auto leading-relaxed"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            Transform authentic cultural recordings into AI-powered music assets. 
-            Create, license, and earn while preserving musical traditions.
+            Access centuries-old cultural sounds and transform them into modern compositions. 
+            Honor traditions while creating new musical possibilities.
           </motion.p>
           
           {/* Audio visualization */}
@@ -321,58 +310,60 @@ export function HeroSection() {
             <AudioWaveVisualization />
           </motion.div>
           
-          {/* CTA buttons */}
+          {/* Enhanced CTA buttons */}
           <motion.div
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8"
+            className="flex flex-col sm:flex-row gap-6 justify-center items-center pt-8"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
           >
             <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.02, y: -2 }}
+              whileTap={{ scale: 0.98 }}
+              className="relative"
             >
               <Button
+                variant="gold"
                 size="lg"
-                className="bg-white text-purple-600 hover:bg-gray-100 font-semibold px-8 py-4 text-lg rounded-full shadow-lg"
+                className="px-8 py-4 text-h4 font-medium click-ripple animate-gold-pulse hover-console-lift"
                 onClick={() => window.location.href = '/dashboard/library'}
               >
-                Explore Sounds
+                Discover Heritage
               </Button>
             </motion.div>
             
             <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
               <Button
+                variant="secondary"
                 size="lg"
-                variant="outline"
-                className="border-white bg-white/10 text-white hover:bg-white hover:text-purple-600 font-semibold px-8 py-4 text-lg rounded-full backdrop-blur-sm shadow-lg"
+                className="px-8 py-4 text-h4 font-medium"
                 onClick={() => window.location.href = '/register'}
               >
-                Start Creating
+                Join the Studio
               </Button>
             </motion.div>
           </motion.div>
           
           {/* Stats preview */}
           <motion.div
-            className="grid grid-cols-3 gap-8 max-w-2xl mx-auto pt-12"
+            className="grid grid-cols-3 gap-12 max-w-3xl mx-auto pt-16"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.0 }}
           >
             {[
-              { value: '500+', label: 'Cultural Sounds', link: '/library' },
-              { value: '50+', label: 'Communities', link: '/library' },
-              { value: '$100k+', label: 'Creator Earnings', link: '/register' },
+              { value: '500+', label: 'Heritage Recordings', link: '/library' },
+              { value: '50+', label: 'Cultural Communities', link: '/library' },
+              { value: '100k+', label: 'Artists Supported', link: '/register' },
             ].map((stat, index) => (
               <motion.div
                 key={index}
-                className="text-center cursor-pointer"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                className="text-center cursor-pointer group"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => {
                   if (stat.link === '/library') {
                     window.location.href = '/dashboard/library';
@@ -381,10 +372,10 @@ export function HeroSection() {
                   }
                 }}
               >
-                <div className="text-2xl md:text-3xl font-bold text-white">
+                <div className="text-h1 md:text-display font-bold text-white font-mono">
                   {stat.value}
                 </div>
-                <div className="text-white/80 text-sm mt-1 hover:text-white transition-colors">
+                <div className="text-silver text-body mt-2 group-hover:text-gold transition-colors">
                   {stat.label}
                 </div>
               </motion.div>
@@ -396,8 +387,8 @@ export function HeroSection() {
       {/* Scroll indicator */}
       <motion.div
         className="absolute bottom-8 left-1/2 transform -translate-x-1/2 cursor-pointer"
-        animate={{ y: [0, 10, 0] }}
-        transition={{ duration: 2, repeat: Infinity }}
+        animate={{ y: [0, 6, 0] }}
+        transition={{ duration: 3, repeat: Infinity }}
         onClick={() => {
           window.scrollTo({
             top: window.innerHeight,
@@ -407,11 +398,11 @@ export function HeroSection() {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
       >
-        <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center hover:border-white/80 transition-colors">
+        <div className="w-6 h-10 border-2 border-silver rounded-full flex justify-center hover:border-gold transition-colors">
           <motion.div
-            className="w-1 h-2 bg-white/70 rounded-full mt-2"
+            className="w-1 h-2 bg-gold rounded-full mt-2"
             animate={{ y: [0, 16, 0] }}
-            transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+            transition={{ duration: 3, repeat: Infinity, delay: 0.5 }}
           />
         </div>
       </motion.div>

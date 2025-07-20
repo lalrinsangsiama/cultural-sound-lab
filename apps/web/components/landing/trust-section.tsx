@@ -157,8 +157,8 @@ const stats = [
     icon: Users,
     value: 1200,
     suffix: '+',
-    label: 'Cultural Contributors',
-    description: 'Artists preserving heritage',
+    label: 'Heritage Keepers',
+    description: 'Artists preserving traditions',
     color: 'text-blue-600',
     bgColor: 'bg-blue-100',
     link: '/register',
@@ -167,8 +167,8 @@ const stats = [
     icon: Music,
     value: 3500,
     suffix: '+',
-    label: 'Cultural Sounds',
-    description: 'Authentic recordings',
+    label: 'Authentic Recordings',
+    description: 'Cultural masterpieces',
     color: 'text-purple-600',
     bgColor: 'bg-purple-100',
     link: '/dashboard/library',
@@ -178,8 +178,8 @@ const stats = [
     value: 150000,
     prefix: '$',
     suffix: '+',
-    label: 'Paid to Artists',
-    description: 'Fair revenue sharing',
+    label: 'Supporting Artists',
+    description: 'Ethical compensation',
     color: 'text-green-600',
     bgColor: 'bg-green-100',
     link: '/register',
@@ -188,8 +188,8 @@ const stats = [
     icon: Globe,
     value: 45,
     suffix: '+',
-    label: 'Cultures Represented',
-    description: 'Global heritage',
+    label: 'Cultural Traditions',
+    description: 'Stories preserved',
     color: 'text-orange-600',
     bgColor: 'bg-orange-100',
     link: '/dashboard/library',
@@ -199,28 +199,28 @@ const stats = [
 // Testimonials data
 const testimonials = [
   {
-    text: "Cultural Sound Lab has revolutionized how we share our Mizo musical heritage. The platform respects our traditions while creating new opportunities for our community.",
+    text: "Cultural Sound Lab has transformed how we share our Mizo musical heritage. The platform honors our traditions while creating meaningful opportunities for our community to thrive.",
     author: "Lalrinpuii Sailo",
     role: "Traditional Music Keeper",
     community: "Mizo Cultural Association",
   },
   {
-    text: "As a content creator, I love having access to authentic cultural sounds with clear licensing. The AI generation features help me create unique content that respects the source material.",
+    text: "As a creator, I treasure having access to authentic cultural sounds with respectful licensing. The platform helps me craft unique content while honoring the source traditions.",
     author: "Marcus Chen",
-    role: "YouTube Creator",
-    community: "500k Subscribers",
+    role: "Digital Storyteller",
+    community: "Cultural Content Creator",
   },
   {
-    text: "The revenue sharing model is transparent and fair. For the first time, I'm earning meaningful income from our ancestral music while ensuring it's preserved properly.",
+    text: "This platform ensures our ancestral music receives the respect and recognition it deserves. For the first time, I'm earning meaningful support while preserving our heritage properly.",
     author: "Zothanmawii",
     role: "Folk Singer & Curator",
     community: "Aizawl, Mizoram",
   },
   {
-    text: "Our brand found the perfect sound identity using Cultural Sound Lab. The authenticity and quality of Mizo sounds elevated our marketing campaigns significantly.",
+    text: "We discovered our perfect sonic identity through Cultural Sound Lab. The authenticity and reverence for Mizo traditions elevated our brand story beyond expectations.",
     author: "Sarah Williams",
-    role: "Brand Director",
-    community: "Global Marketing Agency",
+    role: "Brand Storyteller",
+    community: "Creative Agency",
   },
 ];
 
@@ -263,11 +263,11 @@ export function TrustSection() {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            Preserving Mizo Musical Heritage
+            Honoring Cultural Legacy
           </h2>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Empowering communities, preserving culture, and creating sustainable income 
-            for traditional artists through innovative technology.
+            Where ancient melodies find new life, artists receive recognition, 
+            and cultural treasures are preserved for generations to come.
           </p>
         </motion.div>
 
@@ -328,14 +328,13 @@ export function TrustSection() {
         >
           <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
             <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent">
-              Cultural Impact Story
+              A Living Heritage
             </h3>
             <p className="text-gray-300 leading-relaxed text-lg">
-              In the hills of Mizoram, where bamboo groves whisper ancient melodies, 
-              traditional music faces the challenge of modernization. Cultural Sound Lab 
-              bridges this gap, ensuring that the soulful tunes of the Mizo people not only 
-              survive but thrive in the digital age. Every sound tells a story, every beat 
-              carries heritage, and every artist gets fairly compensated.
+              In the misty hills of Mizoram, where bamboo forests hold centuries of musical wisdom, 
+              each melody carries the soul of a people. Cultural Sound Lab ensures these treasures 
+              don't fade into memory but flourish in new forms. We honor the past while embracing 
+              the future, creating a bridge where tradition and innovation dance together.
             </p>
           </div>
         </motion.div>
@@ -369,11 +368,11 @@ export function TrustSection() {
           transition={{ duration: 0.6, delay: 0.8 }}
         >
           <h3 className="text-2xl font-bold mb-4">
-            Join the Cultural Renaissance
+            Join the Heritage Renaissance
           </h3>
           <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
-            Whether you're a cultural keeper, content creator, or business looking for 
-            authentic sounds, become part of our mission to preserve and monetize heritage.
+            Whether you're a cultural keeper, creative professional, or organization seeking 
+            authentic sounds, become part of our mission to honor and preserve musical heritage.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -383,7 +382,7 @@ export function TrustSection() {
               whileTap={{ scale: 0.95 }}
               onClick={() => window.location.href = '/register'}
             >
-              Become a Contributor
+              Honor Your Heritage
             </motion.button>
             
             <motion.button
@@ -392,7 +391,7 @@ export function TrustSection() {
               whileTap={{ scale: 0.95 }}
               onClick={() => window.location.href = '/dashboard/library'}
             >
-              Explore the Library
+              Discover Treasures
             </motion.button>
           </div>
         </motion.div>

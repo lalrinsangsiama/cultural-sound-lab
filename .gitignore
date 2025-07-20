@@ -35,3 +35,13 @@ yarn-error.log*
 # ui
 dist/
 .vercel
+
+# GitHub Actions Runner (should never be committed)
+actions-runner/
+
+# Sentry
+.sentryclirc
+
+# Environment files
+.env
+.env.vault
