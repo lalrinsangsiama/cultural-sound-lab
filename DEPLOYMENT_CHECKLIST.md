@@ -45,10 +45,13 @@ Options:
 - [ ] **AWS SES**
 - [ ] **Postmark**
 
-### 4. **Monitoring (Optional but Recommended)**
-- [ ] **Sentry** for error tracking
-  - Create project at sentry.io
-  - Get DSN for both frontend and backend
+### 4. **Monitoring (Optional but Recommended)** ✅
+- [x] **Sentry** for error tracking
+  - Created projects at sentry.io
+  - DSN configured for both frontend and backend
+  - Auth token configured: `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`
+  - Web DSN: `https://2fddb04e024bb6a7717753ef879c84d9@o4509699240361984.ingest.us.sentry.io/4509699280076800`
+  - API DSN: `https://4c0f7dbc2f4f6c57fecd7bd0dfb81ddd@o4509699240361984.ingest.us.sentry.io/4509699259760640`
   - See [SENTRY_CONFIGURATION_GUIDE.md](./SENTRY_CONFIGURATION_GUIDE.md) for detailed setup instructions
 - [ ] **Analytics** (optional)
   - Google Analytics or Plausible

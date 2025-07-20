@@ -52,8 +52,8 @@ function checkEnvFile(filePath, envVars) {
     } else if (value.includes('your-') || value.includes('placeholder')) {
       log(`  ⚠️  ${varName}: Still using placeholder value (${value})`, 'yellow');
       allValid = false;
-    } else if (!value.includes('ingest.sentry.io') && !value.includes('@sentry.io')) {
-      log(`  ⚠️  ${varName}: Invalid format - should contain 'ingest.sentry.io' or '@sentry.io'`, 'yellow');
+    } else if (!value.includes('.sentry.io')) {
+      log(`  ⚠️  ${varName}: Invalid format - should contain '.sentry.io'`, 'yellow');
       allValid = false;
     } else {
       log(`  ✅ ${varName}: Configured`, 'green');

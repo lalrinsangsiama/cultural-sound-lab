@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/node';
-// import { nodeProfilingIntegration } from '@sentry/profiling-node';
+import { nodeProfilingIntegration } from '@sentry/profiling-node';
 
 export function initSentry() {
   Sentry.init({
@@ -8,7 +8,7 @@ export function initSentry() {
     integrations: [
       Sentry.httpIntegration(),
       Sentry.expressIntegration(),
-      // nodeProfilingIntegration(), // Commented out - not available
+      nodeProfilingIntegration(),
     ],
     tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
     profilesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,

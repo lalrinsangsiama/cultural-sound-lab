@@ -1,3 +1,7 @@
+// IMPORTANT: Make sure to import `instrument.js` at the top of your file.
+// If you're using ECMAScript Modules (ESM) syntax, use `import "./instrument.js";`
+require("./instrument.js");
+
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -13,11 +17,8 @@ dotenv.config();
 import { initTelemetry } from '@/config/telemetry';
 initTelemetry();
 
-// Initialize Sentry after OpenTelemetry
-import { initSentry } from '@/config/sentry';
+// Import Sentry (already initialized in instrument.js)
 import * as Sentry from '@sentry/node';
-import { nodeProfilingIntegration } from '@sentry/profiling-node';
-initSentry();
 
 import { globalErrorHandler, notFoundHandler, rateLimitErrorHandler } from '@/middleware/error';
 import { versioningMiddleware, versionTransform } from '@/middleware/versioning';
@@ -48,8 +49,6 @@ const app = express();
 const server = createServer(app);
 const PORT = process.env.PORT || 3001;
 
-// Request tracing
-Sentry.setupExpressErrorHandler(app);
 
 // Security middleware with comprehensive headers
 app.use(helmet({
@@ -287,11 +286,24 @@ app.get('/', (req, res) => {
   });
 });
 
+// Sentry debug route for testing
+app.get("/debug-sentry", function mainHandler(req, res) {
+  throw new Error("My first Sentry error!");
+});
+
 // Handle 404 errors
 app.use(notFoundHandler);
 
-// Sentry error handler
-app.use(Sentry.expressErrorHandler());
+// The error handler must be registered before any other error middleware and after all controllers
+Sentry.setupExpressErrorHandler(app);
+
+// Optional fallthrough error handler
+app.use(function onError(err: any, req: Request, res: Response, next: any) {
+  // The error id is attached to `res.sentry` to be returned
+  // and optionally displayed to the user for support.
+  res.statusCode = 500;
+  res.end((res as any).sentry + "\n");
+});
 
 // Global error handler
 app.use(globalErrorHandler);
